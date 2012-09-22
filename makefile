@@ -41,7 +41,7 @@
 
 
 # MCU name
-MCU = atmega644pa
+MCU = atmega644p
 
 
 # Processor frequency.
@@ -252,6 +252,7 @@ EXTRALIBDIRS =
 #EXTMEMOPTS = -Wl,--section-start,.data=0x801100,--defsym=__heap_end=0x80ffff
 
 EXTMEMOPTS =
+
 
 
 
