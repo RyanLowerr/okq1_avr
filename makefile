@@ -80,7 +80,7 @@ OBJDIR = .
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c /dynamixel/dynamixel.c /ik/ik.c
+SRC = $(TARGET).c /dynamixel/dynamixel.c /ik/ik.c /gait/gait.c
 
 
 # List C++ source files here. (C dependencies are automatically generated.)
@@ -252,6 +252,7 @@ EXTRALIBDIRS =
 #EXTMEMOPTS = -Wl,--section-start,.data=0x801100,--defsym=__heap_end=0x80ffff
 
 EXTMEMOPTS =
+
 
 
 

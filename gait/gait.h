@@ -37,9 +37,11 @@ typedef struct
 	double z[4];
 } gaitdata;
 				
-void gait_process(void);
+void gait_process(gaitdata *g);
+void gait_paramcalc(gaitdata *g);
+void gait_ripple_init(gaitdata *g);
+void gait_amble_init(gaitdata *g);
 double gait_sine(double position, double Period, double period_shift, double amplitude, double amplitude_shift);
 double gait_line(double position, double Period, double period_shift, double amplitude, double amplitude_shift);
-void gait_paramcalc(void);
 
 #endif
