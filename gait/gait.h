@@ -2,8 +2,15 @@
 #ifndef _GAIT_H_
 #define _GAIT_H_
 
+#include <avr/io.h>
+
+#define GAIT_TYPE_RIPPLE  1
+#define GAIT_TYPE_AMBLE   2
+
 typedef struct
 {
+	uint8_t type;
+
 	double period;
 	double periodstep;
 	double position;
@@ -39,8 +46,7 @@ typedef struct
 				
 void gait_process(gaitdata *g);
 void gait_paramcalc(gaitdata *g);
-void gait_ripple_init(gaitdata *g);
-void gait_amble_init(gaitdata *g);
+void gait_init(gaitdata *g, uint8_t type);
 double gait_sine(double position, double Period, double period_shift, double amplitude, double amplitude_shift);
 double gait_line(double position, double Period, double period_shift, double amplitude, double amplitude_shift);
 
