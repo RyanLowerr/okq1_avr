@@ -6,7 +6,7 @@
 
 void gait_process(gaitdata *g)
 {	
-	double shiftedtime;	
+	float shiftedtime;	
 	uint8_t legindex = 0;
 	
 	if(g->position > g->period)
@@ -53,6 +53,10 @@ void gait_paramcalc(gaitdata *g)
 	g->step_period_y = g->step_time;
 	g->step_period_z = g->step_time * 2.0;
 	
+	g->step_periodshift_x = 0.0;
+	g->step_periodshift_y = 0.0;
+	g->step_periodshift_z = 0.0;
+	
 	g->move_period_x = g->period * g->move_to_step_ratio;
 	g->move_period_y = g->period * g->move_to_step_ratio;
 	g->move_period_z = 0.0;
@@ -73,7 +77,7 @@ void gait_init(gaitdata *g, uint8_t type)
 	// This should be configurable. Possibly a param of gait_init()?
 	g->period = 100.0;
 
-	if(type = GAIT_TYPE_RIPPLE)
+	if(type == GAIT_TYPE_RIPPLE)
 	{
 		g->type = type;
 		g->step_to_move_ratio = 0.25;
@@ -84,7 +88,7 @@ void gait_init(gaitdata *g, uint8_t type)
 		gait_paramcalc(g);
 	}
 	
-	if(type = GAIT_TYPE_AMBLE)
+	if(type == GAIT_TYPE_AMBLE)
 	{
 		g->type = type;
 		g->step_to_move_ratio = 0.50;
@@ -96,12 +100,12 @@ void gait_init(gaitdata *g, uint8_t type)
 	}
 }
 
-double gait_sine(double position, double Period, double period_shift, double amplitude, double amplitude_shift)
+float gait_sine(float position, float Period, float period_shift, float amplitude, float amplitude_shift)
 {
 	return (amplitude * sin(2 * 3.141592 / Period * (position + period_shift)) + amplitude_shift);
 }
 
-double gait_line(double position, double Period, double period_shift, double amplitude, double amplitude_shift)
+float gait_line(float position, float Period, float period_shift, float amplitude, float amplitude_shift)
 {
 	return (amplitude + (position * ((-amplitude - amplitude) / Period)));
 }
