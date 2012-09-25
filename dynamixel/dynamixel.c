@@ -5,9 +5,9 @@
 
 #include "dynamixel.h"
 
-volatile uint8_t dynamixel_txpacket[DYNAMIXEL_PACKET_SIZE];
-volatile uint8_t dynamixel_rxpacket[DYNAMIXEL_PACKET_SIZE];
-volatile uint8_t dynamixel_rxindex = 0;
+static volatile uint8_t dynamixel_txpacket[DYNAMIXEL_PACKET_SIZE];
+static volatile uint8_t dynamixel_rxpacket[DYNAMIXEL_PACKET_SIZE];
+static volatile uint8_t dynamixel_rxindex = 0;
 
 ISR(USART_RX_vect)
 {
@@ -108,6 +108,7 @@ uint8_t dynamixel_readpacket(volatile uint8_t* rxpacket, uint8_t packetlength)
 
 uint8_t dynamixel_txrx(volatile uint8_t* txpacket, volatile uint8_t* rxpacket)
 {
+	uint8_t result;
 	uint8_t rxlength = 0;
 	uint8_t txlength = dynamixel_txpacket[DYNAMIXEL_LENGTH] + 4;
 	
@@ -117,7 +118,6 @@ uint8_t dynamixel_txrx(volatile uint8_t* txpacket, volatile uint8_t* rxpacket)
 	
 	dynamixel_settx();
 	dynamixel_writepacket(txpacket, txlength);
-	dynamixel_setrx();
 	
 	if(txpacket[DYNAMIXEL_ID] != DYNAMIXEL_BROADCAST_ID)
 	{	
@@ -126,10 +126,12 @@ uint8_t dynamixel_txrx(volatile uint8_t* txpacket, volatile uint8_t* rxpacket)
 		else
 			rxlength = 6;
 			
-		return dynamixel_readpacket(rxpacket, rxlength);			
+		dynamixel_setrx();
+		result = dynamixel_readpacket(rxpacket, rxlength);
+		dynamixel_settx();
+				
+		return result;			
 	}
-	
-	dynamixel_settx();
 		
 	return DYNAMIXEL_SUCCESS;
 }
