@@ -11,13 +11,13 @@
 
 typedef struct
 {
-	double coxa;
-	double femur;
-	double tibia;
-	double tarsus;
+	float coxa;
+	float femur;
+	float tibia;
+	float tarsus;
 } ik_angles;
 
-uint8_t ik_leg(double x, double y, double z, ik_angles *results);
-uint8_t ik_body(double roll, double pitch, double yaw);
+uint8_t ik_leg(float x, float y, float z, ik_angles *results);
+uint8_t ik_body(float roll, float pitch, float yaw);
 
 #endif

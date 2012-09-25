@@ -3,17 +3,17 @@
 
 #include "ik.h"
 
-uint8_t ik_leg(double x, double y, double z, ik_angles *results)
+uint8_t ik_leg(float x, float y, float z, ik_angles *results)
 {
-	double leg_length;
-	double tarsus_offset_angle;
-	double tarsus_offset_xy;
-	double tarsus_offset_z;
-	double theta;
-	double side_a, side_b, side_c;
-	double side_a_sqr, side_b_sqr, side_c_sqr;
-	double angle_a, angle_b, angle_c;
-	double temp1, temp2;
+	float leg_length;
+	float tarsus_offset_angle;
+	float tarsus_offset_xy;
+	float tarsus_offset_z;
+	float theta;
+	float side_a, side_b, side_c;
+	float side_a_sqr, side_b_sqr, side_c_sqr;
+	float angle_a, angle_b, angle_c;
+	float temp1, temp2;
 
 	// Magnitude of the leg length along the ground from the coxa axis to the tip of the foot in the XY plane
 	leg_length = sqrt(x * x + y * y);
