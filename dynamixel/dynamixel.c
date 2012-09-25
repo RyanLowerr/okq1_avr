@@ -128,7 +128,6 @@ uint8_t dynamixel_txrx(volatile uint8_t* txpacket, volatile uint8_t* rxpacket)
 			
 		dynamixel_setrx();
 		result = dynamixel_readpacket(rxpacket, rxlength);
-		dynamixel_settx();
 				
 		return result;			
 	}
