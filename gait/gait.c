@@ -9,7 +9,7 @@ void gait_process(gaitdata *g)
 	float shiftedtime;
 	
 	// for each leg calculate percentage of leg endpoint movement
-	for(uin8_t legindex = 0; legindex < 4; legindex++)
+	for(uint8_t legindex = 0; legindex < 4; legindex++)
 	{	
 		// shift start time to 0
 		shiftedtime = g->position - g->step_start[legindex];
