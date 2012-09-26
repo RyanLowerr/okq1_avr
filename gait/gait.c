@@ -9,9 +9,6 @@ void gait_process(gaitdata *g)
 	float shiftedtime;	
 	uint8_t legindex = 0;
 	
-	if(g->position > g->period)
-		g->position = 0;
-	
 	// for each leg calculate percentage of leg endpoint movement
 	while(legindex < 4)
 	{	
@@ -39,8 +36,14 @@ void gait_process(gaitdata *g)
 		
 		legindex++;
 	}
-	
+}
+
+void gait_increment(gaitdata *g)
+{
 	g->position += 1;
+	
+	if(g->position > g->period)
+		g->position = 0;	
 }
 
 void gait_paramcalc(gaitdata *g)

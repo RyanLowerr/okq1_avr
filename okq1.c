@@ -22,7 +22,8 @@ int main(void)
 	while(1)
 	{		
 		gait_process(&gait);
-		
+		gait_increment(&gait);
+				
 		x[0] =   40.0 + gait.x[0] * 50.0;
 		y[0] =  100.0 + gait.y[0] * 0.0;
 		z[0] =  -30.0 + gait.z[0] * 30.0;
@@ -44,25 +45,25 @@ int main(void)
 		ik_leg(x[2], y[2], z[2], &leg_angles[2]);
 		ik_leg(x[3], y[3], z[3], &leg_angles[3]);
 	
-		leg_angles[0].coxa   = (int) (AX_CENTER_VALUE + (leg_angles[0].coxa - 45.0) * 3.41);
-		leg_angles[0].femur  = (int) (AX_CENTER_VALUE + (leg_angles[0].femur + 11.0) * 3.41);
-		leg_angles[0].tibia  = (int) (AX_CENTER_VALUE - (leg_angles[0].tibia - 11.0) * 3.41);
-		leg_angles[0].tarsus = (int) (AX_CENTER_VALUE - leg_angles[0].tarsus * 3.41);
+		leg_angles[0].coxa   = (uint16_t) (AX_CENTER_VALUE + (leg_angles[0].coxa - 45.0) * 3.41);
+		leg_angles[0].femur  = (uint16_t) (AX_CENTER_VALUE + (leg_angles[0].femur + 11.0) * 3.41);
+		leg_angles[0].tibia  = (uint16_t) (AX_CENTER_VALUE - (leg_angles[0].tibia - 11.0) * 3.41);
+		leg_angles[0].tarsus = (uint16_t) (AX_CENTER_VALUE - leg_angles[0].tarsus * 3.41);
 		
-		leg_angles[1].coxa   = (int) (AX_CENTER_VALUE + (leg_angles[1].coxa - 45.0) * 3.41);
-		leg_angles[1].femur  = (int) (AX_CENTER_VALUE + (leg_angles[1].femur + 11.0) * 3.41);
-		leg_angles[1].tibia  = (int) (AX_CENTER_VALUE - (leg_angles[1].tibia - 11.0) * 3.41);
-		leg_angles[1].tarsus = (int) (AX_CENTER_VALUE - leg_angles[1].tarsus * 3.41);
+		leg_angles[1].coxa   = (uint16_t) (AX_CENTER_VALUE + (leg_angles[1].coxa - 45.0) * 3.41);
+		leg_angles[1].femur  = (uint16_t) (AX_CENTER_VALUE + (leg_angles[1].femur + 11.0) * 3.41);
+		leg_angles[1].tibia  = (uint16_t) (AX_CENTER_VALUE - (leg_angles[1].tibia - 11.0) * 3.41);
+		leg_angles[1].tarsus = (uint16_t) (AX_CENTER_VALUE - leg_angles[1].tarsus * 3.41);
 		
-		leg_angles[2].coxa   = (int) (AX_CENTER_VALUE + (leg_angles[2].coxa - 45.0) * 3.41);
-		leg_angles[2].femur  = (int) (AX_CENTER_VALUE + (leg_angles[2].femur + 11.0) * 3.41);
-		leg_angles[2].tibia  = (int) (AX_CENTER_VALUE - (leg_angles[2].tibia - 11.0) * 3.41);
-		leg_angles[2].tarsus = (int) (AX_CENTER_VALUE - leg_angles[2].tarsus * 3.41);
+		leg_angles[2].coxa   = (uint16_t) (AX_CENTER_VALUE + (leg_angles[2].coxa - 45.0) * 3.41);
+		leg_angles[2].femur  = (uint16_t) (AX_CENTER_VALUE + (leg_angles[2].femur + 11.0) * 3.41);
+		leg_angles[2].tibia  = (uint16_t) (AX_CENTER_VALUE - (leg_angles[2].tibia - 11.0) * 3.41);
+		leg_angles[2].tarsus = (uint16_t) (AX_CENTER_VALUE - leg_angles[2].tarsus * 3.41);
 		
-		leg_angles[3].coxa   = (int) (AX_CENTER_VALUE + (leg_angles[3].coxa - 45.0) * 3.41);
-		leg_angles[3].femur  = (int) (AX_CENTER_VALUE + (leg_angles[3].femur + 11.0) * 3.41);
-		leg_angles[3].tibia  = (int) (AX_CENTER_VALUE - (leg_angles[3].tibia - 11.0) * 3.41);
-		leg_angles[3].tarsus = (int) (AX_CENTER_VALUE - leg_angles[3].tarsus * 3.41);
+		leg_angles[3].coxa   = (uint16_t) (AX_CENTER_VALUE + (leg_angles[3].coxa - 45.0) * 3.41);
+		leg_angles[3].femur  = (uint16_t) (AX_CENTER_VALUE + (leg_angles[3].femur + 11.0) * 3.41);
+		leg_angles[3].tibia  = (uint16_t) (AX_CENTER_VALUE - (leg_angles[3].tibia - 11.0) * 3.41);
+		leg_angles[3].tarsus = (uint16_t) (AX_CENTER_VALUE - leg_angles[3].tarsus * 3.41);
 		
 		packet[0]  = 1;
 		packet[1]  = dynamixel_getlowbyte(leg_angles[0].coxa);
