@@ -15,7 +15,7 @@ int main(void)
 	gaitdata gait;
 	ik_angles leg_angles[4];	
 	float x[4], y[4], z[4];
-	uint8_t packet[48];
+	uint8_t packet[54];
 
 	dynamixel_init();
 	gait_init(&gait, GAIT_TYPE_RIPPLE);
