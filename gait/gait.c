@@ -12,7 +12,7 @@ void gait_process(gaitdata *g)
 	for(uint8_t legindex = 0; legindex < 4; legindex++)
 	{	
 		// shift start time to 0
-		shiftedtime = g->position - g->step_start[legindex];
+		shiftedtime = (float) g->position - g->step_start[legindex];
 		if(shiftedtime < 0)
 			shiftedtime += g->period;
 	
@@ -76,6 +76,7 @@ void gait_init(gaitdata *g, uint8_t type)
 
 	// This should be configurable. Possibly a param of gait_init()?
 	g->period = 100.0;
+	g->position = 0;
 
 	if(type == GAIT_TYPE_RIPPLE)
 	{

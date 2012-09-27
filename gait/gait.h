@@ -13,7 +13,7 @@ typedef struct
 
 	float period;
 	float periodstep;
-	float position;
+	uint8_t position;
 	
 	float step_to_move_ratio;
 	float move_to_step_ratio;
