@@ -8,6 +8,7 @@
 #include "dynamixel/ax.h"
 #include "gait/gait.h"
 #include "ik/ik.h"
+#include "common.h"
 
 int main(void)
 {
@@ -24,21 +25,21 @@ int main(void)
 		gait_process(&gait);
 		gait_increment(&gait);
 				
-		x[0] =   40.0 + gait.x[0] * 50.0;
-		y[0] =  100.0 + gait.y[0] * 0.0;
-		z[0] =  -30.0 + gait.z[0] * 30.0;
+		x[0] = FR_FOOT_X_NEUTRAL + gait.x[0] * 0.0;
+		y[0] = FR_FOOT_Y_NEUTRAL + gait.y[0] * 50.0;
+		z[0] = FR_FOOT_Z_NEUTRAL + gait.z[0] * 20.0;
 		
-		x[1] =  -40.0 + gait.x[1] * 50.0;
-		y[1] =  100.0 + gait.y[1] * 0.0;
-		z[1] =  -30.0 + gait.z[1] * 30.0;
+		x[1] = BR_FOOT_X_NEUTRAL + gait.x[1] * 0.0;
+		y[1] = BR_FOOT_Y_NEUTRAL + gait.y[1] * 50.0;
+		z[1] = BR_FOOT_Z_NEUTRAL + gait.z[1] * 20.0;
 		
-		x[2] =  -40.0 + gait.x[2] * 50.0;
-		y[2] = -100.0 + gait.y[2] * 0.0;
-		z[2] =  -30.0 + gait.z[2] * 30.0;
+		x[2] = BL_FOOT_X_NEUTRAL + gait.x[2] * 0.0;
+		y[2] = BL_FOOT_Y_NEUTRAL + gait.y[2] * 50.0;
+		z[2] = BL_FOOT_Z_NEUTRAL + gait.z[2] * 20.0;
 		
-		x[3] =   40.0 + gait.x[3] * 50.0;
-		y[3] = -100.0 + gait.y[3] * 0.0;
-		z[3] =  -30.0 + gait.z[3] * 30.0;
+		x[3] = FL_FOOT_X_NEUTRAL + gait.x[3] * 0.0;
+		y[3] = FL_FOOT_Y_NEUTRAL + gait.y[3] * 50.0;
+		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 20.0;
 		
 		ik_leg(x[0], y[0], z[0], &leg_angles[0]);
 		ik_leg(x[1], y[1], z[1], &leg_angles[1]);

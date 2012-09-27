@@ -2,6 +2,7 @@
 #include <math.h>
 
 #include "ik.h"
+#include "common.h"
 
 uint8_t ik_leg(float x, float y, float z, ik_angles *results)
 {

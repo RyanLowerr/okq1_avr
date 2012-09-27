@@ -1,0 +1,26 @@
+
+#ifndef _COMMON_H_
+#define _COMMON_H_
+
+#define COXA_LENGTH   46.0
+#define FEMUR_LENGTH  70.0
+#define TIBIA_LENGTH  68.0
+#define TARSUS_LENGTH 83.0
+
+#define FR_FOOT_X_NEUTRAL 100.0
+#define FR_FOOT_Y_NEUTRAL 40.0
+#define FR_FOOT_Z_NEUTRAL -30.0
+
+#define BR_FOOT_X_NEUTRAL 100.0
+#define BR_FOOT_Y_NEUTRAL -400.0
+#define BR_FOOT_Z_NEUTRAL -30.0
+
+#define BL_FOOT_X_NEUTRAL -100.0
+#define BL_FOOT_Y_NEUTRAL -40.0
+#define BL_FOOT_Z_NEUTRAL -30.0
+
+#define FL_FOOT_X_NEUTRAL -100.0
+#define FL_FOOT_Y_NEUTRAL 40.0
+#define FL_FOOT_Z_NEUTRAL -30.0
+
+#endif
