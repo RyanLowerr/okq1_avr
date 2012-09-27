@@ -10,9 +10,9 @@ typedef struct
 	float femur;
 	float tibia;
 	float tarsus;
-} ik_angles;
+} ikdata;
 
-uint8_t ik_leg(float x, float y, float z, ik_angles *results);
+uint8_t ik_leg(float x, float y, float z, ikdata *ik);
 uint8_t ik_body(float roll, float pitch, float yaw);
 
 #endif

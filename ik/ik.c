@@ -4,7 +4,7 @@
 #include "ik.h"
 #include "common.h"
 
-uint8_t ik_leg(float x, float y, float z, ik_angles *results)
+uint8_t ik_leg(float x, float y, float z, ikdata *ik)
 {
 	float leg_length;
 	float tarsus_offset_angle;
@@ -36,7 +36,7 @@ uint8_t ik_leg(float x, float y, float z, ik_angles *results)
 	side_b_sqr = side_b * side_b;
 	side_c_sqr = side_c * side_c;
 	
-	angle_a = acos((-side_a_sqr + side_b_sqr + side_c_sqr) / (2 * side_b * side_c)) * 57.32;
+	//angle_a = acos((-side_a_sqr + side_b_sqr + side_c_sqr) / (2 * side_b * side_c)) * 57.32; // not needed
 	angle_b = acos(( side_a_sqr - side_b_sqr + side_c_sqr) / (2 * side_a * side_c)) * 57.32;
 	angle_c = acos(( side_a_sqr + side_b_sqr - side_c_sqr) / (2 * side_a * side_b)) * 57.32;
 	
@@ -44,10 +44,10 @@ uint8_t ik_leg(float x, float y, float z, ik_angles *results)
 	theta = atan2(temp2, temp1) * 57.32;
 	
 	// Resulting joint angles
-	results->coxa   = atan2(x,y) * 57.32;
-	results->femur  = 90.0 - theta-angle_b;
-	results->tibia  = 90.0 - angle_c;
-	results->tarsus = tarsus_offset_angle - results->femur - results->tibia;
+	ik->coxa   = atan2(x,y) * 57.32;
+	ik->femur  = 90.0 - theta - angle_b;
+	ik->tibia  = 90.0 - angle_c;
+	ik->tarsus = tarsus_offset_angle - ik->femur - ik->tibia;
 	
 	return 1;
 }
