@@ -25,46 +25,46 @@ int main(void)
 		gait_process(&gait);
 		gait_increment(&gait);
 				
-		x[0] = FR_FOOT_X_NEUTRAL + gait.x[0] * 50.0;
+		x[0] = FR_FOOT_X_NEUTRAL + gait.x[0] * 0.0;
 		y[0] = FR_FOOT_Y_NEUTRAL + gait.y[0] * 0.0;
-		z[0] = FR_FOOT_Z_NEUTRAL + gait.z[0] * 30.0;
+		z[0] = FR_FOOT_Z_NEUTRAL + gait.z[0] * 0.0;
 		
-		x[1] = BR_FOOT_X_NEUTRAL + gait.x[1] * 50.0;
+		x[1] = BR_FOOT_X_NEUTRAL + gait.x[1] * 0.0;
 		y[1] = BR_FOOT_Y_NEUTRAL + gait.y[1] * 0.0;
-		z[1] = BR_FOOT_Z_NEUTRAL + gait.z[1] * 30.0;
+		z[1] = BR_FOOT_Z_NEUTRAL + gait.z[1] * 0.0;
 		
-		x[2] = BL_FOOT_X_NEUTRAL + gait.x[2] * 50.0;
+		x[2] = BL_FOOT_X_NEUTRAL + gait.x[2] * 0.0;
 		y[2] = BL_FOOT_Y_NEUTRAL + gait.y[2] * 0.0;
-		z[2] = BL_FOOT_Z_NEUTRAL + gait.z[2] * 30.0;
+		z[2] = BL_FOOT_Z_NEUTRAL + gait.z[2] * 0.0;
 		
-		x[3] = FL_FOOT_X_NEUTRAL + gait.x[3] * 50.0;
+		x[3] = FL_FOOT_X_NEUTRAL + gait.x[3] * 0.0;
 		y[3] = FL_FOOT_Y_NEUTRAL + gait.y[3] * 0.0;
-		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 30.0;
+		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 0.0;
 		
 		ik_leg(x[0], y[0], z[0], &ikresults[0]);
 		ik_leg(x[1], y[1], z[1], &ikresults[1]);
 		ik_leg(x[2], y[2], z[2], &ikresults[2]);
 		ik_leg(x[3], y[3], z[3], &ikresults[3]);
 	
-		ikresults[0].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].coxa   - COXA_ZERO)   * 3.41);
-		ikresults[0].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].femur  + FEMUR_ZERO)  * 3.41);
-		ikresults[0].tibia  = (uint16_t) (AX_CENTER_VALUE - (ikresults[0].tibia  - TIBIA_ZERO)  * 3.41);
+		ikresults[0].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].coxa - COXA_ZERO) * 3.41);
+		ikresults[1].coxa   = (uint16_t) (AX_CENTER_VALUE - (ikresults[1].coxa - COXA_ZERO) * 3.41);
+		ikresults[2].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[2].coxa - COXA_ZERO) * 3.41);
+		ikresults[3].coxa   = (uint16_t) (AX_CENTER_VALUE - (ikresults[3].coxa - COXA_ZERO) * 3.41);
+				
+		ikresults[0].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].femur + FEMUR_ZERO) * 3.41);
+		ikresults[1].femur  = (uint16_t) (AX_CENTER_VALUE - (ikresults[1].femur + FEMUR_ZERO) * 3.41);
+		ikresults[2].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[2].femur + FEMUR_ZERO) * 3.41);
+		ikresults[3].femur  = (uint16_t) (AX_CENTER_VALUE - (ikresults[3].femur + FEMUR_ZERO) * 3.41);
+		
+		ikresults[0].tibia  = (uint16_t) (AX_CENTER_VALUE - (ikresults[0].tibia - TIBIA_ZERO) * 3.41);
+		ikresults[1].tibia  = (uint16_t) (AX_CENTER_VALUE + (ikresults[1].tibia - TIBIA_ZERO) * 3.41);
+		ikresults[2].tibia  = (uint16_t) (AX_CENTER_VALUE - (ikresults[2].tibia - TIBIA_ZERO) * 3.41);
+		ikresults[3].tibia  = (uint16_t) (AX_CENTER_VALUE + (ikresults[3].tibia - TIBIA_ZERO) * 3.41);
+		
 		ikresults[0].tarsus = (uint16_t) (AX_CENTER_VALUE - (ikresults[0].tarsus + TARSUS_ZERO) * 3.41);
-		
-		ikresults[1].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[1].coxa   - COXA_ZERO)   * 3.41);
-		ikresults[1].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[1].femur  + FEMUR_ZERO)  * 3.41);
-		ikresults[1].tibia  = (uint16_t) (AX_CENTER_VALUE - (ikresults[1].tibia  - TIBIA_ZERO)  * 3.41);
-		ikresults[1].tarsus = (uint16_t) (AX_CENTER_VALUE - (ikresults[1].tarsus + TARSUS_ZERO) * 3.41);
-		
-		ikresults[2].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[2].coxa   - COXA_ZERO)   * 3.41);
-		ikresults[2].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[2].femur  + FEMUR_ZERO)  * 3.41);
-		ikresults[2].tibia  = (uint16_t) (AX_CENTER_VALUE - (ikresults[2].tibia  - TIBIA_ZERO)  * 3.41);
+		ikresults[1].tarsus = (uint16_t) (AX_CENTER_VALUE + (ikresults[1].tarsus + TARSUS_ZERO) * 3.41);
 		ikresults[2].tarsus = (uint16_t) (AX_CENTER_VALUE - (ikresults[2].tarsus + TARSUS_ZERO) * 3.41);
-		
-		ikresults[3].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[3].coxa   - COXA_ZERO)   * 3.41);
-		ikresults[3].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[3].femur  + FEMUR_ZERO)  * 3.41);
-		ikresults[3].tibia  = (uint16_t) (AX_CENTER_VALUE - (ikresults[3].tibia  - TIBIA_ZERO)  * 3.41);
-		ikresults[4].tarsus = (uint16_t) (AX_CENTER_VALUE - (ikresults[3].tarsus + TARSUS_ZERO) * 3.41);
+		ikresults[3].tarsus = (uint16_t) (AX_CENTER_VALUE + (ikresults[3].tarsus + TARSUS_ZERO) * 3.41);
 		
 		packet[0]  = FR_COXA_ID;
 		packet[1]  = dynamixel_getlowbyte(ikresults[0].coxa);
