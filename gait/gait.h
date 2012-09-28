@@ -42,6 +42,7 @@ typedef struct
 	float x[4];
 	float y[4];
 	float z[4];
+	float r[4];
 } gaitdata;
 				
 void gait_process(gaitdata *g);
