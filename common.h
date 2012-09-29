@@ -33,6 +33,30 @@
 #define PAN_ID       17
 #define TILT_ID      18
 
+// Servo Direction
+#define FR_COXA_DIRECTION    1.0
+#define FR_FEMUR_DIRECTION   1.0
+#define FR_TIBIA_DIRECTION  -1.0
+#define FR_TARSUS_DIRECTION -1.0
+
+#define BR_COXA_DIRECTION    1.0
+#define BR_FEMUR_DIRECTION  -1.0
+#define BR_TIBIA_DIRECTION   1.0
+#define BR_TARSUS_DIRECTION  1.0
+
+#define BL_COXA_DIRECTION    1.0
+#define BL_FEMUR_DIRECTION   1.0
+#define BL_TIBIA_DIRECTION  -1.0
+#define BL_TARSUS_DIRECTION -1.0
+
+#define FL_COXA_DIRECTION    1.0
+#define FL_FEMUR_DIRECTION  -1.0
+#define FL_TIBIA_DIRECTION   1.0
+#define FL_TARSUS_DIRECTION  1.0
+
+#define PAN_DIRECTION        1.0
+#define TILT_DIRECTION       1.0
+
 // Servo 'Zero' angle
 #define FR_COXA_ZERO  45.0
 #define BR_COXA_ZERO  45.0
