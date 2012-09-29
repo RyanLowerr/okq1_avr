@@ -19,7 +19,7 @@ void gait_process(gaitdata *g)
 		// Leg lift and forward
 		if((g->position >= g->step_start[legindex]) && (g->position <= g->step_end[legindex]))
 		{
-			g->z[legindex] = gait_sine(shiftedtime, g->step_period_z, g->step_periodshift_z, 2.0, -1.0);
+			g->z[legindex] = gait_sine(shiftedtime, g->step_period_z, g->step_periodshift_z, 1.0,  0.0);
 			g->x[legindex] = gait_line(shiftedtime, g->step_period_x, g->step_periodshift_x, 2.0, -1.0);
 			g->y[legindex] = g->x[legindex];
 			g->r[legindex] = g->x[legindex];
