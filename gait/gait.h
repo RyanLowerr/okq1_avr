@@ -49,7 +49,7 @@ void gait_process(gaitdata *g);
 void gait_increment(gaitdata *g);
 void gait_paramcalc(gaitdata *g);
 void gait_init(gaitdata *g, uint8_t type);
-float gait_sine(float position, float Period, float period_shift, float amplitude, float amplitude_shift);
-float gait_line(float position, float Period, float period_shift, float amplitude, float amplitude_shift);
+float gait_sine(float position, float period, float period_shift, float amplitude, float amplitude_shift);
+float gait_line(float position, float period, float period_shift, float amplitude, float amplitude_shift);
 
 #endif
