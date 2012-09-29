@@ -117,12 +117,6 @@ int main(void)
 		
 		servo[16].angle = 0;
 		servo[17].angle = 0;
-		
-		// calculate servo positions
-		for(uint8_t i = 0; i < NUM_SERVOS; i++)
-		{
-			servo[i].position = (uint16_t) (AX_CENTER_VALUE + (servo[i].direction * (servo[i].angle + servo[i].center) * 3.41));
-		}
 
 		// form dynamixel sync write data
 		n = 0;
