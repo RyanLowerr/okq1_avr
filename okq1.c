@@ -73,8 +73,7 @@ void servo_init(dynamixel* servo)
 int main(void)
 {
 	gaitdata gait;
-	dynamixel servo[NUM_SERVOS];
-	ikdata ikresults[4];	
+	dynamixel servo[NUM_SERVOS];	
 	float x[4], y[4], z[4];
 	uint8_t packet[54];
 	uint8_t n;
@@ -105,14 +104,9 @@ int main(void)
 		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 30.0;
 		
 		// ik calculations
-		n = 0;
 		for(uint8_t i = 0; i < 4; i++)
 		{
-			ik_leg(x[i], y[i], z[i], &ikresults[i]);
-			servo[n++].angle = ikresults[i].coxa;
-			servo[n++].angle = ikresults[i].femur;
-			servo[n++].angle = ikresults[i].tibia;
-			servo[n++].angle = ikresults[i].tarsus;
+			ik_leg(x[i], y[i], z[i], &servo[i*4].angle, &servo[i*4+1].angle, &servo[i*4+2].angle, &servo[i*4+3].angle);
 		}
 		
 		servo[16].angle = 0;

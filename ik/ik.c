@@ -4,7 +4,7 @@
 #include "ik.h"
 #include "common.h"
 
-uint8_t ik_leg(float x, float y, float z, ikdata *ik)
+uint8_t ik_leg(float x, float y, float z, float* coxa, float* femur, float* tibia, float* tarsus)
 {
 	float leg_length;
 	float tarsus_offset_angle;
@@ -13,8 +13,9 @@ uint8_t ik_leg(float x, float y, float z, ikdata *ik)
 	float theta;
 	float side_a, side_b, side_c;
 	float side_a_sqr, side_b_sqr, side_c_sqr;
-	float angle_a, angle_b, angle_c;
+	float angle_b, angle_c;
 	float temp1, temp2;
+	float result[4];
 
 	// Magnitude of the leg length along the ground from the coxa axis to the tip of the foot in the XY plane
 	leg_length = sqrt(x * x + y * y);
@@ -44,10 +45,15 @@ uint8_t ik_leg(float x, float y, float z, ikdata *ik)
 	theta = atan2(temp2, temp1) * 57.32;
 	
 	// Resulting joint angles
-	ik->coxa   = atan2(y,x) * 57.32;
-	ik->femur  = 90.0 - theta - angle_b;
-	ik->tibia  = 90.0 - angle_c;
-	ik->tarsus = tarsus_offset_angle - ik->femur - ik->tibia;
+	result[0] = atan2(y,x) * 57.32;                          // coxa
+	result[1] = 90.0 - theta - angle_b;                      // femur
+	result[2] = 90.0 - angle_c;                              // tibia
+	result[3] = tarsus_offset_angle - result[1] - result[2]; // tarsus
+	
+	*coxa = result[0];
+	*femur = result[1];
+	*tibia = result[2];
+	*tarsus = result[3];
 	
 	return 1;
 }
