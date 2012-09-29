@@ -44,7 +44,7 @@ uint8_t ik_leg(float x, float y, float z, ikdata *ik)
 	theta = atan2(temp2, temp1) * 57.32;
 	
 	// Resulting joint angles
-	ik->coxa   = atan2(x,y) * 57.32;
+	ik->coxa   = atan2(y,x) * 57.32;
 	ik->femur  = 90.0 - theta - angle_b;
 	ik->tibia  = 90.0 - angle_c;
 	ik->tarsus = tarsus_offset_angle - ik->femur - ik->tibia;

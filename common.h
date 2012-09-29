@@ -34,29 +34,32 @@
 #define TILT_ID      18
 
 // Servo 'Zero' angle
-#define COXA_ZERO   45.0
-#define FEMUR_ZERO  11.0
-#define TIBIA_ZERO  11.0
-#define TARSUS_ZERO 0.0
+#define FR_COXA_ZERO  45.0
+#define BR_COXA_ZERO  45.0
+#define BL_COXA_ZERO  135.0
+#define FL_COXA_ZERO  135.0
+#define FEMUR_ZERO    11.0
+#define TIBIA_ZERO    11.0
+#define TARSUS_ZERO   0.0
 
 #define PAN_ZERO    0.0
 #define TILT_ZERO   0.0
 
 // Foot neutral positions
-#define FR_FOOT_X_NEUTRAL 40.0
-#define FR_FOOT_Y_NEUTRAL 100.0
+#define FR_FOOT_X_NEUTRAL 90.0
+#define FR_FOOT_Y_NEUTRAL 70.0
 #define FR_FOOT_Z_NEUTRAL -30.0
 
-#define BR_FOOT_X_NEUTRAL -40.0
-#define BR_FOOT_Y_NEUTRAL 100.0
+#define BR_FOOT_X_NEUTRAL 90.0
+#define BR_FOOT_Y_NEUTRAL -70.0
 #define BR_FOOT_Z_NEUTRAL -30.0
 
-#define BL_FOOT_X_NEUTRAL -40.0
-#define BL_FOOT_Y_NEUTRAL -100.0
+#define BL_FOOT_X_NEUTRAL -90.0
+#define BL_FOOT_Y_NEUTRAL -70.0
 #define BL_FOOT_Z_NEUTRAL -30.0
 
-#define FL_FOOT_X_NEUTRAL 40.0
-#define FL_FOOT_Y_NEUTRAL -100.0
+#define FL_FOOT_X_NEUTRAL -90.0
+#define FL_FOOT_Y_NEUTRAL 70.0
 #define FL_FOOT_Z_NEUTRAL -30.0
 
 #endif

@@ -26,30 +26,30 @@ int main(void)
 		gait_increment(&gait);
 				
 		x[0] = FR_FOOT_X_NEUTRAL + gait.x[0] * 0.0;
-		y[0] = FR_FOOT_Y_NEUTRAL + gait.y[0] * 0.0;
-		z[0] = FR_FOOT_Z_NEUTRAL + gait.z[0] * 0.0;
+		y[0] = FR_FOOT_Y_NEUTRAL + gait.y[0] * 40.0;
+		z[0] = FR_FOOT_Z_NEUTRAL + gait.z[0] * 30.0;
 		
 		x[1] = BR_FOOT_X_NEUTRAL + gait.x[1] * 0.0;
-		y[1] = BR_FOOT_Y_NEUTRAL + gait.y[1] * 0.0;
-		z[1] = BR_FOOT_Z_NEUTRAL + gait.z[1] * 0.0;
+		y[1] = BR_FOOT_Y_NEUTRAL + gait.y[1] * 40.0;
+		z[1] = BR_FOOT_Z_NEUTRAL + gait.z[1] * 30.0;
 		
 		x[2] = BL_FOOT_X_NEUTRAL + gait.x[2] * 0.0;
-		y[2] = BL_FOOT_Y_NEUTRAL + gait.y[2] * 0.0;
-		z[2] = BL_FOOT_Z_NEUTRAL + gait.z[2] * 0.0;
+		y[2] = BL_FOOT_Y_NEUTRAL + gait.y[2] * 40.0;
+		z[2] = BL_FOOT_Z_NEUTRAL + gait.z[2] * 30.0;
 		
 		x[3] = FL_FOOT_X_NEUTRAL + gait.x[3] * 0.0;
-		y[3] = FL_FOOT_Y_NEUTRAL + gait.y[3] * 0.0;
-		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 0.0;
+		y[3] = FL_FOOT_Y_NEUTRAL + gait.y[3] * 40.0;
+		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 30.0;
 		
 		ik_leg(x[0], y[0], z[0], &ikresults[0]);
 		ik_leg(x[1], y[1], z[1], &ikresults[1]);
 		ik_leg(x[2], y[2], z[2], &ikresults[2]);
 		ik_leg(x[3], y[3], z[3], &ikresults[3]);
 	
-		ikresults[0].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].coxa - COXA_ZERO) * 3.41);
-		ikresults[1].coxa   = (uint16_t) (AX_CENTER_VALUE - (ikresults[1].coxa - COXA_ZERO) * 3.41);
-		ikresults[2].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[2].coxa - COXA_ZERO) * 3.41);
-		ikresults[3].coxa   = (uint16_t) (AX_CENTER_VALUE - (ikresults[3].coxa - COXA_ZERO) * 3.41);
+		ikresults[0].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].coxa - FR_COXA_ZERO) * 3.41);
+		ikresults[1].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[1].coxa + BR_COXA_ZERO) * 3.41);
+		ikresults[2].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[2].coxa + BL_COXA_ZERO) * 3.41);
+		ikresults[3].coxa   = (uint16_t) (AX_CENTER_VALUE + (ikresults[3].coxa - FL_COXA_ZERO) * 3.41);
 				
 		ikresults[0].femur  = (uint16_t) (AX_CENTER_VALUE + (ikresults[0].femur + FEMUR_ZERO) * 3.41);
 		ikresults[1].femur  = (uint16_t) (AX_CENTER_VALUE - (ikresults[1].femur + FEMUR_ZERO) * 3.41);
