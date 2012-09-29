@@ -104,32 +104,19 @@ int main(void)
 		y[3] = FL_FOOT_Y_NEUTRAL + gait.y[3] * 40.0;
 		z[3] = FL_FOOT_Z_NEUTRAL + gait.z[3] * 30.0;
 		
-		ik_leg(x[0], y[0], z[0], &ikresults[0]);
-		servo[0].angle = ikresults[0].coxa;
-		servo[1].angle = ikresults[0].femur;
-		servo[2].angle = ikresults[0].tibia;
-		servo[3].angle = ikresults[0].tarsus;
+		// ik calculations
+		n = 0;
+		for(uint8_t i = 0; i < 4; i++)
+		{
+			ik_leg(x[i], y[i], z[i], &ikresults[i]);
+			servo[n++].angle = ikresults[i].coxa;
+			servo[n++].angle = ikresults[i].femur;
+			servo[n++].angle = ikresults[i].tibia;
+			servo[n++].angle = ikresults[i].tarsus;
+		}
 		
-		ik_leg(x[1], y[1], z[1], &ikresults[1]);
-		servo[4].angle = ikresults[1].coxa;
-		servo[5].angle = ikresults[1].femur;
-		servo[6].angle = ikresults[1].tibia;
-		servo[7].angle = ikresults[1].tarsus;
-		
-		ik_leg(x[2], y[2], z[2], &ikresults[2]);
-		servo[8].angle = ikresults[2].coxa;
-		servo[9].angle = ikresults[2].femur;
-		servo[10].angle = ikresults[2].tibia;
-		servo[11].angle = ikresults[2].tarsus;
-		
-		ik_leg(x[3], y[3], z[3], &ikresults[3]);
-		servo[12].angle = ikresults[3].coxa;
-		servo[13].angle = ikresults[3].femur;
-		servo[14].angle = ikresults[3].tibia;
-		servo[15].angle = ikresults[3].tarsus;
-		
+		servo[16].angle = 0;
 		servo[17].angle = 0;
-		servo[18].angle = 0;
 		
 		// calculate servo positions
 		for(uint8_t i = 0; i < NUM_SERVOS; i++)
@@ -141,6 +128,7 @@ int main(void)
 		n = 0;
 		for(uint8_t i = 0; i < NUM_SERVOS; i++)
 		{
+			servo[i].position = (uint16_t) (AX_CENTER_VALUE + (servo[i].direction * (servo[i].angle + servo[i].center) * 3.41));
 			packet[n++] = servo[i].id;
 			packet[n++] = dynamixel_getlowbyte(servo[i].position);
 			packet[n++] = dynamixel_gethighbyte(servo[i].position);
