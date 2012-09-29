@@ -105,10 +105,10 @@ void gait_init(gaitdata *g, uint8_t type)
 
 float gait_sine(float position, float period, float period_shift, float amplitude, float amplitude_shift)
 {
-	return (amplitude * sin(2 * 3.141592 / Period * (position + period_shift)) + amplitude_shift);
+	return (amplitude * sin(2 * 3.141592 / period * (position + period_shift)) + amplitude_shift);
 }
 
 float gait_line(float position, float period, float period_shift, float amplitude, float amplitude_shift)
 {
-	return (amplitude + (position * ((-amplitude - amplitude) / Period)));
+	return (amplitude + (position * ((-amplitude - amplitude) / period)));
 }
