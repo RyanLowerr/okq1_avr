@@ -4,15 +4,6 @@
 
 #include <avr/io.h>
 
-typedef struct
-{
-	uint8_t id;
-	uint16_t position;
-	int16_t center;
-	int direction;
-	float angle;
-} dynamixel;
-
 #define DYNAMIXEL_BAUDRATE      1000000
 
 #define DYNAMIXEL_OK            1
