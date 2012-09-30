@@ -2,6 +2,27 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+typedef struct
+{
+	uint8_t id;
+	uint16_t position;
+	int16_t center;
+	int direction;
+	float angle;
+} jointdata;
+
+typedef struct
+{
+	float x;
+	float y;
+	float z;
+	float neutral_from_coxa_x;
+	float neutral_from_coxa_y;
+	float neutral_from_center_x;
+	float neutral_from_center_y;
+	float neutral_z;
+} footdata;
+
 #define COXA_LENGTH   46.0
 #define FEMUR_LENGTH  70.0
 #define TIBIA_LENGTH  68.0
@@ -66,24 +87,16 @@
 #define TIBIA_ZERO    11.0
 #define TARSUS_ZERO   0.0
 
-#define PAN_ZERO    0.0
-#define TILT_ZERO   0.0
+#define PAN_ZERO  0.0
+#define TILT_ZERO 0.0
 
 // Foot neutral positions
-#define FR_FOOT_X_NEUTRAL 90.0
-#define FR_FOOT_Y_NEUTRAL 70.0
-#define FR_FOOT_Z_NEUTRAL -30.0
+#define FOOT_X_NEUTRAL 90.0
+#define FOOT_Y_NEUTRAL 70.0
+#define FOOT_Z_NEUTRAL 30.0
 
-#define BR_FOOT_X_NEUTRAL 90.0
-#define BR_FOOT_Y_NEUTRAL -70.0
-#define BR_FOOT_Z_NEUTRAL -30.0
-
-#define BL_FOOT_X_NEUTRAL -90.0
-#define BL_FOOT_Y_NEUTRAL -70.0
-#define BL_FOOT_Z_NEUTRAL -30.0
-
-#define FL_FOOT_X_NEUTRAL -90.0
-#define FL_FOOT_Y_NEUTRAL 70.0
-#define FL_FOOT_Z_NEUTRAL -30.0
+// Coxa offset from center
+#define COXA_X_OFFSET 65.0
+#define COXA_Y_OFFSET 65.0
 
 #endif
