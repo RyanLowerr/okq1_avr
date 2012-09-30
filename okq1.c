@@ -107,9 +107,9 @@ int main(void)
 	uint8_t n;
 	
 	float controller_x = 0.0;
-	float controller_y = 40.0;
+	float controller_y = 0.0;
  	float controller_z = 30.0;
-	float controller_r = 5.0;
+	float controller_r = 20.0;
 		
 	joint_init(&joint[0]);
 	foot_init(&foot[0]);
@@ -121,7 +121,7 @@ int main(void)
 		gait_process(&gait);
 		gait_increment(&gait);
 		
-		if(controller_r != 0.0)
+		if(controller_r == 0.0)
 		{
 			// Start with neutral foot position		
 			foot[0].x = foot[0].neutral_from_coxa_x;
@@ -144,39 +144,48 @@ int main(void)
 		{
 			// start with rotations from neutral foot position
 			theta = gait.r[0] * controller_r * 0.01745;
-			foot[0].x = foot[0].neutral_from_center_x * cos(theta) - foot[0].neutral_from_center_y * sin(theta);
-			foot[0].y = foot[0].neutral_from_center_x * sin(theta) + foot[0].neutral_from_center_y * cos(theta);
+			foot[0].x = (foot[0].neutral_from_center_x * cos(theta) - foot[0].neutral_from_center_y * sin(theta)) - COXA_X_OFFSET;
+			foot[0].y = (foot[0].neutral_from_center_x * sin(theta) + foot[0].neutral_from_center_y * cos(theta)) - COXA_Y_OFFSET;
+			foot[0].z = foot[0].neutral_z;
 		
 			theta = gait.r[1] * controller_r * 0.01745;
-			foot[1].x = foot[1].neutral_from_center_x * cos(theta) - foot[1].neutral_from_center_y * sin(theta);
-			foot[1].y = foot[1].neutral_from_center_x * sin(theta) + foot[1].neutral_from_center_y * cos(theta);
+			foot[1].x = (foot[1].neutral_from_center_x * cos(theta) - foot[1].neutral_from_center_y * sin(theta)) - COXA_X_OFFSET;
+			foot[1].y = (foot[1].neutral_from_center_x * sin(theta) + foot[1].neutral_from_center_y * cos(theta)) + COXA_Y_OFFSET;
+			foot[1].z = foot[1].neutral_z;
 		
 			theta = gait.r[2] * controller_r * 0.01745;
-			foot[2].x = foot[2].neutral_from_center_x * cos(theta) - foot[2].neutral_from_center_y * sin(theta);
-			foot[2].y = foot[2].neutral_from_center_x * sin(theta) + foot[2].neutral_from_center_y * cos(theta);
+			foot[2].x = (foot[2].neutral_from_center_x * cos(theta) - foot[2].neutral_from_center_y * sin(theta)) + COXA_X_OFFSET;
+			foot[2].y = (foot[2].neutral_from_center_x * sin(theta) + foot[2].neutral_from_center_y * cos(theta)) + COXA_Y_OFFSET;
+			foot[2].z = foot[2].neutral_z;
 		
 			theta = gait.r[3] * controller_r * 0.01745;
-			foot[3].x = foot[3].neutral_from_center_x * cos(theta) - foot[3].neutral_from_center_y * sin(theta);
-			foot[3].y = foot[3].neutral_from_center_x * sin(theta) + foot[3].neutral_from_center_y * cos(theta);
+			foot[3].x = (foot[3].neutral_from_center_x * cos(theta) - foot[3].neutral_from_center_y * sin(theta)) + COXA_X_OFFSET;
+			foot[3].y = (foot[3].neutral_from_center_x * sin(theta) + foot[3].neutral_from_center_y * cos(theta)) - COXA_Y_OFFSET;
+			foot[3].z = foot[3].neutral_z;
 		}
 		
-		if(controller_x != 0.0 || controller_x != 0.0 || controller_x != 0.0)
+		// Add gait translations to foot position
+		if(controller_x != 0.0)
 		{
-			// Add gait translations to foot position
 			foot[0].x += gait.x[0] * controller_x;
-			foot[0].y += gait.y[0] * controller_y;
-			foot[0].z += gait.z[0] * controller_z;
-		
 			foot[1].x += gait.x[1] * controller_x;
-			foot[1].y += gait.y[1] * controller_y;
-			foot[1].z += gait.z[1] * controller_z;
-		
 			foot[2].x += gait.x[2] * controller_x;
-			foot[2].y += gait.y[2] * controller_y;
-			foot[2].z += gait.z[2] * controller_z;
-		
 			foot[3].x += gait.x[3] * controller_x;
+		}
+		
+		if(controller_y != 0.0)
+		{
+			foot[0].y += gait.y[0] * controller_y;
+			foot[1].y += gait.y[1] * controller_y;
+			foot[2].y += gait.y[2] * controller_y;
 			foot[3].y += gait.y[3] * controller_y;
+		}
+		
+		if(controller_z != 0.0)
+		{
+			foot[0].z += gait.z[0] * controller_z;
+			foot[1].z += gait.z[1] * controller_z;
+			foot[2].z += gait.z[2] * controller_z;
 			foot[3].z += gait.z[3] * controller_z;
 		}
 		
