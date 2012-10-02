@@ -116,8 +116,8 @@ int main(void)
 	
 	float controller_x = 0.0;
 	float controller_y = 40.0;
- 	float controller_z = 30.0;
-	float controller_r = 0.0;
+ 	float controller_z = 0.0;
+	float controller_r = 20.0;
 	float controller_s = 5.0;
 		
 	joint_init(&joint[0]);
@@ -128,7 +128,6 @@ int main(void)
 	while(1)
 	{	
 		gait_process(&gait);
-		gait_increment(&gait);
 		
 		if(controller_r == 0.0)
 		{
@@ -153,32 +152,26 @@ int main(void)
 		}
 		
 		// Add gait translations to foot position
-		if(controller_x != 0.0)
+		for(int i = 0; i < 4; i++)
 		{
-			for(int i = 0; i < 4; i++)
-				foot[i].x += gait.x[i] * controller_x;
+			foot[i].x += gait.x[i] * controller_x;
+			foot[i].y += gait.y[i] * controller_y;
+			foot[i].z += gait.z[i] * controller_z;
 		}
 		
-		if(controller_y != 0.0)
-		{
-			for(int i = 0; i < 4; i++)
-				foot[i].y += gait.y[i] * controller_y;
-		}
-		
-		if(controller_z != 0.0)
-		{
-			for(int i = 0; i < 4; i++)
-				foot[i].z += gait.z[i] * controller_z;
-		}
-		
+		// Add gait body shift if required.
 		if(controller_s != 0.0)
 		{
+			gait_shift_process(&gait);
 			for(int i = 0; i < 4; i++)
 			{
 				foot[i].x += gait.sx * controller_s;
 				foot[i].y += gait.sy * controller_s;
 			}
 		}
+		
+		// Increment gait position
+		gait_increment(&gait);
 		
 		// ik calculations
 		for(uint8_t i = 0; i < 4; i++)
@@ -200,7 +193,7 @@ int main(void)
 		// write positions to servos
 		dynamixel_syncwrite(AX_GOAL_POSITION_L, 2, NUM_SERVOS, &packet);	
 		
-		_delay_ms(10);
+		_delay_ms(5);
 	}
 	
 	return 0;

@@ -7,7 +7,6 @@
 void gait_process(gaitdata *g)
 {	
 	float shiftedtime;
-	float angle;
 	
 	// for each leg calculate percentage of leg endpoint movement
 	for(uint8_t legindex = 0; legindex < 4; legindex++)
@@ -35,8 +34,12 @@ void gait_process(gaitdata *g)
 			g->r[legindex] = g->x[legindex];
 		}
 	}
-	
-	angle = (6.2831 / g->period) * (float) g->position;
+}
+
+void gait_shift_process(gaitdata *g)
+{
+	// Getting some odd behavior out of this. Needs some tender love and care.
+	float angle = (45.0 - (360.0 / g->period) * (float) g->position) * 0.01745;
 	g->sx = cos(angle) - sin(angle);
 	g->sy = sin(angle) + cos(angle);
 }

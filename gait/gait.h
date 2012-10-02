@@ -46,8 +46,9 @@ typedef struct
 	float sx;
 	float sy;
 } gaitdata;
-				
-void gait_process(gaitdata *g);
+
+void gait_process(gaitdata *g);				
+void gait_shift_process(gaitdata *g);
 void gait_increment(gaitdata *g);
 void gait_paramcalc(gaitdata *g);
 void gait_init(gaitdata *g, uint8_t type);
