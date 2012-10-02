@@ -21,6 +21,8 @@ typedef struct
 	float neutral_from_center_x;
 	float neutral_from_center_y;
 	float neutral_z;
+	float coxa_offset_x;
+	float coxa_offset_y;
 } footdata;
 
 #define COXA_LENGTH   46.0
