@@ -38,8 +38,7 @@ void gait_process(gaitdata *g)
 
 void gait_shift_process(gaitdata *g)
 {
-	// Getting some odd behavior out of this. Needs some tender love and care.
-	float angle = (45.0 - (360.0 / g->period) * (float) g->position) * 0.01745;
+	float angle = (225.0 - (360.0 / g->period) * (float) g->position) * 0.01745;
 	g->sx = cos(angle) - sin(angle);
 	g->sy = sin(angle) + cos(angle);
 }
