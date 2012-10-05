@@ -6,6 +6,7 @@
 
 #include "dynamixel/dynamixel.h"
 #include "dynamixel/ax.h"
+#include "controller/controller.h"
 #include "gait/gait.h"
 #include "ik/ik.h"
 #include "common.h"
@@ -115,15 +116,17 @@ int main(void)
 	uint8_t n;
 	
 	float controller_x = 0.0;
-	float controller_y = 40.0;
- 	float controller_z = 0.0;
-	float controller_r = 20.0;
-	float controller_s = 5.0;
+	float controller_y = 30.0;
+ 	float controller_z = 40.0;
+	float controller_r = 0.0;
+	float controller_s = 0.0;
 		
 	joint_init(&joint[0]);
 	foot_init(&foot[0]);
 	dynamixel_init();
-	gait_init(&gait, GAIT_TYPE_RIPPLE);
+	controller_init();
+	//gait_init(&gait, GAIT_TYPE_RIPPLE);
+	gait_init(&gait, GAIT_TYPE_AMBLE);
 	
 	while(1)
 	{	
@@ -165,8 +168,8 @@ int main(void)
 			gait_shift_process(&gait);
 			for(int i = 0; i < 4; i++)
 			{
-				foot[i].x += gait.sx * controller_s;
-				foot[i].y += gait.sy * controller_s;
+				foot[i].x -= gait.sx * controller_s;
+				foot[i].y -= gait.sy * controller_s;
 			}
 		}
 		
