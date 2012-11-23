@@ -7,6 +7,7 @@
 #define AX_CENTER_VALUE  512
 #define AX_MIN_ANGLE    -150
 #define AX_MAX_ANGLE     150
+#define AX_TIC_PER_DEG   3.44
 
 #define AX_MODEL_NUMBER_L          0
 #define AX_MODEL_NUMBER_H          1
