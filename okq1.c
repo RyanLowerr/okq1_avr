@@ -187,7 +187,7 @@ int main(void)
 		n = 0;
 		for(uint8_t i = 0; i < NUM_SERVOS; i++)
 		{
-			joint[i].position = (uint16_t) (MX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * 11.36));
+			joint[i].position = (uint16_t) (MX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * MX_TIC_PER_DEG));
 			packet[n++] = joint[i].id;
 			packet[n++] = dynamixel_getlowbyte(joint[i].position);
 			packet[n++] = dynamixel_gethighbyte(joint[i].position);
