@@ -2,13 +2,11 @@
 #ifndef _MX_H_
 #define _MX_H_
 
-/* UPDATE THESE!
 #define MX_MIN_VALUE     0
-#define MX_MAX_VALUE     1023
-#define MX_CENTER_VALUE  512
-#define MX_MIN_ANGLE    -150
-#define MX_MAX_ANGLE     150
-*/
+#define MX_MAX_VALUE     4095
+#define MX_CENTER_VALUE  2048
+#define MX_MIN_ANGLE    -180
+#define MX_MAX_ANGLE     180
 
 #define MX_MODEL_NUMBER_L          0
 #define MX_MODEL_NUMBER_H          1

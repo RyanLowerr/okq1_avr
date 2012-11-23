@@ -5,7 +5,7 @@
 #include <math.h>
 
 #include "dynamixel/dynamixel.h"
-#include "dynamixel/ax.h"
+#include "dynamixel/mx.h"
 #include "controller/controller.h"
 #include "gait/gait.h"
 #include "ik/ik.h"
@@ -187,14 +187,14 @@ int main(void)
 		n = 0;
 		for(uint8_t i = 0; i < NUM_SERVOS; i++)
 		{
-			joint[i].position = (uint16_t) (AX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * 3.41));
+			joint[i].position = (uint16_t) (MX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * 11.36));
 			packet[n++] = joint[i].id;
 			packet[n++] = dynamixel_getlowbyte(joint[i].position);
 			packet[n++] = dynamixel_gethighbyte(joint[i].position);
 		}
 
 		// write positions to servos
-		dynamixel_syncwrite(AX_GOAL_POSITION_L, 2, NUM_SERVOS, &packet);	
+		dynamixel_syncwrite(MX_GOAL_POSITION_L, 2, NUM_SERVOS, &packet);	
 		
 		_delay_ms(5);
 	}
