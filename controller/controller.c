@@ -6,8 +6,8 @@
 #include "controller.h"
 
 static volatile uint8_t controller_rxbuffer[CONTROLLER_BUFFER_SIZE];
-static volatile uint8_t controller_rxhead = 0;
-static volatile uint8_t controller_rxtail = 0;
+static volatile uint8_t controller_rxhead;
+static volatile uint8_t controller_rxtail;
 uint8_t controller_paramaters[CONTROLLER_NUM_PARAMS];
 
 ISR(USART1_RX_vect)
@@ -24,9 +24,12 @@ void controller_init(void)
 {
 	UBRR1H = ((F_CPU / 16 + CONTROLLER_BAUDRATE / 2) / CONTROLLER_BAUDRATE - 1) >> 8;
 	UBRR1L = ((F_CPU / 16 + CONTROLLER_BAUDRATE / 2) / CONTROLLER_BAUDRATE - 1);
+	
 	UCSR1B |= (1 << TXEN1);
 	UCSR1B |= (1 << RXEN1);
 	UCSR1B |= (1 << RXCIE1);
+	
+	controller_buffer_flush();
 }
 
 uint8_t controller_buffer_size(void)
@@ -36,7 +39,11 @@ uint8_t controller_buffer_size(void)
 
 void controller_buffer_flush(void)
 {
-	controller_rxhead = controller_rxtail;
+	for(uint8_t i = 0; i <= CONTROLLER_BUFFER_SIZE; i++)
+		controller_rxbuffer[i] = 0;
+	
+	controller_rxhead = 0;
+	controller_rxtail = 0;
 }
 
 uint8_t controller_buffer_read(void)

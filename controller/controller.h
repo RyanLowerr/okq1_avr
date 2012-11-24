@@ -20,6 +20,16 @@
 
 #define CONTROLLER_NUM_PARAMS    9
 
+typedef struct
+{
+	float theta;
+	float x;
+	float y;
+ 	float z;
+	float r;
+	float s;
+} controllerdata;
+
 void controller_init(void);
 uint8_t controller_buffer_size(void);
 void controller_buffer_flush(void);

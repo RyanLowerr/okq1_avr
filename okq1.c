@@ -11,6 +11,7 @@
 #include "ik/ik.h"
 #include "common.h"
 
+// Save joint constants into joint structure from common.h file
 void joint_init(jointdata* joint)
 {
 	joint[0].id  = FR_COXA_ID;
@@ -71,6 +72,7 @@ void joint_init(jointdata* joint)
 	joint[17].center =  TILT_ZERO;
 }
 
+// Calculate and save foot neutral positions and offset values into foot structure
 void foot_init(footdata* foot)
 {
 	foot[0].neutral_from_coxa_x = FOOT_X_NEUTRAL;
@@ -108,31 +110,35 @@ void foot_init(footdata* foot)
 
 int main(void)
 {
+	controllerdata controller;
 	gaitdata gait;
 	jointdata joint[NUM_SERVOS];	
 	footdata foot[4];
-	float theta;
+	
+	// Servo sync write packet variables
 	uint8_t packet[54];
 	uint8_t n;
 	
-	float controller_x = 0.0;
-	float controller_y = 30.0;
- 	float controller_z = 40.0;
-	float controller_r = 0.0;
-	float controller_s = 0.0;
-		
+	// Temp control variables for demos
+	controller.theta;
+	controller.x = 0.0;
+	controller.y = 30.0;
+ 	controller.z = 40.0;
+	controller.r = 0.0;
+	controller.s = 0.0;
+	
+	// Robot initilizations
 	joint_init(&joint[0]);
 	foot_init(&foot[0]);
 	dynamixel_init();
 	controller_init();
-	//gait_init(&gait, GAIT_TYPE_RIPPLE);
 	gait_init(&gait, GAIT_TYPE_AMBLE);
 	
 	while(1)
 	{	
 		gait_process(&gait);
 		
-		if(controller_r == 0.0)
+		if(controller.r == 0.0)
 		{
 			// Start with neutral foot position		
 			for(int i = 0; i < 4; i++)
@@ -147,9 +153,9 @@ int main(void)
 			// start with rotations from neutral foot position
 			for(int i = 0; i < 4; i++)
 			{
-				theta = gait.r[i] * controller_r * 0.01745;
-				foot[i].x = (foot[i].neutral_from_center_x * cos(theta) - foot[i].neutral_from_center_y * sin(theta)) - foot[i].coxa_offset_x;
-				foot[i].y = (foot[i].neutral_from_center_x * sin(theta) + foot[i].neutral_from_center_y * cos(theta)) - foot[i].coxa_offset_y;
+				controller.theta = gait.r[i] * controller.r * 0.01745;
+				foot[i].x = (foot[i].neutral_from_center_x * cos(controller.theta) - foot[i].neutral_from_center_y * sin(controller.theta)) - foot[i].coxa_offset_x;
+				foot[i].y = (foot[i].neutral_from_center_x * sin(controller.theta) + foot[i].neutral_from_center_y * cos(controller.theta)) - foot[i].coxa_offset_y;
 				foot[i].z = foot[i].neutral_z;
 			}
 		}
@@ -157,19 +163,19 @@ int main(void)
 		// Add gait translations to foot position
 		for(int i = 0; i < 4; i++)
 		{
-			foot[i].x += gait.x[i] * controller_x;
-			foot[i].y += gait.y[i] * controller_y;
-			foot[i].z += gait.z[i] * controller_z;
+			foot[i].x += gait.x[i] * controller.x;
+			foot[i].y += gait.y[i] * controller.y;
+			foot[i].z += gait.z[i] * controller.z;
 		}
 		
 		// Add gait body shift if required.
-		if(controller_s != 0.0)
+		if(controller.s != 0.0)
 		{
 			gait_shift_process(&gait);
 			for(int i = 0; i < 4; i++)
 			{
-				foot[i].x -= gait.sx * controller_s;
-				foot[i].y -= gait.sy * controller_s;
+				foot[i].x -= gait.sx * controller.s;
+				foot[i].y -= gait.sy * controller.s;
 			}
 		}
 		
