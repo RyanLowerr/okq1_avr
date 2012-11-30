@@ -72,6 +72,7 @@ void joint_init(jointdata* joint)
 	joint[17].center =  TILT_ZERO;
 }
 
+// Write joint positions out to all servos using the dynamixel sync write command
 void joint_write(jointdata* joint)
 {
 	uint8_t packet[NUM_SERVOS*3]; // id, position low byte and position high byte per servo
@@ -124,17 +125,66 @@ void foot_init(footdata* foot)
 	foot[3].coxa_offset_y         =  COXA_Y_OFFSET;
 }
 
+// Calculate x/y/z foot positions from controller and gait data
+void foot_position_calc(footdata* foot, controllerdata* controller, gaitdata* gait)
+{
+	if(controller->r == 0.0)
+	{
+		// Start with neutral foot position		
+		for(int i = 0; i < 4; i++)
+		{
+			foot[i].x = foot[i].neutral_from_coxa_x;
+			foot[i].y = foot[i].neutral_from_coxa_y;
+			foot[i].z = foot[i].neutral_z;
+		}
+	}
+	else
+	{
+		// start with rotations from neutral foot position
+		float theta;
+		float costheta;
+		float sintheta;
+		
+		for(int i = 0; i < 4; i++)
+		{
+			theta = gait->r[i] * controller->r * 0.01745;
+			costheta = cos(theta);
+			sintheta = sin(theta);
+				
+			foot[i].x = (foot[i].neutral_from_center_x * costheta - foot[i].neutral_from_center_y * sintheta) - foot[i].coxa_offset_x;
+			foot[i].y = (foot[i].neutral_from_center_x * sintheta + foot[i].neutral_from_center_y * costheta) - foot[i].coxa_offset_y;
+			foot[i].z = foot[i].neutral_z;
+		}
+	}
+		
+	// Add gait translations to foot position
+	for(int i = 0; i < 4; i++)
+	{
+		foot[i].x += gait->x[i] * controller->x;
+		foot[i].y += gait->y[i] * controller->y;
+		foot[i].z += gait->z[i] * controller->z;
+	}
+		
+	// Add gait body shift if required.
+	if(controller->s != 0.0)
+	{
+		gait_shift_process(gait);
+		for(int i = 0; i < 4; i++)
+		{
+			foot[i].x -= gait->sx * controller->s;
+			foot[i].y -= gait->sy * controller->s;
+		}
+	}
+}
+
 int main(void)
 {
-	//
 	jointdata joint[NUM_SERVOS];
 	joint_init(&joint[0]);
 	
-	//
 	footdata foot[4];
 	foot_init(&foot[0]);
 	
-	//
 	controllerdata controller;
 	controller_init();
 	controller.x = 0.0;
@@ -142,77 +192,24 @@ int main(void)
  	controller.z = 40.0;
 	controller.r = 0.0;
 	controller.s = 0.0;
-	float theta;
-	float costheta;
-	float sintheta;
 	
-	//
 	gaitdata gait;
 	gait_init(&gait, GAIT_TYPE_AMBLE);
-
-	//	
+	
 	dynamixel_init();
 	
-	// Main program loop
 	while(1)
 	{	
 		gait_process(&gait);
-		
-		if(controller.r == 0.0)
-		{
-			// Start with neutral foot position		
-			for(int i = 0; i < 4; i++)
-			{
-				foot[i].x = foot[i].neutral_from_coxa_x;
-				foot[i].y = foot[i].neutral_from_coxa_y;
-				foot[i].z = foot[i].neutral_z;
-			}
-		}
-		else
-		{
-			// start with rotations from neutral foot position
-			for(int i = 0; i < 4; i++)
-			{
-				theta = gait.r[i] * controller.r * 0.01745;
-				costheta = cos(theta);
-				sintheta = sin(theta);
-				
-				foot[i].x = (foot[i].neutral_from_center_x * costheta - foot[i].neutral_from_center_y * sintheta) - foot[i].coxa_offset_x;
-				foot[i].y = (foot[i].neutral_from_center_x * sintheta + foot[i].neutral_from_center_y * costheta) - foot[i].coxa_offset_y;
-				foot[i].z = foot[i].neutral_z;
-			}
-		}
-		
-		// Add gait translations to foot position
-		for(int i = 0; i < 4; i++)
-		{
-			foot[i].x += gait.x[i] * controller.x;
-			foot[i].y += gait.y[i] * controller.y;
-			foot[i].z += gait.z[i] * controller.z;
-		}
-		
-		// Add gait body shift if required.
-		if(controller.s != 0.0)
-		{
-			gait_shift_process(&gait);
-			for(int i = 0; i < 4; i++)
-			{
-				foot[i].x -= gait.sx * controller.s;
-				foot[i].y -= gait.sy * controller.s;
-			}
-		}
-		
-		// Increment gait position
+		foot_position_calc(&foot[0], &controller, &gait);
 		gait_increment(&gait);
 		
-		// ik calculations
 		for(uint8_t i = 0; i < 4; i++)
 			ik_leg(foot[i].x, foot[i].y, foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
-		
+			
 		joint[16].angle = 0;
 		joint[17].angle = 0;
 
-		// Update all servo positions
 		joint_write(&joint[0]);
 		
 		_delay_ms(5);
