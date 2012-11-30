@@ -72,68 +72,88 @@ void joint_init(jointdata* joint)
 	joint[17].center =  TILT_ZERO;
 }
 
+void joint_write(jointdata* joint)
+{
+	uint8_t packet[NUM_SERVOS*3]; // id, position low byte and position high byte per servo
+	uint8_t n = 0;
+	
+	for(uint8_t i = 0; i < NUM_SERVOS; i++)
+	{
+		joint[i].position = (uint16_t) (MX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * MX_TIC_PER_DEG));
+		packet[n++] = joint[i].id;
+		packet[n++] = dynamixel_getlowbyte(joint[i].position);
+		packet[n++] = dynamixel_gethighbyte(joint[i].position);
+	}
+
+	dynamixel_syncwrite(MX_GOAL_POSITION_L, 2, NUM_SERVOS, &packet);
+}
+
 // Calculate and save foot neutral positions and offset values into foot structure
 void foot_init(footdata* foot)
 {
-	foot[0].neutral_from_coxa_x = FOOT_X_NEUTRAL;
-	foot[0].neutral_from_coxa_y = FOOT_Y_NEUTRAL;
-	foot[0].neutral_from_center_x = FOOT_X_NEUTRAL + COXA_X_OFFSET;
-	foot[0].neutral_from_center_y = FOOT_Y_NEUTRAL + COXA_Y_OFFSET;
-	foot[0].neutral_z = -FOOT_Z_NEUTRAL;
-	foot[0].coxa_offset_x = COXA_X_OFFSET;
-	foot[0].coxa_offset_y = COXA_Y_OFFSET;
+	foot[0].neutral_from_coxa_x   =  FOOT_X_NEUTRAL;
+	foot[0].neutral_from_coxa_y   =  FOOT_Y_NEUTRAL;
+	foot[0].neutral_from_center_x =  FOOT_X_NEUTRAL + COXA_X_OFFSET;
+	foot[0].neutral_from_center_y =  FOOT_Y_NEUTRAL + COXA_Y_OFFSET;
+	foot[0].neutral_z             = -FOOT_Z_NEUTRAL;
+	foot[0].coxa_offset_x         =  COXA_X_OFFSET;
+	foot[0].coxa_offset_y         =  COXA_Y_OFFSET;
 
-	foot[1].neutral_from_coxa_x = FOOT_X_NEUTRAL;
-	foot[1].neutral_from_coxa_y = -FOOT_Y_NEUTRAL;
-	foot[1].neutral_from_center_x = FOOT_X_NEUTRAL + COXA_X_OFFSET;
-	foot[1].neutral_from_center_y = -FOOT_Y_NEUTRAL + -COXA_Y_OFFSET;
-	foot[1].neutral_z = -FOOT_Z_NEUTRAL;
-	foot[1].coxa_offset_x = COXA_X_OFFSET;
-	foot[1].coxa_offset_y = -COXA_Y_OFFSET;
+	foot[1].neutral_from_coxa_x   =  FOOT_X_NEUTRAL;
+	foot[1].neutral_from_coxa_y   = -FOOT_Y_NEUTRAL;
+	foot[1].neutral_from_center_x =  FOOT_X_NEUTRAL + COXA_X_OFFSET;
+	foot[1].neutral_from_center_y = -FOOT_Y_NEUTRAL - COXA_Y_OFFSET;
+	foot[1].neutral_z             = -FOOT_Z_NEUTRAL;
+	foot[1].coxa_offset_x         =  COXA_X_OFFSET;
+	foot[1].coxa_offset_y         = -COXA_Y_OFFSET;
 	
-	foot[2].neutral_from_coxa_x = -FOOT_X_NEUTRAL;
-	foot[2].neutral_from_coxa_y = -FOOT_Y_NEUTRAL;
-	foot[2].neutral_from_center_x = -FOOT_X_NEUTRAL + -COXA_X_OFFSET;
-	foot[2].neutral_from_center_y = -FOOT_Y_NEUTRAL + -COXA_Y_OFFSET;
-	foot[2].neutral_z = -FOOT_Z_NEUTRAL;
-	foot[2].coxa_offset_x = -COXA_X_OFFSET;
-	foot[2].coxa_offset_y = -COXA_Y_OFFSET;
+	foot[2].neutral_from_coxa_x   = -FOOT_X_NEUTRAL;
+	foot[2].neutral_from_coxa_y   = -FOOT_Y_NEUTRAL;
+	foot[2].neutral_from_center_x = -FOOT_X_NEUTRAL - COXA_X_OFFSET;
+	foot[2].neutral_from_center_y = -FOOT_Y_NEUTRAL - COXA_Y_OFFSET;
+	foot[2].neutral_z             = -FOOT_Z_NEUTRAL;
+	foot[2].coxa_offset_x         = -COXA_X_OFFSET;
+	foot[2].coxa_offset_y         = -COXA_Y_OFFSET;
 	
-	foot[3].neutral_from_coxa_x = -FOOT_X_NEUTRAL;
-	foot[3].neutral_from_coxa_y = FOOT_Y_NEUTRAL;
-	foot[3].neutral_from_center_x = -FOOT_X_NEUTRAL + -COXA_X_OFFSET;
-	foot[3].neutral_from_center_y = FOOT_Y_NEUTRAL + COXA_Y_OFFSET;
-	foot[3].neutral_z = -FOOT_Z_NEUTRAL;
-	foot[3].coxa_offset_x = -COXA_X_OFFSET;
-	foot[3].coxa_offset_y = COXA_Y_OFFSET;
+	foot[3].neutral_from_coxa_x   = -FOOT_X_NEUTRAL;
+	foot[3].neutral_from_coxa_y   =  FOOT_Y_NEUTRAL;
+	foot[3].neutral_from_center_x = -FOOT_X_NEUTRAL - COXA_X_OFFSET;
+	foot[3].neutral_from_center_y =  FOOT_Y_NEUTRAL + COXA_Y_OFFSET;
+	foot[3].neutral_z             = -FOOT_Z_NEUTRAL;
+	foot[3].coxa_offset_x         = -COXA_X_OFFSET;
+	foot[3].coxa_offset_y         =  COXA_Y_OFFSET;
 }
 
 int main(void)
 {
-	controllerdata controller;
-	gaitdata gait;
-	jointdata joint[NUM_SERVOS];	
+	//
+	jointdata joint[NUM_SERVOS];
+	joint_init(&joint[0]);
+	
+	//
 	footdata foot[4];
+	foot_init(&foot[0]);
 	
-	// Servo sync write packet variables
-	uint8_t packet[54];
-	uint8_t n;
-	
-	// Temp control variables for demos
-	controller.theta;
+	//
+	controllerdata controller;
+	controller_init();
 	controller.x = 0.0;
 	controller.y = 30.0;
  	controller.z = 40.0;
 	controller.r = 0.0;
 	controller.s = 0.0;
+	float theta;
+	float costheta;
+	float sintheta;
 	
-	// Robot initilizations
-	joint_init(&joint[0]);
-	foot_init(&foot[0]);
-	dynamixel_init();
-	controller_init();
+	//
+	gaitdata gait;
 	gait_init(&gait, GAIT_TYPE_AMBLE);
+
+	//	
+	dynamixel_init();
 	
+	// Main program loop
 	while(1)
 	{	
 		gait_process(&gait);
@@ -153,9 +173,12 @@ int main(void)
 			// start with rotations from neutral foot position
 			for(int i = 0; i < 4; i++)
 			{
-				controller.theta = gait.r[i] * controller.r * 0.01745;
-				foot[i].x = (foot[i].neutral_from_center_x * cos(controller.theta) - foot[i].neutral_from_center_y * sin(controller.theta)) - foot[i].coxa_offset_x;
-				foot[i].y = (foot[i].neutral_from_center_x * sin(controller.theta) + foot[i].neutral_from_center_y * cos(controller.theta)) - foot[i].coxa_offset_y;
+				theta = gait.r[i] * controller.r * 0.01745;
+				costheta = cos(theta);
+				sintheta = sin(theta);
+				
+				foot[i].x = (foot[i].neutral_from_center_x * costheta - foot[i].neutral_from_center_y * sintheta) - foot[i].coxa_offset_x;
+				foot[i].y = (foot[i].neutral_from_center_x * sintheta + foot[i].neutral_from_center_y * costheta) - foot[i].coxa_offset_y;
 				foot[i].z = foot[i].neutral_z;
 			}
 		}
@@ -189,18 +212,8 @@ int main(void)
 		joint[16].angle = 0;
 		joint[17].angle = 0;
 
-		// form dynamixel sync write data
-		n = 0;
-		for(uint8_t i = 0; i < NUM_SERVOS; i++)
-		{
-			joint[i].position = (uint16_t) (MX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * MX_TIC_PER_DEG));
-			packet[n++] = joint[i].id;
-			packet[n++] = dynamixel_getlowbyte(joint[i].position);
-			packet[n++] = dynamixel_gethighbyte(joint[i].position);
-		}
-
-		// write positions to servos
-		dynamixel_syncwrite(MX_GOAL_POSITION_L, 2, NUM_SERVOS, &packet);	
+		// Update all servo positions
+		joint_write(&joint[0]);
 		
 		_delay_ms(5);
 	}

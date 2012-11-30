@@ -22,7 +22,6 @@
 
 typedef struct
 {
-	float theta;
 	float x;
 	float y;
  	float z;
