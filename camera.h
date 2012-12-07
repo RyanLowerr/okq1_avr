@@ -21,5 +21,6 @@ typedef struct
 } camera_data;
 
 void camera_init(void);
+void camera_process(camera_data* cam);
 
 #endif
