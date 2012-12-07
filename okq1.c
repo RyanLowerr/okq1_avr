@@ -10,6 +10,7 @@
 #include "gait.h"
 #include "ik.h"
 #include "common.h"
+#include "twi.h"
 
 // Save joint constants into joint structure from common.h file
 void joint_init(jointdata* joint)
@@ -198,6 +199,8 @@ int main(void)
 	gait_process(&gait);
 	
 	dynamixel_init();
+	
+	twi_init();
 	
 	while(1)
 	{	
