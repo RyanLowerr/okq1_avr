@@ -80,7 +80,7 @@ OBJDIR = .
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c /dynamixel/dynamixel.c /ik/ik.c /gait/gait.c /controller/controller.c
+SRC = $(TARGET).c dynamixel.c ik.c gait.c controller.c
 
 
 # List C++ source files here. (C dependencies are automatically generated.)

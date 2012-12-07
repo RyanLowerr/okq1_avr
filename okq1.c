@@ -4,11 +4,11 @@
 #include <util/delay.h>
 #include <math.h>
 
-#include "dynamixel/dynamixel.h"
-#include "dynamixel/mx.h"
-#include "controller/controller.h"
-#include "gait/gait.h"
-#include "ik/ik.h"
+#include "dynamixel.h"
+#include "mx.h"
+#include "controller.h"
+#include "gait.h"
+#include "ik.h"
 #include "common.h"
 
 // Save joint constants into joint structure from common.h file
@@ -195,6 +195,7 @@ int main(void)
 	
 	gaitdata gait;
 	gait_init(&gait, GAIT_TYPE_AMBLE);
+	gait_process(&gait);
 	
 	dynamixel_init();
 	
