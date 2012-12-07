@@ -100,6 +100,7 @@ ISR(TWI_vect)
 	{
 		// Start condition transmitted.
 		case TWI_START:
+		
 		// Repeated start condition transmitted.
 		case TWI_REP_START:
 			// Reset the buffer pointer.
@@ -107,6 +108,7 @@ ISR(TWI_vect)
 		
 		// Slave address and write transmitted. Ack received.
 		case TWI_MTX_ADR_ACK:
+		
 		// Data byte transmitted. Ack received.
 		case TWI_MTX_DATA_ACK:
 			// Transmit byte in the buffer or issue twi stop if last data byte has been transmitted.
@@ -141,10 +143,13 @@ ISR(TWI_vect)
 		
 		// Slave address and write transmitted. Nack received.
 		case TWI_MTX_ADR_NACK:
+		
 		// Slave address and read transmitted. Nack received. 
 		case TWI_MRX_ADR_NACK:
+		
 		// Data byte transmitted. Nack received.
 		case TWI_MTX_DATA_NACK:		
+		
 		default:
 			// Reset the TWI.
 			twi_init();

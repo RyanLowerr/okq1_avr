@@ -1,3 +1,9 @@
+
+#ifndef _TWI_H_
+#define _TWI_H_
+
+#include <avr/io.h>
+
 // TWI genera status codes
 #define TWI_START              0x08 // Start has been transmitted.
 #define TWI_REP_START          0x10 // Repeated start has been transmitted.
@@ -20,3 +26,5 @@
 void twi_init(void);
 void twi_write(uint8_t sla, uint8_t* data, uint8_t length);
 void twi_read(uint8_t sla, uint8_t* data, uint8_t length);
+
+#endif

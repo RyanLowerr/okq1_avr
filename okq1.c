@@ -11,6 +11,7 @@
 #include "ik.h"
 #include "common.h"
 #include "twi.h"
+#include "camera.h"
 
 // Save joint constants into joint structure from common.h file
 void joint_init(jointdata* joint)
