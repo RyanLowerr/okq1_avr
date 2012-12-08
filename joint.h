@@ -11,4 +11,7 @@ typedef struct
 	float angle;
 } jointdata;
 
+void joint_init(jointdata* joint);
+void joint_write(jointdata* joint);
+
 #endif

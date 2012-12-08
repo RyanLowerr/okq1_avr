@@ -2,6 +2,11 @@
 #ifndef _FOOT_H_
 #define _FOOT_H_
 
+#include <avr/io.h>
+
+#include "controller.h"
+#include "gait.h"
+
 typedef struct
 {
 	float x;
@@ -15,5 +20,8 @@ typedef struct
 	float coxa_offset_x;
 	float coxa_offset_y;
 } footdata;
+
+void foot_init(footdata* foot);
+void foot_position_calc(footdata* foot, controllerdata* controller, gaitdata* gait);
 
 #endif
