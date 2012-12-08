@@ -7,6 +7,8 @@
 
 void camera_init(void)
 {
+	twi_init();
+	
 	uint8_t tx[128];
 	_delay_ms(100);
 	
