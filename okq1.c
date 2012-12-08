@@ -4,13 +4,12 @@
 #include <util/delay.h>
 #include <math.h>
 
+#include "common.h"
+#include "ik.h"
+#include "gait.h"
+#include "controller.h"
 #include "dynamixel.h"
 #include "mx.h"
-#include "controller.h"
-#include "gait.h"
-#include "ik.h"
-#include "common.h"
-#include "twi.h"
 #include "camera.h"
 
 // Save joint constants into joint structure from common.h file
@@ -193,12 +192,23 @@ void foot_position_calc(footdata* foot, controllerdata* controller, gaitdata* ga
 
 int main(void)
 {
+	// enable interups
+	sei();
+
+	// initalize datasets to store foot placement values
+	footdata foot[4];
+	foot_init(&foot[0]);
+
+	// initalize datasets to store joint values
 	jointdata joint[NUM_SERVOS];
 	joint_init(&joint[0]);
 	
-	footdata foot[4];
-	foot_init(&foot[0]);
+	// initalize datasets to store gait values
+	gaitdata gait;
+	gait_init(&gait, GAIT_TYPE_AMBLE);
+	gait_process(&gait);
 	
+	// initalize controller
 	controllerdata controller;
 	controller_init();
 	controller.x = 0.0;
@@ -207,13 +217,11 @@ int main(void)
 	controller.r = 0.0;
 	controller.s = 0.0;
 	
-	gaitdata gait;
-	gait_init(&gait, GAIT_TYPE_AMBLE);
-	gait_process(&gait);
-	
+	// initalize dynamixel bus
 	dynamixel_init();
 	
-	twi_init();
+	// initalize auto targeting camera
+	camera_init();
 	
 	while(1)
 	{	
