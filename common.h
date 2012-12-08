@@ -2,29 +2,6 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-typedef struct
-{
-	uint8_t id;
-	uint16_t position;
-	int16_t center;
-	int direction;
-	float angle;
-} jointdata;
-
-typedef struct
-{
-	float x;
-	float y;
-	float z;
-	float neutral_from_coxa_x;
-	float neutral_from_coxa_y;
-	float neutral_from_center_x;
-	float neutral_from_center_y;
-	float neutral_z;
-	float coxa_offset_x;
-	float coxa_offset_y;
-} footdata;
-
 #define COXA_LENGTH   46.0
 #define FEMUR_LENGTH  70.0
 #define TIBIA_LENGTH  68.0

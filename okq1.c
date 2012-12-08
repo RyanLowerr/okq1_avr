@@ -5,6 +5,8 @@
 #include <math.h>
 
 #include "common.h"
+#include "foot.h"
+#include "joint.h"
 #include "ik.h"
 #include "gait.h"
 #include "controller.h"
