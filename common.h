@@ -2,10 +2,10 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-#define COXA_LENGTH   46.0
-#define FEMUR_LENGTH  70.0
-#define TIBIA_LENGTH  68.0
-#define TARSUS_LENGTH 83.0
+#define COXA_LENGTH   60.0
+#define FEMUR_LENGTH  90.0
+#define TIBIA_LENGTH  80.0
+#define TARSUS_LENGTH 47.0
 
 #define NUM_SERVOS 22
 
@@ -45,14 +45,14 @@
 #define FR_TARSUS_DIRECTION  -1.0
 
 #define BR_COXA_DIRECTION     1.0
-#define BR_FEMUR_DIRECTION   -1.0
-#define BR_TIBIA_DIRECTION    1.0
-#define BR_TARSUS_DIRECTION   1.0
+#define BR_FEMUR_DIRECTION    1.0
+#define BR_TIBIA_DIRECTION   -1.0
+#define BR_TARSUS_DIRECTION  -1.0
 
 #define BL_COXA_DIRECTION     1.0
-#define BL_FEMUR_DIRECTION    1.0
-#define BL_TIBIA_DIRECTION   -1.0
-#define BL_TARSUS_DIRECTION  -1.0
+#define BL_FEMUR_DIRECTION   -1.0
+#define BL_TIBIA_DIRECTION    1.0
+#define BL_TARSUS_DIRECTION   1.0
 
 #define FL_COXA_DIRECTION     1.0
 #define FL_FEMUR_DIRECTION   -1.0
@@ -68,12 +68,12 @@
 #define L_GUN_TILT_DIRECTION  1.0
 
 // Servo 'Zero' angle
-#define FR_COXA_ZERO     45.0
-#define BR_COXA_ZERO     45.0
-#define BL_COXA_ZERO     135.0
-#define FL_COXA_ZERO     135.0
-#define FEMUR_ZERO       11.0
-#define TIBIA_ZERO       11.0
+#define FR_COXA_ZERO     95.0
+#define BR_COXA_ZERO     95.0
+#define BL_COXA_ZERO     95.0
+#define FL_COXA_ZERO     95.0
+#define FEMUR_ZERO       0.0
+#define TIBIA_ZERO       0.0
 #define TARSUS_ZERO      0.0
 
 #define TURRET_PAN_ZERO  0.0
@@ -85,12 +85,12 @@
 #define L_GUN_TILT_ZERO  0.0
 
 // Foot neutral positions
-#define FOOT_X_NEUTRAL 90.0
-#define FOOT_Y_NEUTRAL 70.0
+#define FOOT_X_NEUTRAL 120.0
+#define FOOT_Y_NEUTRAL 100.0
 #define FOOT_Z_NEUTRAL 30.0
 
 // Coxa offset from center
-#define COXA_X_OFFSET 65.0
-#define COXA_Y_OFFSET 65.0
+#define COXA_X_OFFSET 60.0
+#define COXA_Y_OFFSET 60.0
 
 #endif

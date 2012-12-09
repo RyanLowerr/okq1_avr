@@ -36,8 +36,8 @@ int main(void)
 	controllerdata controller;
 	controller_init();
 	controller.x = 0.0;
-	controller.y = 30.0;
- 	controller.z = 40.0;
+	controller.y = 0.0;
+ 	controller.z = 0.0;
 	controller.r = 0.0;
 	controller.s = 0.0;
 	
