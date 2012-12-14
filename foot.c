@@ -5,7 +5,7 @@
 #include "common.h"
 
 // Calculate and save foot neutral positions and offset values into foot structure
-void foot_init(footdata* foot)
+void foot_init(FOOT* foot)
 {
 	foot[0].neutral_from_coxa_x   =  FOOT_X_NEUTRAL;
 	foot[0].neutral_from_coxa_y   =  FOOT_Y_NEUTRAL;
@@ -41,7 +41,7 @@ void foot_init(footdata* foot)
 }
 
 // Calculate x/y/z foot positions from controller and gait data
-void foot_position_calc(footdata* foot, controllerdata* controller, gaitdata* gait)
+void foot_position_calc(FOOT* foot, CONTROLLER* controller, GAIT* gait)
 {
 	if(controller->r == 0.0)
 	{

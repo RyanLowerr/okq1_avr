@@ -27,7 +27,7 @@ typedef struct
  	float z;
 	float r;
 	float s;
-} controllerdata;
+} CONTROLLER;
 
 void controller_init(void);
 uint8_t controller_buffer_size(void);

@@ -4,7 +4,7 @@
 
 #include "gait.h"
 
-void gait_process(gaitdata *g)
+void gait_process(GAIT *g)
 {	
 	float shiftedtime;
 	
@@ -36,14 +36,14 @@ void gait_process(gaitdata *g)
 	}
 }
 
-void gait_shift_process(gaitdata *g)
+void gait_shift_process(GAIT *g)
 {
 	float angle = (225.0 - (360.0 / g->period) * (float) g->position) * 0.01745;
 	g->sx = cos(angle) - sin(angle);
 	g->sy = sin(angle) + cos(angle);
 }
 
-void gait_increment(gaitdata *g)
+void gait_increment(GAIT *g)
 {
 	g->position += 1;
 	
@@ -51,7 +51,7 @@ void gait_increment(gaitdata *g)
 		g->position = 0;	
 }
 
-void gait_paramcalc(gaitdata *g)
+void gait_paramcalc(GAIT *g)
 {
 	g->move_to_step_ratio = 1.0 - g->step_to_move_ratio;
 	g->step_time = g->period * g->step_to_move_ratio;
@@ -79,7 +79,7 @@ void gait_paramcalc(gaitdata *g)
 	g->step_end[3] = g->step_start[3] + g->step_time;
 }
 
-void gait_init(gaitdata *g, uint8_t type)
+void gait_init(GAIT *g, uint8_t type)
 {
 
 	// This should be configurable. Possibly a param of gait_init()?

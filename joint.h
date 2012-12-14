@@ -9,9 +9,9 @@ typedef struct
 	int16_t center;
 	int direction;
 	float angle;
-} jointdata;
+} JOINT;
 
-void joint_init(jointdata* joint);
-void joint_write(jointdata* joint);
+void joint_init(JOINT* joint);
+void joint_write(JOINT* joint);
 
 #endif

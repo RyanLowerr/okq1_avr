@@ -41,7 +41,7 @@ void camera_init(void)
 	_delay_ms(100);
 }
 
-void camera_process(camera_data* cam)
+void camera_process(CAMERA* cam)
 {
 	uint8_t tx[128];
 	uint8_t rx[128];

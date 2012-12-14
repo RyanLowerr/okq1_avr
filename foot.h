@@ -19,9 +19,9 @@ typedef struct
 	float neutral_z;
 	float coxa_offset_x;
 	float coxa_offset_y;
-} footdata;
+} FOOT;
 
-void foot_init(footdata* foot);
-void foot_position_calc(footdata* foot, controllerdata* controller, gaitdata* gait);
+void foot_init(FOOT* foot);
+void foot_position_calc(FOOT* foot, CONTROLLER* controller, GAIT* gait);
 
 #endif

@@ -18,9 +18,9 @@ typedef struct
 	
 	uint8_t s[4];
 	uint8_t I[4];
-} camera_data;
+} CAMERA;
 
 void camera_init(void);
-void camera_process(camera_data* cam);
+void camera_process(CAMERA* cam);
 
 #endif

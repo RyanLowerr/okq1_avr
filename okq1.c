@@ -13,6 +13,7 @@
 #include "dynamixel.h"
 #include "mx.h"
 #include "camera.h"
+#include "position.h"
 
 int main(void)
 {
@@ -20,20 +21,20 @@ int main(void)
 	sei();
 
 	// initalize datasets to store foot placement values
-	footdata foot[4];
+	FOOT foot[4];
 	foot_init(&foot[0]);
 
 	// initalize datasets to store joint values
-	jointdata joint[NUM_SERVOS];
+	JOINT joint[NUM_SERVOS];
 	joint_init(&joint[0]);
 	
 	// initalize datasets to store gait values
-	gaitdata gait;
+	GAIT gait;
 	gait_init(&gait, GAIT_TYPE_AMBLE);
 	gait_process(&gait);
 	
 	// initalize controller
-	controllerdata controller;
+	CONTROLLER controller;
 	controller_init();
 	controller.x = 0.0;
 	controller.y = 0.0;
