@@ -7,7 +7,7 @@
 #include "common.h"
 #include "foot.h"
 #include "joint.h"
-#include "ik.h"
+#include "kinematics.h"
 #include "gait.h"
 #include "controller.h"
 #include "dynamixel.h"
@@ -54,7 +54,7 @@ int main(void)
 		gait_increment(&gait);
 		
 		for(uint8_t i = 0; i < 4; i++)
-			ik_leg(foot[i].x, foot[i].y, foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
+			kinematics_legik(foot[i].x, foot[i].y, foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
 			
 		joint[16].angle = 0;
 		joint[17].angle = 0;

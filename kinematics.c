@@ -1,10 +1,10 @@
 
 #include <math.h>
 
-#include "ik.h"
+#include "kinematics.h"
 #include "common.h"
 
-uint8_t ik_leg(float x, float y, float z, float* coxa, float* femur, float* tibia, float* tarsus)
+uint8_t kinematics_legik(float x, float y, float z, float* coxa, float* femur, float* tibia, float* tarsus)
 {
 	float leg_length;
 	float tarsus_offset_angle;
@@ -56,4 +56,9 @@ uint8_t ik_leg(float x, float y, float z, float* coxa, float* femur, float* tibi
 	*tarsus = result[3];
 	
 	return 1;
+}
+
+uint8_t kinematics_legfk(float a1, float a2, float a3, float a4)
+{
+	return 0;
 }
