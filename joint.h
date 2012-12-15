@@ -2,6 +2,8 @@
 #ifndef _JOINT_H_
 #define _JOINT_H_
 
+#include "common.h"
+
 typedef struct
 {
 	uint8_t id;
@@ -11,7 +13,9 @@ typedef struct
 	float angle;
 } JOINT;
 
-void joint_init(JOINT* joint);
-void joint_write(JOINT* joint);
+extern JOINT joint[NUM_SERVOS];
+
+void joint_init(JOINT *joint);
+void joint_write(JOINT *joint);
 
 #endif

@@ -29,7 +29,9 @@ typedef struct
 	float s;
 } CONTROLLER;
 
-void controller_init(void);
+extern CONTROLLER controller;
+
+void controller_init(CONTROLLER *c);
 uint8_t controller_buffer_size(void);
 void controller_buffer_flush(void);
 uint8_t controller_buffer_read(void);

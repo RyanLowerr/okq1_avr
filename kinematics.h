@@ -6,5 +6,7 @@
 
 uint8_t kinematics_legik(float x, float y, float z, float* coxa, float* femur, float* tibia, float* tarsus);
 uint8_t kinematics_legfk(float a1, float a2, float a3, float a4);
+uint8_t kinematics_turretik(void);
+uint8_t kinematics_gunik(void);
 
 #endif

@@ -47,6 +47,8 @@ typedef struct
 	float sy;
 } GAIT;
 
+extern GAIT gait;
+
 void gait_process(GAIT *g);				
 void gait_shift_process(GAIT *g);
 void gait_increment(GAIT *g);
