@@ -4,6 +4,8 @@
 
 #include "gait.h"
 
+GAIT gait;
+
 void gait_process(GAIT *g)
 {	
 	float shiftedtime;
@@ -83,7 +85,7 @@ void gait_init(GAIT *g, uint8_t type)
 {
 
 	// This should be configurable. Possibly a param of gait_init()?
-	g->period = 100.0;
+	g->period = 1000.0;
 	g->position = 0;
 
 	if(type == GAIT_TYPE_RIPPLE)

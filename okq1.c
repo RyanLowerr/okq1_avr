@@ -2,12 +2,11 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <math.h>
 
 #include "common.h"
-#include "foot.h"
+#include "position.h"
+#include "motion.h"
 #include "joint.h"
-#include "kinematics.h"
 #include "gait.h"
 #include "controller.h"
 #include "dynamixel.h"
@@ -21,47 +20,31 @@ int main(void)
 	sei();
 
 	// initalize datasets to store foot placement values
-	FOOT foot[4];
-	foot_init(&foot[0]);
+	//FOOT foot[4];
+	//foot_init(&foot[0]);
 
-	// initalize datasets to store joint values
-	JOINT joint[NUM_SERVOS];
+	// initalize datasets that store joint values
 	joint_init(&joint[0]);
 	
-	// initalize datasets to store gait values
-	GAIT gait;
+	// initalize datasets that store gait values
 	gait_init(&gait, GAIT_TYPE_AMBLE);
 	gait_process(&gait);
 	
 	// initalize controller
-	CONTROLLER controller;
-	controller_init();
-	controller.x = 0.0;
-	controller.y = 0.0;
- 	controller.z = 0.0;
-	controller.r = 0.0;
-	controller.s = 0.0;
+	controller_init(&controller);
 	
 	// initalize dynamixel bus
 	dynamixel_init();
-	
-	// initalize auto targeting camera
-	camera_init();
+
+	// initalize robot positions
+	position_init();
+
+	// initalize the motion manager
+	motion_init();
 	
 	while(1)
 	{	
-		gait_process(&gait);
-		foot_position_calc(&foot[0], &controller, &gait);
-		gait_increment(&gait);
-		
-		for(uint8_t i = 0; i < 4; i++)
-			kinematics_legik(foot[i].x, foot[i].y, foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
-			
-		joint[16].angle = 0;
-		joint[17].angle = 0;
-
-		joint_write(&joint[0]);
-		
+		motion_process(&controller, &gait);		
 		_delay_ms(5);
 	}
 	

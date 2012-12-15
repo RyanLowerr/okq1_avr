@@ -5,9 +5,12 @@
 #define COXA_LENGTH   60.0
 #define FEMUR_LENGTH  90.0
 #define TIBIA_LENGTH  80.0
-#define TARSUS_LENGTH 47.0
+#define TARSUS_LENGTH 80.0
 
 #define NUM_SERVOS 22
+#define NUM_LEGS 4
+#define NUM_TURRETS 1
+#define NUM_GUNS 2
 
 // Servo ID's
 #define FR_COXA_ID     1
@@ -87,7 +90,7 @@
 // Foot neutral positions
 #define FOOT_X_NEUTRAL 120.0
 #define FOOT_Y_NEUTRAL 100.0
-#define FOOT_Z_NEUTRAL 30.0
+#define FOOT_Z_NEUTRAL 60.0
 
 // Coxa offset from center
 #define COXA_X_OFFSET 60.0

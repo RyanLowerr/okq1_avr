@@ -7,8 +7,10 @@
 #include "ax.h"
 #include "mx.h"
 
+JOINT joint[NUM_SERVOS];
+
 // Save joint constants into joint structure from common.h file
-void joint_init(JOINT* joint)
+void joint_init(JOINT *joint)
 {
 	joint[0].id  = FR_COXA_ID;
 	joint[1].id  = FR_FEMUR_ID;
@@ -81,7 +83,7 @@ void joint_init(JOINT* joint)
 }
 
 // Write joint positions out to all servos using the dynamixel sync write command
-void joint_write(JOINT* joint)
+void joint_write(JOINT *joint)
 {
 	uint8_t packet[NUM_SERVOS*3]; // id, position low byte and position high byte per servo
 	uint8_t n = 0;

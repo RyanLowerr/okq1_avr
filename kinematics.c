@@ -22,8 +22,8 @@ uint8_t kinematics_legik(float x, float y, float z, float* coxa, float* femur, f
 	
 	// Tarsus Offsets
 	tarsus_offset_angle = 0.0; // 0.0 for now. will revisit later.
-	tarsus_offset_xy = 0.0; //sin(tarsus_offset_angle) * TARSUS_LENGTH;
-	tarsus_offset_z = 0.0; //cos(tarsus_offset_angle) * TARSUS_LENGTH;
+	tarsus_offset_xy = sin(tarsus_offset_angle) * TARSUS_LENGTH;
+	tarsus_offset_z = cos(tarsus_offset_angle) * TARSUS_LENGTH;
 	
 	// Triangle formed by the femur, tibia and tarsus joints. Using the law of cosines to calculate all sides lengths and angles.
 	temp1 = leg_length - COXA_LENGTH - tarsus_offset_xy;
@@ -59,6 +59,16 @@ uint8_t kinematics_legik(float x, float y, float z, float* coxa, float* femur, f
 }
 
 uint8_t kinematics_legfk(float a1, float a2, float a3, float a4)
+{
+	return 0;
+}
+
+uint8_t kinematics_turretik(void)
+{
+	return 0;
+}
+
+uint8_t kinematics_gunik(void)
 {
 	return 0;
 }
