@@ -33,7 +33,7 @@ void dynamixel_init(void)
 	dynamixel_rxindex = 0;
 }
 
-void dynamixel_settx(void)
+static void dynamixel_settx(void)
 {
 	// Set UART direction pins
 	PORTD |= (1 << PD2);
@@ -44,7 +44,7 @@ void dynamixel_settx(void)
 	//UCSR0B &= ~(1 << RXCIE0);
 }
 
-void dynamixel_setrx(void)
+static void dynamixel_setrx(void)
 {
 	// Wait for TX complete flag before turning the bus around
 	while(bit_is_clear(UCSR0A, TXC0));
@@ -63,13 +63,13 @@ void dynamixel_setrx(void)
 	dynamixel_rxindex = 0;
 }
 
-void dynamixel_write(uint8_t c)
+static void dynamixel_write(uint8_t c)
 {
 	while(bit_is_clear(UCSR0A, UDRE0));
 	UDR0 = c;
 }
 
-uint8_t dynamixel_calculatechecksum(volatile uint8_t* packet)
+static uint8_t dynamixel_calculatechecksum(volatile uint8_t* packet)
 {
 	uint16_t checksum = 0;
 	
@@ -79,7 +79,7 @@ uint8_t dynamixel_calculatechecksum(volatile uint8_t* packet)
 	return ~(checksum % 256);
 }
 
-uint8_t dynamixel_writepacket(volatile uint8_t* txpacket, uint8_t packetlength)
+static uint8_t dynamixel_writepacket(volatile uint8_t* txpacket, uint8_t packetlength)
 {	
 	for(uint8_t i = 0; i < packetlength; i++)
 		dynamixel_write(txpacket[i]);
@@ -87,7 +87,7 @@ uint8_t dynamixel_writepacket(volatile uint8_t* txpacket, uint8_t packetlength)
 	return DYNAMIXEL_SUCCESS;
 }
 
-uint8_t dynamixel_readpacket(volatile uint8_t* rxpacket, uint8_t packetlength)
+static uint8_t dynamixel_readpacket(volatile uint8_t* rxpacket, uint8_t packetlength)
 {
 	uint16_t ulcounter = 0;
 
@@ -106,7 +106,7 @@ uint8_t dynamixel_readpacket(volatile uint8_t* rxpacket, uint8_t packetlength)
 	return DYNAMIXEL_SUCCESS;
 }
 
-uint8_t dynamixel_txrx(volatile uint8_t* txpacket, volatile uint8_t* rxpacket)
+static uint8_t dynamixel_txrx(volatile uint8_t* txpacket, volatile uint8_t* rxpacket)
 {
 	uint8_t result;
 	uint8_t rxlength = 0;
