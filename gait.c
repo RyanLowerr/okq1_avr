@@ -48,7 +48,7 @@ void gait_init(GAIT *g, uint8_t type)
 {
 
 	// This should be configurable. Possibly a param of gait_init()?
-	g->period = 1000.0;
+	g->period = 150.0;
 	g->position = 0;
 
 	if(type == GAIT_TYPE_RIPPLE)
@@ -118,5 +118,13 @@ void gait_increment(GAIT *g)
 	g->position += 1;
 	
 	if(g->position > g->period)
-		g->position = 0;	
+		g->position = 0;			
+}
+
+void gait_decrement(GAIT *g)
+{
+	g->position -= 1;
+	
+	if(g->position < 0)
+		g->position = g->period;
 }

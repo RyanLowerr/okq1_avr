@@ -9,12 +9,6 @@
 
 typedef struct
 {
-	uint8_t type;
-
-	float period;
-	float periodstep;
-	uint8_t position;
-	
 	float step_to_move_ratio;
 	float move_to_step_ratio;
 	float step_time;
@@ -45,6 +39,10 @@ typedef struct
 	float r[4];
 	float sx;
 	float sy;
+
+	int16_t period;	
+	int16_t position;
+	uint8_t type;
 } GAIT;
 
 extern GAIT gait;
@@ -53,5 +51,6 @@ void gait_init(GAIT *g, uint8_t type);
 void gait_process(GAIT *g);				
 void gait_shift_process(GAIT *g);
 void gait_increment(GAIT *g);
+void gait_decrement(GAIT *g);
 
 #endif
