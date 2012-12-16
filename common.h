@@ -88,8 +88,8 @@
 #define L_GUN_TILT_ZERO  0.0
 
 // Foot neutral positions
-#define FOOT_X_NEUTRAL 120.0
-#define FOOT_Y_NEUTRAL 100.0
+#define FOOT_X_NEUTRAL 130.0
+#define FOOT_Y_NEUTRAL 80.0
 #define FOOT_Z_NEUTRAL 60.0
 
 // Coxa offset from center
