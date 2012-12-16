@@ -56,7 +56,7 @@ void motion_process(CONTROLLER *controller, GAIT *gait)
 			theta = gait->r[i] * controller->r * 0.01745;
 			costheta = cos(theta);
 			sintheta = sin(theta);
-			xfromcenter = neutral.foot[i].z + coxaoffset.foot[i].x;
+			xfromcenter = neutral.foot[i].x + coxaoffset.foot[i].x;
 			yfromcenter = neutral.foot[i].y + coxaoffset.foot[i].y;
 
 			goal.foot[i].x = (xfromcenter * costheta - yfromcenter * sintheta) - coxaoffset.foot[i].x;

@@ -9,8 +9,6 @@
 #include "joint.h"
 #include "gait.h"
 #include "controller.h"
-#include "dynamixel.h"
-#include "mx.h"
 #include "camera.h"
 #include "position.h"
 
@@ -18,10 +16,6 @@ int main(void)
 {
 	// enable interups
 	sei();
-
-	// initalize datasets to store foot placement values
-	//FOOT foot[4];
-	//foot_init(&foot[0]);
 
 	// initalize datasets that store joint values
 	joint_init(&joint[0]);
@@ -45,7 +39,7 @@ int main(void)
 	while(1)
 	{	
 		motion_process(&controller, &gait);		
-		_delay_ms(5);
+		_delay_ms(1);
 	}
 	
 	return 0;
