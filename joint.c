@@ -81,28 +81,28 @@ void joint_init(JOINT *joint)
 	joint[20].center =  L_GUN_PAN_ZERO;
 	joint[21].center =  L_GUN_TILT_ZERO;
 
-	joint[0].center  = JOINT_TYPE_MX;
-	joint[1].center  = JOINT_TYPE_MX;
-	joint[2].center  = JOINT_TYPE_MX;
-	joint[3].center  = JOINT_TYPE_MX;
-	joint[4].center  = JOINT_TYPE_MX;
-	joint[5].center  = JOINT_TYPE_MX;
-	joint[6].center  = JOINT_TYPE_MX;
-	joint[7].center  = JOINT_TYPE_MX;
-	joint[8].center  = JOINT_TYPE_MX;
-	joint[9].center  = JOINT_TYPE_MX;
-	joint[10].center = JOINT_TYPE_MX;
-	joint[11].center = JOINT_TYPE_MX;
-	joint[12].center = JOINT_TYPE_MX;
-	joint[13].center = JOINT_TYPE_MX;
-	joint[14].center = JOINT_TYPE_MX;
-	joint[15].center = JOINT_TYPE_MX;
-	joint[16].center = JOINT_TYPE_MX;
-	joint[17].center = JOINT_TYPE_MX;
-	joint[18].center = JOINT_TYPE_AX;
-	joint[19].center = JOINT_TYPE_AX;
-	joint[20].center = JOINT_TYPE_AX;
-	joint[21].center = JOINT_TYPE_AX;
+	joint[0].type  = JOINT_TYPE_MX;
+	joint[1].type  = JOINT_TYPE_MX;
+	joint[2].type  = JOINT_TYPE_MX;
+	joint[3].type  = JOINT_TYPE_MX;
+	joint[4].type  = JOINT_TYPE_MX;
+	joint[5].type  = JOINT_TYPE_MX;
+	joint[6].type  = JOINT_TYPE_MX;
+	joint[7].type  = JOINT_TYPE_MX;
+	joint[8].type  = JOINT_TYPE_MX;
+	joint[9].type  = JOINT_TYPE_MX;
+	joint[10].type = JOINT_TYPE_MX;
+	joint[11].type = JOINT_TYPE_MX;
+	joint[12].type = JOINT_TYPE_MX;
+	joint[13].type = JOINT_TYPE_MX;
+	joint[14].type = JOINT_TYPE_MX;
+	joint[15].type = JOINT_TYPE_MX;
+	joint[16].type = JOINT_TYPE_MX;
+	joint[17].type = JOINT_TYPE_MX;
+	joint[18].type = JOINT_TYPE_AX;
+	joint[19].type = JOINT_TYPE_AX;
+	joint[20].type = JOINT_TYPE_AX;
+	joint[21].type = JOINT_TYPE_AX;
 }
 
 // Writes joint positions to all servos that need their goal positions updated using the dynamixel sync write command
