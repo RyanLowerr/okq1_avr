@@ -115,7 +115,7 @@ void gait_shift_process(GAIT *g)
 
 void gait_increment(GAIT *g)
 {
-	g->position += 1;
+	g->position += 2;
 	
 	if(g->position > g->period)
 		g->position = 0;			
@@ -123,7 +123,7 @@ void gait_increment(GAIT *g)
 
 void gait_decrement(GAIT *g)
 {
-	g->position -= 1;
+	g->position -= 2;
 	
 	if(g->position < 0)
 		g->position = g->period;

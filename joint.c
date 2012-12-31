@@ -58,28 +58,33 @@ void joint_init(JOINT *joint)
 	joint[20].direction = L_GUN_PAN_DIRECTION;
 	joint[21].direction = L_GUN_TILT_DIRECTION;
 
-	joint[0].center  = -FR_COXA_ZERO;
-	joint[1].center  =  FEMUR_ZERO;
-	joint[2].center  = -TIBIA_ZERO;
-	joint[3].center  =  TARSUS_ZERO;
-	joint[4].center  =  BR_COXA_ZERO;
-	joint[5].center  =  FEMUR_ZERO;
-	joint[6].center  = -TIBIA_ZERO;
-	joint[7].center  =  TARSUS_ZERO;
-	joint[8].center  =  BL_COXA_ZERO;
-	joint[9].center  =  FEMUR_ZERO;
-	joint[10].center = -TIBIA_ZERO;
-	joint[11].center =  TARSUS_ZERO;
-	joint[12].center = -FL_COXA_ZERO;
-	joint[13].center =  FEMUR_ZERO;
-	joint[14].center = -TIBIA_ZERO;
-	joint[15].center =  TARSUS_ZERO;
-	joint[16].center =  TURRET_PAN_ZERO;
-	joint[17].center =  TURRET_TILT_ZERO;
-	joint[18].center =  R_GUN_PAN_ZERO;
-	joint[19].center =  R_GUN_TILT_ZERO;
-	joint[20].center =  L_GUN_PAN_ZERO;
-	joint[21].center =  L_GUN_TILT_ZERO;
+	joint[0].center  = FR_COXA_ZERO;
+	joint[1].center  = FEMUR_ZERO;
+	joint[2].center  = TIBIA_ZERO;
+	joint[3].center  = TARSUS_ZERO;
+	
+	joint[4].center  = BR_COXA_ZERO;
+	joint[5].center  = FEMUR_ZERO;
+	joint[6].center  = TIBIA_ZERO;
+	joint[7].center  = TARSUS_ZERO;
+	
+	joint[8].center  = BL_COXA_ZERO;
+	joint[9].center  = FEMUR_ZERO;
+	joint[10].center = TIBIA_ZERO;
+	joint[11].center = TARSUS_ZERO;
+	
+	joint[12].center = FL_COXA_ZERO;
+	joint[13].center = FEMUR_ZERO;
+	joint[14].center = TIBIA_ZERO;
+	joint[15].center = TARSUS_ZERO;
+	
+	joint[16].center = TURRET_PAN_ZERO;
+	joint[17].center = TURRET_TILT_ZERO;
+	
+	joint[18].center = R_GUN_PAN_ZERO;
+	joint[19].center = R_GUN_TILT_ZERO;
+	joint[20].center = L_GUN_PAN_ZERO;
+	joint[21].center = L_GUN_TILT_ZERO;
 
 	joint[0].type  = JOINT_TYPE_MX;
 	joint[1].type  = JOINT_TYPE_MX;
@@ -116,26 +121,26 @@ void joint_write(JOINT *joint)
 	{	
 		// Calculate the joint's position.
 		if(joint[i].type == JOINT_TYPE_MX)
-			joint[i].position = (uint16_t) (MX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * MX_TIC_PER_DEG));
+			joint[i].position = (uint16_t) (MX_CENTER_VALUE + (MX_TIC_PER_DEG * (joint[i].direction * (joint[i].center + joint[i].angle))));
 		else if (joint[i].type == JOINT_TYPE_AX)
-			joint[i].position = (uint16_t) (AX_CENTER_VALUE + (joint[i].direction * (joint[i].angle + joint[i].center) * AX_TIC_PER_DEG));
+			joint[i].position = (uint16_t) (AX_CENTER_VALUE + (AX_TIC_PER_DEG * (joint[i].direction * (joint[i].center + joint[i].angle))));
 		else
 			joint[i].position = 0;
 
 		// If the joint requires a position update add it to the sync write packet. Increment the servo counter.		
-		if(joint[i].position != joint[i].prevposition) 
-		{
-			packet[n++] = joint[i].id;
-			packet[n++] = dynamixel_getlowbyte(joint[i].position);
-			packet[n++] = dynamixel_gethighbyte(joint[i].position);
-			servocount++;
-		}
+		//if(joint[i].position != joint[i].prevposition) 
+		//{
+		packet[n++] = joint[i].id;
+		packet[n++] = dynamixel_getlowbyte(joint[i].position);
+		packet[n++] = dynamixel_gethighbyte(joint[i].position);
+			//servocount++;
+		//}
 
 		// Remember the joint's newest position value.
-		joint[i].prevposition = joint[i].position;
+		//joint[i].prevposition = joint[i].position;
 	}
 
 	// sync write goal positions out to servos if required.
-	if(servocount > 0)
-		dynamixel_syncwrite(MX_GOAL_POSITION_L, 2, servocount, &packet);
+	//if(servocount > 0)
+	dynamixel_syncwrite(MX_GOAL_POSITION_L, 2, NUM_SERVOS, &packet); // servocount, &packet);
 }

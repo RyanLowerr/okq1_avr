@@ -39,7 +39,7 @@ int main(void)
 	while(1)
 	{	
 		motion_process(&controller, &gait);		
-		_delay_ms(1);
+		//_delay_ms(1);
 	}
 	
 	return 0;

@@ -29,6 +29,16 @@ void motion_capture_start_position(void)
 
 void motion_process(CONTROLLER *controller, GAIT *gait)
 {
+	
+	if(controller_buffer_size() > 16)
+		controller_read(controller);
+	
+	if(gait->position == gait->period)
+	{
+		controller->y = (((float) controller->a[0]) - 512.0) / 12.8;
+		controller->x = (((float) controller->a[1]) - 512.0) / 12.8;
+		controller->r = -1 * ((((float) controller->a[2]) - 512.0) / 51.2);
+	}
 
 	gait_process(gait);
 
