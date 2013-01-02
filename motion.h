@@ -15,7 +15,7 @@ typedef struct {
 } MOTION;
 
 void motion_init(void);
-void motion_capture_start_position(void);
+void motion_capture_position(void);
 void motion_process(CONTROLLER *controller, GAIT *gait);
 
 #endif

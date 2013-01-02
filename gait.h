@@ -50,7 +50,7 @@ extern GAIT gait;
 void gait_init(GAIT *g, uint8_t type);
 void gait_process(GAIT *g);				
 void gait_shift_process(GAIT *g);
-void gait_increment(GAIT *g);
-void gait_decrement(GAIT *g);
+void gait_increment(GAIT *g, uint8_t step_size);
+void gait_decrement(GAIT *g, uint8_t step_size);
 
 #endif

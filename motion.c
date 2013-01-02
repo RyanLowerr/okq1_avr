@@ -18,7 +18,7 @@ void motion_init(void)
 	;
 }
 
-void motion_capture_start_position(void)
+void motion_capture_position(void)
 {
 	// read all curret servo positions
 	// perform FK to determine inital limb positions
@@ -30,14 +30,18 @@ void motion_capture_start_position(void)
 void motion_process(CONTROLLER *controller, GAIT *gait)
 {
 	
-	if(controller_buffer_size() > 16)
+	if(controller_buffer_size() >= 19)
+	{
 		controller_read(controller);
+		controller->s = (uint8_t) (((float)controller->a[3]) / 17.0); 
+	}
 	
-	if(gait->position == gait->period)
+	if(gait->position == 0)
 	{
 		controller->y = (((float) controller->a[0]) - 512.0) / 12.8;
 		controller->x = (((float) controller->a[1]) - 512.0) / 12.8;
 		controller->r = -1 * ((((float) controller->a[2]) - 512.0) / 51.2);
+		controller->s = (uint8_t) (((float)controller->a[3]) / 17.0);
 	}
 
 	gait_process(gait);
@@ -84,6 +88,7 @@ void motion_process(CONTROLLER *controller, GAIT *gait)
 	}
 		
 	// Add gait body shift to goal position if required.
+	/*
 	if(controller->s != 0.0)
 	{
 		gait_shift_process(gait);
@@ -93,8 +98,9 @@ void motion_process(CONTROLLER *controller, GAIT *gait)
 			goal.foot[i].y -= gait->sy * controller->s;
 		}
 	}
+	*/
 
-	gait_increment(gait);
+	gait_increment(gait, controller->s);
 
 	for(uint8_t i = 0; i < NUM_LEGS; i++)
 		kinematics_legik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
