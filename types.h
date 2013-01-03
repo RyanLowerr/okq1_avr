@@ -15,11 +15,11 @@ typedef uint32_t u32;
 #define MAX_U16  65535
 #define MAX_U32  4294967295
 
-#define MIN_U08 -128
-#define MAX_U08  127
-#define MIN_U16 -32768
-#define MAX_U16  32767
-#define MIN_U32 -2147483648
-#define MAX_U32  2147483647 
+#define MIN_S08 -128
+#define MAX_S08  127
+#define MIN_S16 -32768
+#define MAX_S16  32767
+#define MIN_S32 -2147483648
+#define MAX_S32  2147483647 
 
 #endif
