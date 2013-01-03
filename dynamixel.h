@@ -2,7 +2,7 @@
 #ifndef _DYNAMIXEL_H_
 #define _DYNAMIXEL_H_
 
-#include <avr/io.h>
+#include "types.h"
 
 #define DYNAMIXEL_BAUDRATE      1000000
 
@@ -33,16 +33,16 @@
 #define DYNAMIXEL_TX_TIMEOUT    5
 
 void dynamixel_init(void);
-uint8_t dynamixel_ping(uint8_t id);
-uint8_t dynamixel_readbyte(uint8_t id, uint8_t address, uint8_t* value);
-uint8_t dynamixel_readword(uint8_t id, uint8_t address, uint16_t* value);
-uint8_t dynamixel_readtable(uint8_t id, uint8_t start_address, uint8_t end_address, uint8_t* table);
-uint8_t dynamixel_writebyte(uint8_t id, uint8_t address, uint8_t value);
-uint8_t dynamixel_writeword(uint8_t id, uint8_t address, uint16_t value);
-uint8_t dynamixel_syncwrite(uint8_t address, uint8_t length, uint8_t number, uint8_t* param);
-uint8_t dynamixel_reset(uint8_t id);
-uint16_t dynamixel_makeword(uint8_t lowbyte, uint8_t highbyte);
-uint8_t dynamixel_getlowbyte(uint16_t word);
-uint8_t dynamixel_gethighbyte(uint16_t word);
+u08 dynamixel_ping(u08 id);
+u08 dynamixel_readbyte(u08 id, u08 address, u08 *value);
+u08 dynamixel_readword(u08 id, u08 address, u16 *value);
+u08 dynamixel_readtable(u08 id, u08 start_address, u08 end_address, u08 *table);
+u08 dynamixel_writebyte(u08 id, u08 address, u08 value);
+u08 dynamixel_writeword(u08 id, u08 address, u16 value);
+u08 dynamixel_syncwrite(u08 address, u08 length, u08 number, u08 *param);
+u08 dynamixel_reset(u08 id);
+u16 dynamixel_makeword(u08 lowbyte, u08 highbyte);
+u08 dynamixel_getlowbyte(u16 word);
+u08 dynamixel_gethighbyte(u16 word);
 
 #endif

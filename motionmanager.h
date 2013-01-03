@@ -2,8 +2,7 @@
 #ifndef _MOTIONMANADER_H_
 #define _MOTIONMANAGER_H_
 
-#include <avr/io.h>
-
+#include "types.h"
 #include "okmath.h"
 #include "position.h"
 #include "controller.h"

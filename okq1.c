@@ -1,8 +1,7 @@
-
-#include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#include "types.h"
 #include "common.h"
 #include "position.h"
 #include "motionmanager.h"
@@ -10,6 +9,7 @@
 #include "gait.h"
 #include "controller.h"
 #include "okirtrak.h"
+#include "dynamixel.h"
 
 int main(void)
 {

@@ -1,12 +1,13 @@
-#include <avr/io.h>
+
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
 #include "twi.h"
+#include "types.h"
 
-static volatile uint8_t twi_buffer[128];
-static volatile uint8_t twi_pointer;
-static volatile uint8_t twi_length;
+static volatile u08 twi_buffer[128];
+static volatile u08 twi_pointer;
+static volatile u08 twi_length;
 
 void twi_init(void)
 {
@@ -36,7 +37,7 @@ static void twi_stop(void)
 	       (0 << TWWC);
 }
 
-static void twi_enable_interupt(uint8_t ack)
+static void twi_enable_interupt(u08 ack)
 {
 	if(ack)
 	{
@@ -54,13 +55,13 @@ static void twi_enable_interupt(uint8_t ack)
 	}
 }
 
-void twi_write(uint8_t sla, uint8_t* data, uint8_t length)
+void twi_write(u08 sla, u08 *data, u08 length)
 {
 	// Copy slave address into the tx buffer.
 	twi_buffer[0] = sla << 1;
 	
 	// Copy data to be transmitted into the tx buffer.
-	for(uint8_t i = 1; i <= length; i++)
+	for(u08 i = 1; i <= length; i++)
 		twi_buffer[i] = data[i-1];		
 	
 	// Save the data length for use in the interupt routine.
@@ -72,7 +73,7 @@ void twi_write(uint8_t sla, uint8_t* data, uint8_t length)
 	// Should have a status return here...
 }
 
-void twi_read(uint8_t sla, uint8_t* data, uint8_t length)
+void twi_read(u08 sla, u08 *data, u08 length)
 {
 	// Copy slave address into the tx buffer.
 	twi_buffer[0] = (sla << 1) + 1;
@@ -87,7 +88,7 @@ void twi_read(uint8_t sla, uint8_t* data, uint8_t length)
 	_delay_us(380);
 	
 	// Copy received bytes from buffer to *data
-	for(uint8_t i = 0; i < twi_length; i++)
+	for(u08 i = 0; i < twi_length; i++)
 		data[i] = twi_buffer[i+1];
 		
 	// Should have a status return here...

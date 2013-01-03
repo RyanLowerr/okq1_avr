@@ -1,8 +1,9 @@
 
-#include <avr/io.h>
 #include <math.h>
 
 #include "gait.h"
+#include "types.h"
+#include "okmath.h"
 
 GAIT gait;
 
@@ -44,7 +45,7 @@ static float gait_line(float position, float period, float period_shift, float a
 	return ((position + period_shift) * (amplitude / period) + amplitude_shift);
 }
 
-void gait_init(GAIT *g, uint8_t type)
+void gait_init(GAIT *g, u08 type)
 {
 
 	// This should be configurable. Possibly a param of gait_init()?
@@ -79,7 +80,7 @@ void gait_process(GAIT *g)
 	float shiftedtime;
 	
 	// for each leg calculate percentage of leg endpoint movement
-	for(uint8_t legindex = 0; legindex < 4; legindex++)
+	for(u08 legindex = 0; legindex < 4; legindex++)
 	{	
 		// shift start time to 0
 		shiftedtime = (float) g->position - g->step_start[legindex];
@@ -113,7 +114,7 @@ void gait_shift_process(GAIT *g)
 	g->sy = sin(angle) + cos(angle);
 }
 
-void gait_increment(GAIT *g, uint8_t step_size)
+void gait_increment(GAIT *g, u08 step_size)
 {	
 	if(g->position + step_size > g->period)
 		g->position = 0;
@@ -121,7 +122,7 @@ void gait_increment(GAIT *g, uint8_t step_size)
 		g->position += step_size;			
 }
 
-void gait_decrement(GAIT *g, uint8_t step_size)
+void gait_decrement(GAIT *g, u08 step_size)
 {	
 	if(g->position - step_size < 0)
 		g->position = g->period;

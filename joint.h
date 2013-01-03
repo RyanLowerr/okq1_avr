@@ -3,16 +3,17 @@
 #define _JOINT_H_
 
 #include "common.h"
+#include "types.h"
 
 typedef struct
 {
 	float angle;
-	uint16_t position;
-	uint16_t prevposition;
-	uint16_t center;
-	uint8_t id;
-	int8_t direction;
-	int8_t type;
+	u16 position;
+	u16 prevposition;
+	u16 center;
+	u08 id;
+	s08 direction;
+	s08 type;
 } JOINT;
 
 #define JOINT_TYPE_AX 1

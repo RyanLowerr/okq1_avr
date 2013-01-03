@@ -2,9 +2,10 @@
 #include <math.h>
 
 #include "kinematics.h"
+#include "types.h"
 #include "common.h"
 
-uint8_t kinematics_legik(float x, float y, float z, float* coxa, float* femur, float* tibia, float* tarsus)
+u08 kinematics_legik(float x, float y, float z, float* coxa, float* femur, float* tibia, float* tarsus)
 {
 	float leg_length;
 	float tarsus_offset_angle;
@@ -58,17 +59,17 @@ uint8_t kinematics_legik(float x, float y, float z, float* coxa, float* femur, f
 	return 1;
 }
 
-uint8_t kinematics_legfk(float a1, float a2, float a3, float a4)
+u08 kinematics_legfk(float a1, float a2, float a3, float a4)
 {
 	return 0;
 }
 
-uint8_t kinematics_turretik(void)
+u08 kinematics_turretik(void)
 {
 	return 0;
 }
 
-uint8_t kinematics_gunik(void)
+u08 kinematics_gunik(void)
 {
 	return 0;
 }

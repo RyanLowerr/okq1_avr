@@ -1,7 +1,6 @@
 
-#include <avr/io.h>
-
 #include "position.h"
+#include "types.h"
 #include "common.h"
 #include "okmath.h"
 
@@ -13,7 +12,7 @@ POSITION neutral;
 void position_copy(POSITION *pi, POSITION *po)
 {
 	po->legignore = pi->legignore;
-	for(uint8_t i = 0; i < NUM_LEGS; i++)
+	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		po->foot[i].x = pi->foot[i].x;
 		po->foot[i].y = pi->foot[i].y;
@@ -21,7 +20,7 @@ void position_copy(POSITION *pi, POSITION *po)
 	}
 
 	po->turretignore = pi->turretignore;
-	for(uint8_t i = 0; i < NUM_TURRETS; i++)
+	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
 		po->turret[i].x = pi->turret[i].x;
 		po->turret[i].y = pi->turret[i].y;
@@ -29,7 +28,7 @@ void position_copy(POSITION *pi, POSITION *po)
 	}
 
 	po->gunignore = pi->gunignore;
-	for(uint8_t i = 0; i < NUM_GUNS; i++)
+	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
 		po->gun[i].x = pi->gun[i].x;
 		po->gun[i].y = pi->gun[i].y;
@@ -84,7 +83,7 @@ void position_set_neutral_guns(POSITION *p)
 	p->gun[1].z = 0.0;
 }
 
-void position_init()
+void position_init(void)
 {
 	// coxa offset position initilization.
 	coxaoffset.foot[0].x =  COXA_X_OFFSET;
@@ -124,9 +123,9 @@ void position_init()
 	current.gunignore = 0;
 }
 
-uint8_t interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, uint16_t period)
+u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 period)
 {
-	uint8_t n = 0;
+	u08 n = 0;
 
 	I->period = period;
 	I->position = 0;
@@ -134,7 +133,7 @@ uint8_t interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, uint16_
 	position_copy(p1, &(I->ps));
 	position_copy(p2, &(I->pe));
 
-	for(uint8_t i = 0; i < NUM_LEGS; i++)
+	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		if(I->pe.legignore & (1 << i))
 		{
@@ -150,7 +149,7 @@ uint8_t interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, uint16_
 		}
 	}
 
-	for(uint8_t i = 0; i < NUM_TURRETS; i++)
+	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
 		if(I->pe.turretignore & (1 << i))
 		{
@@ -166,7 +165,7 @@ uint8_t interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, uint16_
 		}
 	}
 
-	for(uint8_t i = 0; i < NUM_GUNS; i++)
+	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
 		if(I->pe.gunignore & (1 << i))
 		{
@@ -185,25 +184,25 @@ uint8_t interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, uint16_
 	return 0;
 }
 
-uint8_t interpolation_step(INTERPOLATION *I, POSITION *p)
+u08 interpolation_step(INTERPOLATION *I, POSITION *p)
 {
-	uint8_t n = 0;
+	u08 n = 0;
 
-	for(uint8_t i = 0; i < NUM_LEGS; i++)
+	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		p->foot[n].x += I->stepsize[n]; n++;
 		p->foot[n].y += I->stepsize[n]; n++;
 		p->foot[n].z += I->stepsize[n]; n++;
 	}
 
-	for(uint8_t i = 0; i < NUM_TURRETS; i++)
+	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
 		p->turret[n].x += I->stepsize[n]; n++;
 		p->turret[n].y += I->stepsize[n]; n++;
 		p->turret[n].z += I->stepsize[n]; n++;
 	}
 
-	for(uint8_t i = 0; i < NUM_GUNS; i++)
+	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
 		p->gun[n].x += I->stepsize[n]; n++;
 		p->gun[n].y += I->stepsize[n]; n++;
@@ -216,7 +215,7 @@ uint8_t interpolation_step(INTERPOLATION *I, POSITION *p)
 	}
 	else
 	{
-		return 0;
 		I->position += 1;
+		return 0;
 	}
 }

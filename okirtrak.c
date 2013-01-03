@@ -1,17 +1,17 @@
 
-#include <avr/io.h>
 #include <util/delay.h>
 
 #include "okirtrak.h"
+#include "types.h"
 #include "twi.h"
 
-void okirtrak_init(OKIRTRAK *cam, uint8_t address)
+void okirtrak_init(OKIRTRAK *cam, u08 address)
 {
 	twi_init();
 	
 	cam->address = address;
 	
-	uint8_t tx[128];
+	u08 tx[128];
 	_delay_ms(100);
 	
 	tx[0] = 0x30; tx[1] = 0x01;
@@ -45,8 +45,8 @@ void okirtrak_init(OKIRTRAK *cam, uint8_t address)
 
 void okirtrak_process(OKIRTRAK *cam)
 {
-	uint8_t tx[128];
-	uint8_t rx[128];
+	u08 tx[128];
+	u08 rx[128];
 
 	tx[0] = 0x37;
 	twi_write(cam->address, &tx[0], 1);
@@ -55,7 +55,7 @@ void okirtrak_process(OKIRTRAK *cam)
 	twi_read(cam->address, &rx[0], 36);
 	_delay_us(380);
 	
-	for(uint8_t i = 0; i < 4; i++)
+	for(u08 i = 0; i < 4; i++)
 	{
 		cam->x[i] = rx[i*9]   + ((rx[i*9+2] & 0x30) << 4);
 		cam->y[i] = rx[i*9+1] + ((rx[i*9+2] & 0xc0) << 2);

@@ -2,7 +2,7 @@
 #ifndef _TWI_H_
 #define _TWI_H_
 
-#include <avr/io.h>
+#include "types.h"
 
 // TWI genera status codes
 #define TWI_START              0x08 // Start has been transmitted.
@@ -24,7 +24,7 @@
 #define TWI_NACK 0
 
 void twi_init(void);
-void twi_write(uint8_t sla, uint8_t* data, uint8_t length);
-void twi_read(uint8_t sla, uint8_t* data, uint8_t length);
+void twi_write(u08 sla, u08 *data, u08 length);
+void twi_read(u08 sla, u08 *data, u08 length);
 
 #endif

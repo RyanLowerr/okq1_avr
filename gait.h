@@ -2,7 +2,7 @@
 #ifndef _GAIT_H_
 #define _GAIT_H_
 
-#include <avr/io.h>
+#include "types.h"
 
 #define GAIT_TYPE_RIPPLE  1
 #define GAIT_TYPE_AMBLE   2
@@ -40,17 +40,17 @@ typedef struct
 	float sx;
 	float sy;
 
-	int16_t period;	
-	int16_t position;
-	uint8_t type;
+	s16 period;	
+	s16 position;
+	u08 type;
 } GAIT;
 
 extern GAIT gait;
 
-void gait_init(GAIT *g, uint8_t type);
+void gait_init(GAIT *g, u08 type);
 void gait_process(GAIT *g);				
 void gait_shift_process(GAIT *g);
-void gait_increment(GAIT *g, uint8_t step_size);
-void gait_decrement(GAIT *g, uint8_t step_size);
+void gait_increment(GAIT *g, u08 step_size);
+void gait_decrement(GAIT *g, u08 step_size);
 
 #endif
