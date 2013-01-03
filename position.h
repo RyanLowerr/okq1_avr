@@ -5,7 +5,7 @@
 #include <avr/io.h>
 
 #include "common.h"
-#include "vector.h"
+#include "okmath.h"
 
 
 typedef struct {
@@ -30,6 +30,7 @@ typedef struct {
 	uint16_t position;
 } INTERPOLATION;
 
+void position_init();
 void position_copy(POSITION *pi, POSITION *po);
 void position_set_goal(POSITION *P);
 void position_set_standing(POSITION *p);

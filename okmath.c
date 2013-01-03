@@ -1,7 +1,7 @@
 
 #include <avr/io.h>
 
-#include "vector.h"
+#include "okmath.h"
 
 void vector_normalize(VECTOR *vi, VECTOR *vo)
 {

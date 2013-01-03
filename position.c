@@ -3,7 +3,7 @@
 
 #include "position.h"
 #include "common.h"
-#include "vector.h"
+#include "okmath.h"
 
 POSITION current;
 POSITION goal;

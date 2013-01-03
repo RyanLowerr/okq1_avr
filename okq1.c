@@ -5,12 +5,11 @@
 
 #include "common.h"
 #include "position.h"
-#include "motion.h"
+#include "motionmanager.h"
 #include "joint.h"
 #include "gait.h"
 #include "controller.h"
-#include "camera.h"
-#include "position.h"
+#include "okirtrak.h"
 
 int main(void)
 {
@@ -34,11 +33,11 @@ int main(void)
 	position_init();
 
 	// initalize the motion manager
-	motion_init();
+	mm_init();
 	
 	while(1)
 	{	
-		motion_process(&controller, &gait);		
+		mm_process(&controller, &gait);		
 		//_delay_ms(1);
 	}
 	

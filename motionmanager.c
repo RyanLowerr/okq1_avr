@@ -2,32 +2,23 @@
 #include <avr/io.h>
 #include <math.h>
 
-#include "motion.h"
+#include "motionmanager.h"
 #include "common.h"
 #include "position.h"
 #include "kinematics.h"
 #include "joint.h"
-#include "vector.h"
+#include "okmath.h"
 #include "gait.h"
 #include "dynamixel.h"
 #include "mx.h"
 #include "ax.h"
 
-void motion_init(void)
+void mm_init(void)
 {
 	;
 }
 
-void motion_capture_position(void)
-{
-	// read all curret servo positions
-	// perform FK to determine inital limb positions
-	// setup interpolation between measured inital position and neutral position
-	// set "interpolation to be done" flag
-	;
-}
-
-void motion_process(CONTROLLER *controller, GAIT *gait)
+void mm_process(CONTROLLER *controller, GAIT *gait)
 {
 	
 	if(controller_buffer_size() >= 19)

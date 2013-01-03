@@ -80,7 +80,7 @@ OBJDIR = .
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = joint.c dynamixel.c kinematics.c gait.c controller.c twi.c camera.c vector.c position.c motion.c $(TARGET).c 
+SRC = $(TARGET).c controller.c dynamixel.c gait.c joint.c kinematics.c motionmanager.c okirtrak.c okmath.c position.c twi.c 
 
 
 # List C++ source files here. (C dependencies are automatically generated.)

@@ -1,13 +1,13 @@
 
-#ifndef _CAMERA_H_
-#define _CAMERA_H_
+#ifndef _OKIRTRAK_H_
+#define _OKIRTRAK_H_
 
 #include <avr/io.h>
 
-#define CAMERA_SLA   0x58
-
 typedef struct
 {
+	uint8_t address;
+
 	uint16_t x[4];
 	uint8_t xmin[4];
 	uint8_t xmax[4];
@@ -18,9 +18,9 @@ typedef struct
 	
 	uint8_t s[4];
 	uint8_t I[4];
-} CAMERA;
+} OKIRTRAK;
 
-void camera_init(void);
-void camera_process(CAMERA* cam);
+void okirtrak_init(OKIRTRAK *cam, uint8_t address);
+void okirtrak_process(OKIRTRAK *cam);
 
 #endif

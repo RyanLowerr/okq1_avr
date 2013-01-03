@@ -1,6 +1,6 @@
 
-#ifndef _VECTOR_H_
-#define _VECTOR_H_
+#ifndef _OKMATH_H_
+#define _OKMATH_H_
 
 #include <avr/io.h>
 
