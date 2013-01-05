@@ -2,7 +2,7 @@
 #ifndef _OKMATH_H_
 #define _OKMATH_H_
 
-#include <avr/io.h>
+#include "types.h"
 
 typedef struct {
 	float x;
@@ -13,5 +13,8 @@ typedef struct {
 void vector_normalize(VECTOR *vi, VECTOR *vo);
 void vector_magnitude(VECTOR *v);
 void vector_rotate(VECTOR *vi, VECTOR *vo, float roll, float pitch, float yaw);
+
+s16 lookupsin(s16 deg);
+s16 loopupcos(s16 deg);
 
 #endif
