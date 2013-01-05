@@ -22,4 +22,9 @@ typedef uint32_t u32;
 #define MIN_S32 -2147483648
 #define MAX_S32  2147483647 
 
+#define DEC1 10
+#define DEC2 100
+#define DEC3 1000
+#define DEC4 10000
+
 #endif
