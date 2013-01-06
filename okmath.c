@@ -61,15 +61,15 @@ s16 lookupsin(s16 deg)
 	
 	// Between 90 and 180 degrees.
 	else if((d > 900) && (d <= 1800))
-		result = sintable[900 - (d - 900) / 5];
+		result = sintable[(900 - (d - 900)) / 5];
 	
 	// Between 180 and 270 degrees.
 	else if((d > 1800) && (d <= 2700))
-		result = sintable[(d - 1800) / 5];
+		result = -sintable[(d - 1800) / 5];
 	
 	// Between 270 and 360 degrees.
 	else if((d >= 2700) && (d <= 3600))
-		result = sintable[(3600 - d) / 5];
+		result = -sintable[(3600 - d) / 5];
 	
 	return result;
 }
@@ -85,11 +85,11 @@ s16 lookupcos(s16 deg)
 	
 	// Between 90 and 180 degrees.
 	else if((d > 900) && (d <= 1800))
-		result = sintable[(d - 900) / 5];
+		result = -sintable[(d - 900) / 5];
 	
 	// Between 180 and 270 degrees.
 	else if((d > 1800) && (d <= 2700))
-		result = sintable[(2700 - d) / 5];
+		result = -sintable[(2700 - d) / 5];
 	
 	// Between 270 and 360 degrees.
 	else if((d >= 2700) && (d <= 3600))
