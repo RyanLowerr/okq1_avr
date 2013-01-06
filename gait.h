@@ -9,48 +9,27 @@
 
 typedef struct
 {
-	float step_to_move_ratio;
-	float move_to_step_ratio;
-	float step_time;
-	float move_time;
+	u16 period;	               // 
+	u16 position;              // 
 
-	float step_period_x;
-	float step_period_y;
-	float step_period_z;
-
-	float step_periodshift_x;
-	float step_periodshift_y;
-	float step_periodshift_z;
-
-	float move_period_x;
-	float move_period_y;
-	float move_period_z;
-
-	float move_periodshift_x;
-	float move_periodshift_y;
-	float move_periodshift_z;
-
-	float step_start[4];
-	float step_end[4];
+	u08 step_to_move_ratio;    // dec2
+	u08 start_position[4];     // dec2
 	
-	float x[4];
-	float y[4];
-	float z[4];
-	float r[4];
-	float sx;
-	float sy;
-
-	s16 period;	
-	s16 position;
-	u08 type;
+	u16 step_period;           //
+	u16 move_period;           // 
+	
+	u16 step_start[4];         // 
+	u16 step_end[4];           //  
+	
+	s16 tran[4];               // Leg translation result. dec4
+	s16 lift[4];               // Leg lift result. dec4
 } GAIT;
 
 extern GAIT gait;
 
 void gait_init(GAIT *g, u08 type);
-void gait_process(GAIT *g);				
-void gait_shift_process(GAIT *g);
-void gait_increment(GAIT *g, u08 step_size);
-void gait_decrement(GAIT *g, u08 step_size);
+void gait_process(GAIT *g);
+void gait_increment(GAIT *g, u16 step_size);
+void gait_decrement(GAIT *g, u16 step_size);
 
 #endif

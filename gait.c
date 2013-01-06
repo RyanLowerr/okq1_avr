@@ -9,120 +9,86 @@ GAIT gait;
 
 static void gait_paramcalc(GAIT *g)
 {
-	g->move_to_step_ratio = 1.0 - g->step_to_move_ratio;
-	g->step_time = g->period * g->step_to_move_ratio;
-	g->move_time = g->period * g->move_to_step_ratio;
+	g->period = MAX_U16;
+	g->step_period = ((u32)g->period * (u32)g->step_to_move_ratio) / DEC2;
+	g->move_period = g->period - g->step_period;
 	
-	g->step_period_x = g->step_time;
-	g->step_period_y = g->step_time;
-	g->step_period_z = g->step_time * 2.0;
-	
-	g->step_periodshift_x = 0.0;
-	g->step_periodshift_y = 0.0;
-	g->step_periodshift_z = 0.0;
-	
-	g->move_period_x = g->period * g->move_to_step_ratio;
-	g->move_period_y = g->period * g->move_to_step_ratio;
-	g->move_period_z = 0.0;
-	
-	g->move_periodshift_x = -g->step_period_x;
-	g->move_periodshift_y = -g->step_period_y;
-	g->move_periodshift_z = 0.0;
-	
-	g->step_end[0] = g->step_start[0] + g->step_time;
-	g->step_end[1] = g->step_start[1] + g->step_time;
-	g->step_end[2] = g->step_start[2] + g->step_time;
-	g->step_end[3] = g->step_start[3] + g->step_time;
-}
-
-static float gait_sine(float position, float period, float period_shift, float amplitude, float amplitude_shift)
-{
-	return (amplitude * sin(2 * 3.141592 / period * (position + period_shift)) + amplitude_shift);
-}
-
-static float gait_line(float position, float period, float period_shift, float amplitude, float amplitude_shift)
-{
-	return ((position + period_shift) * (amplitude / period) + amplitude_shift);
+	for(u08 i = 0; i < 4; i++)
+	{
+		g->step_start[i] = ((u32)g->period * (u32)g->start_position[i]) / DEC2;
+		g->step_end[i] = g->step_start[i] + g->step_period;
+	}
 }
 
 void gait_init(GAIT *g, u08 type)
 {
-
-	// This should be configurable. Possibly a param of gait_init()?
-	g->period = 3000;
 	g->position = 0;
 
 	if(type == GAIT_TYPE_RIPPLE)
 	{
-		g->type = type;
-		g->step_to_move_ratio = 0.25;
-		g->step_start[0] = g->period * 0.00;
-		g->step_start[1] = g->period * 0.25;
-		g->step_start[2] = g->period * 0.50;
-		g->step_start[3] = g->period * 0.75;
+		g->step_to_move_ratio = 25;
+		g->start_position[0] = 0;
+		g->start_position[1] = 25;
+		g->start_position[2] = 50;
+		g->start_position[3] = 75;
 		gait_paramcalc(g);
 	}
 	
 	if(type == GAIT_TYPE_AMBLE)
 	{
-		g->type = type;
-		g->step_to_move_ratio = 0.50;
-		g->step_start[0] = g->period * 0.00;
-		g->step_start[1] = g->period * 0.50;
-		g->step_start[2] = g->period * 0.00;
-		g->step_start[3] = g->period * 0.50;
+		g->step_to_move_ratio = 50;
+		g->start_position[0] = 0;
+		g->start_position[1] = 50;
+		g->start_position[2] = 0;
+		g->start_position[3] = 50;
 		gait_paramcalc(g);
 	}
 }
 
 void gait_process(GAIT *g)
-{	
-	float shiftedtime;
-	
-	// for each leg calculate percentage of leg endpoint movement
-	for(u08 legindex = 0; legindex < 4; legindex++)
+{
+	s32 shiftedposition = 0;
+
+	// For each leg calculate percentage of leg endpoint movement
+	for(u08 i = 0; i < 4; i++)
 	{	
-		// shift start time to 0
-		shiftedtime = (float) g->position - g->step_start[legindex];
-		if(shiftedtime < 0)
-			shiftedtime += g->period;
-	
-		// Leg lift and forward
-		if((g->position >= g->step_start[legindex]) && (g->position <= g->step_end[legindex]))
+		shiftedposition = g->position - g->step_start[i];
+		if(shiftedposition < 0)
+			shiftedposition += g->period;
+			
+		// Foot is raised and lowerd while the leg moves forward.
+		if((g->position >= g->step_start[i]) && (g->position <= g->step_end[i]))
 		{
-			g->z[legindex] = gait_sine(shiftedtime, g->step_period_z, g->step_periodshift_z, 1.0,  0.0);
-			g->x[legindex] = gait_line(shiftedtime, g->step_period_x, g->step_periodshift_x, 2.0, -1.0);
-			g->y[legindex] = g->x[legindex];
-			g->r[legindex] = g->x[legindex];
+			// Translation is movement along a line from -1 (fully backwards) to 1 (full forward) for this portion of the gait.
+			// A rearanged and simplified equation for a line (y = mx + c) is used here.
+			g->tran[i] = (((u32)shiftedposition * 2 * DEC4) / g->step_period) - DEC4;			
+			
+			// Lift follows the first 180 degrees of a sin wave for this portion of the gait. (0.0 -> 1.0 -> 0.0)
+			g->lift[i] = lookupsin( ((u32)shiftedposition * 180 * DEC1) / g->step_period);
 		}
 		
-		// Leg moves boday forward
+		// Foot is on the ground an leg moves backwards to move the boday forward.
 		else
-		{
-			g->z[legindex] = 0.0;
-			g->x[legindex] = gait_line(shiftedtime, g->move_period_x, g->move_periodshift_x, -2.0, 1.0);
-			g->y[legindex] = g->x[legindex];
-			g->r[legindex] = g->x[legindex];
+		{			
+			// Translation is movement along a line from 1 (full forward) to -1 (fully backwards) for this portion of the gait.
+			// A rearanged and simplified equation for a line (y = mx + c) is used here.
+			g->tran[i] = ((((u32)(shiftedposition - g->step_period)) * -2 * DEC4) / g->move_period) + DEC4;
+			
+			// Lift is always zero for this portion of the gait.
+			g->lift[i] = 0;
 		}
 	}
 }
 
-void gait_shift_process(GAIT *g)
-{
-	float angle = (225.0 - (360.0 / g->period) * (float) g->position) * 0.01745;
-	g->sx = cos(angle) - sin(angle);
-	g->sy = sin(angle) + cos(angle);
-}
-
-void gait_increment(GAIT *g, u08 step_size)
+void gait_increment(GAIT *g, u16 step_size)
 {	
-	if(g->position + step_size > g->period)
+	if(g->position + step_size > (u32)g->period)
 		g->position = 0;
 	else
 		g->position += step_size;			
 }
 
-void gait_decrement(GAIT *g, u08 step_size)
+void gait_decrement(GAIT *g, u16 step_size)
 {	
 	if(g->position - step_size < 0)
 		g->position = g->period;
