@@ -26,5 +26,7 @@ typedef uint32_t u32;
 #define DEC2 100
 #define DEC3 1000
 #define DEC4 10000
+#define DEC5 100000
+#define DEC6 1000000
 
 #endif
