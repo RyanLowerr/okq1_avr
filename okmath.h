@@ -5,16 +5,18 @@
 #include "types.h"
 
 typedef struct {
-	float x;
-	float y;
-	float z;
+	s32 x;
+	s32 y;
+	s32 z;
 } VECTOR;
 
-void vector_normalize(VECTOR *vi, VECTOR *vo);
-void vector_magnitude(VECTOR *v);
-void vector_rotate(VECTOR *vi, VECTOR *vo, float roll, float pitch, float yaw);
-
-s16 lookupsin(s16 deg);
-s16 loopupcos(s16 deg);
+u16 okmath_vector_magnitude(VECTOR *v);
+void okmath_vector_normalize(VECTOR *vi, VECTOR *vo);
+void okmath_vector_rotate(VECTOR *vi, VECTOR *vo, s16 roll, s16 pitch, s16 yaw);
+u32 okmath_sqrt(u32 num);
+s16 okmath_sin(s16 deg);
+s16 okmath_cos(s16 deg);
+s16 okmath_acos(s16 cosine);
+s16 okmath_atan(s16 x, s16 y);
 
 #endif

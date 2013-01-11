@@ -1,26 +1,54 @@
 
-#include <avr/io.h>
-
 #include "okmath.h"
+#include "types.h"
 
-void vector_normalize(VECTOR *vi, VECTOR *vo)
+u16 okmath_vector_magnitude(VECTOR *v)
 {
-	;
+	return 0;
 }
 
-void vector_magnitude(VECTOR *v)
+void okmath_vector_normalize(VECTOR *vi, VECTOR *vo)
 {
-	;
+	VECTOR temp;
 }
 
-void vector_rotate(VECTOR *vi, VECTOR *vo, float roll, float pitch, float yaw)
+void okmath_vector_rotate(VECTOR *vi, VECTOR *vo, s16 roll, s16 pitch, s16 yaw)
 {
-	;
+	VECTOR temp;
 }
 
-static u16 scaledeg(s16 deg);
+/*
+	The function okmath_sqrt()
+*/
+u32 okmath_sqrt(u32 number)
+{
+	u32 root = 0;
+	u32 num = number;
+	u32 bit = 1 << 30;
+	
+	// Bit starts at the highest power of four <= to input number.
+	while(bit > num)
+		bit >>= 2;
+		
+	while(bit != 0)
+	{
+		if(num >= root + bit)
+		{
+			num -= root + bit;
+			root = (root >> 1) + bit;
+		}
+		else
+			root >>= 1;
+		
+		bit >>= 2;
+	}
+	
+	return root;
+}
 
-// Sin lookup table. 0 to 90 degrees with 0.5 degree steps. stored as u16 dec4
+/*
+	Sin lookup table. 0 to 90 degrees with 0.5 degree steps. stored as u16 dec4
+*/
 static const u16 sintable[] = 
 {
 	    0,   87,  174,  261,  348,  436,  523,  610,  697,  784,
@@ -44,16 +72,40 @@ static const u16 sintable[] =
 	 10000
 };
 
+/*
+	The function okmath_scaledeg() scales input angle to a value between 0 and 360 degrees. 
+	Input deg is an angle in degrees represented as a s16 dec1. (-450 = -45.0 degrees)
+	Returns scaled input deg as a u16 dec1. (-450 -> 3150 = 315.0 degrees)
+*/
+static u16 okmath_scaledeg(s16 deg)
+{
+	u16 absdeg;
+	u16 posdeg;
+	 
+	if(deg < 0)
+	{
+		absdeg = -1 * deg;
+		posdeg = 3600 - (absdeg - (3600 * (absdeg / 3600)));
+	}
+	else
+	{
+		absdeg = deg;
+		posdeg = absdeg - (3600 * (absdeg / 3600));
+	}
+	
+	return posdeg;
+}
+
 
 /*
-	The functions lookupsin and lookupcos use sintable to determine the sin or cos value of the input angle.
+	The functions okmath_sin() and okmath_cos() use sintable to determine the sin or cos value of the input angle.
 	Both functions assume input deg is an angle in degrees represented as a s16 dec1. (-450 = -45.0 deg)
 	Both functions return a value between -1 and 1 as a s16 dec4. (-450 -> -7071 -> -0.7071)
 */
-s16 lookupsin(s16 deg)
+s16 okmath_sin(s16 deg)
 {
-	s16 result = 0;        // dec4
-	u16 d = scaledeg(deg); // dec1
+	s16 result = 0;               // dec4
+	u16 d = okmath_scaledeg(deg); // dec1
 
 	// Between 0 and 90 degrees.
 	if((d >= 0) && (d <= 900))
@@ -74,10 +126,10 @@ s16 lookupsin(s16 deg)
 	return result;
 }
 
-s16 lookupcos(s16 deg)
+s16 okmath_cos(s16 deg)
 {
-	s16 result = 0;        // dec4
-	u16 d = scaledeg(deg); // dec1
+	s16 result = 0;               // dec4
+	u16 d = okmath_scaledeg(deg); // dec1
 
 	// Between 0 and 90 degrees.
 	if((d >= 0) && (d <= 900))
@@ -99,25 +151,72 @@ s16 lookupcos(s16 deg)
 }
 
 /*
-	The function scaledeg scales input angle to a value between 0 and 360 degrees. 
-	Input deg is an angle in degrees represented as a s16 dec1. (-450 = -45.0 degrees)
-	Returns scaled input deg as a u16 dec1. (-450 -> 3150 = 315.0 degrees)
+	acos lookup table.
 */
-static u16 scaledeg(s16 deg)
+static const u16 acostable[] = 
 {
-	u16 absdeg;
-	u16 posdeg;
-	 
-	if(deg < 0)
+	0
+};
+
+/*
+	The function okmath_acos()
+*/
+s16 okmath_acos(s16 cosine)
+{
+	s16 acos;
+	u08 negative;
+	u16 abscosine;
+	
+	// Record the sign of cosine and store it's absolute value.
+	if(cosine < 0)
 	{
-		absdeg = -1 * deg;
-		posdeg = 3600 - (absdeg - (3600 * (absdeg / 3600)));
+		negative = 1;
+		abscosine = -cosine;
 	}
 	else
 	{
-		absdeg = deg;
-		posdeg = absdeg - (3600 * (absdeg / 3600));
+		negative = 0;
+		abscosine = cosine;
 	}
 	
-	return posdeg;
+	// Cosine between 0 and 0.9.
+	if((cosine >= 0) && (cosine < 9000))
+	{
+		acos = acostable[0];
+	}
+	
+	// Cosine between 0.9 and 0.99.
+	else if ((cosine >= 90000) && (cosine < 9900))
+	{
+		acos = acostable[0];
+	}
+	
+	// Cosine between 0.99 and 1.0.
+	else if ((cosine >= 9900) && (cosine <= 10000))
+	{
+		acos = acostable[0];
+	}
+	
+	// Account for the negative sign if required.
+	if(negative != 0)
+		acos = 31416 - acos;
+	
+	return acos;
+}
+
+/*
+	The function okmath_atan()
+*/
+s16 okmath_atan2(s16 x, s16 y)
+{
+	s16 atan;
+	s16 sqrt = okmath_sqrt(((s32)x * x * DEC4) + ((s32)y * y * DEC4));
+	s16 rads = okmath_acos(((s32)x * DEC6) / sqrt);
+	
+	if(y < 0)
+		atan = -rads;
+	else
+		atan = rads;
+		
+	return atan;
 }
