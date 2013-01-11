@@ -7,11 +7,20 @@
 #define NUM_TURRETS 1
 #define NUM_GUNS 2
 
-// Leg segment lengths (mm from joint to joint)
-#define COXA_LENGTH   60.0
-#define FEMUR_LENGTH  90.0
-#define TIBIA_LENGTH  80.0
-#define TARSUS_LENGTH 80.0
+// Leg segment lengths (mm from joint to joint) dec2
+#define COXA_LENGTH   6000
+#define FEMUR_LENGTH  9000
+#define TIBIA_LENGTH  8000
+#define TARSUS_LENGTH 8000
+
+// Foot neutral positions (mm from center of coxa joint) dec2
+#define FOOT_X_NEUTRAL 13000
+#define FOOT_Y_NEUTRAL 8000
+#define FOOT_Z_NEUTRAL 6000
+
+// Coxa offset from center (mm from center of robot) dec2
+#define COXA_X_OFFSET 6000
+#define COXA_Y_OFFSET 6000
 
 // Servo ID's
 #define FR_COXA_ID     1
@@ -43,58 +52,49 @@
 #define L_GUN_TILT_ID  22
 
 // Servo Direction
-#define FR_COXA_DIRECTION     1.0
-#define FR_FEMUR_DIRECTION    1.0
-#define FR_TIBIA_DIRECTION   -1.0
-#define FR_TARSUS_DIRECTION  -1.0
+#define FR_COXA_DIRECTION     1
+#define FR_FEMUR_DIRECTION    1
+#define FR_TIBIA_DIRECTION   -1
+#define FR_TARSUS_DIRECTION  -1
 
-#define BR_COXA_DIRECTION     1.0
-#define BR_FEMUR_DIRECTION    1.0
-#define BR_TIBIA_DIRECTION   -1.0
-#define BR_TARSUS_DIRECTION  -1.0
+#define BR_COXA_DIRECTION     1
+#define BR_FEMUR_DIRECTION    1
+#define BR_TIBIA_DIRECTION   -1
+#define BR_TARSUS_DIRECTION  -1
 
-#define BL_COXA_DIRECTION     1.0
-#define BL_FEMUR_DIRECTION   -1.0
-#define BL_TIBIA_DIRECTION    1.0
-#define BL_TARSUS_DIRECTION   1.0
+#define BL_COXA_DIRECTION     1
+#define BL_FEMUR_DIRECTION   -1
+#define BL_TIBIA_DIRECTION    1
+#define BL_TARSUS_DIRECTION   1
 
-#define FL_COXA_DIRECTION     1.0
-#define FL_FEMUR_DIRECTION   -1.0
-#define FL_TIBIA_DIRECTION    1.0
-#define FL_TARSUS_DIRECTION   1.0
+#define FL_COXA_DIRECTION     1
+#define FL_FEMUR_DIRECTION   -1
+#define FL_TIBIA_DIRECTION    1
+#define FL_TARSUS_DIRECTION   1
 
-#define TURRET_PAN_DIRECTION  1.0
-#define TURRET_TILT_DIRECTION 1.0
+#define TURRET_PAN_DIRECTION  1
+#define TURRET_TILT_DIRECTION 1
 
-#define R_GUN_PAN_DIRECTION   1.0
-#define R_GUN_TILT_DIRECTION  1.0
-#define L_GUN_PAN_DIRECTION   1.0
-#define L_GUN_TILT_DIRECTION  1.0
+#define R_GUN_PAN_DIRECTION   1
+#define R_GUN_TILT_DIRECTION  1
+#define L_GUN_PAN_DIRECTION   1
+#define L_GUN_TILT_DIRECTION  1
 
-// Servo 'Zero' angle
-#define FR_COXA_ZERO    0.0
-#define BR_COXA_ZERO   90.0
-#define BL_COXA_ZERO   90.0
-#define FL_COXA_ZERO    0.0
-#define FEMUR_ZERO      0.0
-#define TIBIA_ZERO      0.0
-#define TARSUS_ZERO     0.0
+// Servo 'Zero' angle dec1
+#define FR_COXA_ZERO     0
+#define BR_COXA_ZERO     900
+#define BL_COXA_ZERO     900
+#define FL_COXA_ZERO     00
+#define FEMUR_ZERO       00
+#define TIBIA_ZERO       00
+#define TARSUS_ZERO      00
 
-#define TURRET_PAN_ZERO  0.0
-#define TURRET_TILT_ZERO 0.0
+#define TURRET_PAN_ZERO  0
+#define TURRET_TILT_ZERO 0
 
-#define R_GUN_PAN_ZERO   0.0
-#define R_GUN_TILT_ZERO  0.0
-#define L_GUN_PAN_ZERO   0.0
-#define L_GUN_TILT_ZERO  0.0
-
-// Foot neutral positions (mm from center of coxa joint)
-#define FOOT_X_NEUTRAL 130.0
-#define FOOT_Y_NEUTRAL 80.0
-#define FOOT_Z_NEUTRAL 60.0
-
-// Coxa offset from center (mm from center of robot)
-#define COXA_X_OFFSET 60.0
-#define COXA_Y_OFFSET 60.0
+#define R_GUN_PAN_ZERO   0
+#define R_GUN_TILT_ZERO  0
+#define L_GUN_PAN_ZERO   0
+#define L_GUN_TILT_ZERO  0
 
 #endif
