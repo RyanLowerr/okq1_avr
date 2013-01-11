@@ -67,20 +67,20 @@ void position_set_sitting(POSITION *p)
 
 void position_set_neutral_turrets(POSITION *p)
 {
-	p->turret[0].x = 0.0;
-	p->turret[0].y = 1.0;
-	p->turret[0].z = 0.0;
+	p->turret[0].x = 0;
+	p->turret[0].y = 10000;
+	p->turret[0].z = 0;
 }
 
 void position_set_neutral_guns(POSITION *p)
 {
-	p->gun[0].x = 0.0;
-	p->gun[0].y = 1.0;
-	p->gun[0].z = 0.0;
+	p->gun[0].x = 0;
+	p->gun[0].y = 10000;
+	p->gun[0].z = 0;
 
-	p->gun[1].x = 0.0;
-	p->gun[1].y = 1.0;
-	p->gun[1].z = 0.0;
+	p->gun[1].x = 0;
+	p->gun[1].y = 10000;
+	p->gun[1].z = 0;
 }
 
 void position_init(void)
@@ -88,19 +88,19 @@ void position_init(void)
 	// coxa offset position initilization.
 	coxaoffset.foot[0].x =  COXA_X_OFFSET;
 	coxaoffset.foot[0].y =  COXA_X_OFFSET;
-	coxaoffset.foot[0].z =  0.0;
+	coxaoffset.foot[0].z =  0;
 
 	coxaoffset.foot[1].x =  COXA_X_OFFSET;
 	coxaoffset.foot[1].y = -COXA_X_OFFSET;
-	coxaoffset.foot[1].z =  0.0;
+	coxaoffset.foot[1].z =  0;
 
 	coxaoffset.foot[2].x = -COXA_X_OFFSET;
 	coxaoffset.foot[2].y = -COXA_X_OFFSET;
-	coxaoffset.foot[2].z =  0.0;
+	coxaoffset.foot[2].z =  0;
 
 	coxaoffset.foot[3].x = -COXA_X_OFFSET;
 	coxaoffset.foot[3].y =  COXA_X_OFFSET;
-	coxaoffset.foot[3].z =  0.0;
+	coxaoffset.foot[3].z =  0;
 
 	coxaoffset.legignore = 0;
 	coxaoffset.turretignore = 255;
@@ -123,12 +123,10 @@ void position_init(void)
 	current.gunignore = 0;
 }
 
-u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 period)
+u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 steps)
 {
 	u08 n = 0;
-
-	I->period = period;
-	I->position = 0;
+	I->step = 0;
 
 	position_copy(p1, &(I->ps));
 	position_copy(p2, &(I->pe));
@@ -137,15 +135,15 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 period)
 	{
 		if(I->pe.legignore & (1 << i))
 		{
-			I->stepsize[n++] = (p1->foot[i].x - p2->foot[i].x) / (float)I->period;
-			I->stepsize[n++] = (p1->foot[i].y - p2->foot[i].y) / (float)I->period;
-			I->stepsize[n++] = (p1->foot[i].z - p2->foot[i].z) / (float)I->period;
+			I->stepsize[n++] = ((p1->foot[i].x - p2->foot[i].x) * DEC4) / I->steps;
+			I->stepsize[n++] = ((p1->foot[i].y - p2->foot[i].y) * DEC4) / I->steps;
+			I->stepsize[n++] = ((p1->foot[i].z - p2->foot[i].z) * DEC4) / I->steps;
 		}
 		else
 		{
-			I->stepsize[n++] = 0.0;
-			I->stepsize[n++] = 0.0;
-			I->stepsize[n++] = 0.0;
+			I->stepsize[n++] = 0;
+			I->stepsize[n++] = 0;
+			I->stepsize[n++] = 0;
 		}
 	}
 
@@ -153,15 +151,15 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 period)
 	{
 		if(I->pe.turretignore & (1 << i))
 		{
-			I->stepsize[n++] = (p1->turret[i].x - p2->turret[i].x) / (float)I->period;
-			I->stepsize[n++] = (p1->turret[i].y - p2->turret[i].y) / (float)I->period;
-			I->stepsize[n++] = (p1->turret[i].z - p2->turret[i].z) / (float)I->period;
+			I->stepsize[n++] = ((p1->turret[i].x - p2->turret[i].x) * DEC4) / I->steps;
+			I->stepsize[n++] = ((p1->turret[i].y - p2->turret[i].y) * DEC4) / I->steps;
+			I->stepsize[n++] = ((p1->turret[i].z - p2->turret[i].z) * DEC4) / I->steps;
 		}
 		else
 		{
-			I->stepsize[n++] = 0.0;
-			I->stepsize[n++] = 0.0;
-			I->stepsize[n++] = 0.0;
+			I->stepsize[n++] = 0;
+			I->stepsize[n++] = 0;
+			I->stepsize[n++] = 0;
 		}
 	}
 
@@ -169,15 +167,15 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 period)
 	{
 		if(I->pe.gunignore & (1 << i))
 		{
-			I->stepsize[n++] = (p1->gun[i].x - p2->gun[i].x) / (float)I->period;
-			I->stepsize[n++] = (p1->gun[i].y - p2->gun[i].y) / (float)I->period;
-			I->stepsize[n++] = (p1->gun[i].z - p2->gun[i].z) / (float)I->period;
+			I->stepsize[n++] = ((p1->gun[i].x - p2->gun[i].x) * DEC4) / I->steps;
+			I->stepsize[n++] = ((p1->gun[i].y - p2->gun[i].y) * DEC4) / I->steps;
+			I->stepsize[n++] = ((p1->gun[i].z - p2->gun[i].z) * DEC4) / I->steps;
 		}
 		else
 		{
-			I->stepsize[n++] = 0.0;
-			I->stepsize[n++] = 0.0;
-			I->stepsize[n++] = 0.0;
+			I->stepsize[n++] = 0;
+			I->stepsize[n++] = 0;
+			I->stepsize[n++] = 0;
 		}
 	}
 
@@ -186,36 +184,40 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 period)
 
 u08 interpolation_step(INTERPOLATION *I, POSITION *p)
 {
-	u08 n = 0;
-
-	for(u08 i = 0; i < NUM_LEGS; i++)
+	if(I->step != I->steps)
 	{
-		p->foot[n].x += I->stepsize[n]; n++;
-		p->foot[n].y += I->stepsize[n]; n++;
-		p->foot[n].z += I->stepsize[n]; n++;
-	}
+		u08 n = 0;
+	
+		for(u08 i = 0; i < NUM_LEGS; i++)
+		{
+			p->foot[n].x += I->stepsize[n]; n++;
+			p->foot[n].y += I->stepsize[n]; n++;
+			p->foot[n].z += I->stepsize[n]; n++;
+		}
 
-	for(u08 i = 0; i < NUM_TURRETS; i++)
-	{
-		p->turret[n].x += I->stepsize[n]; n++;
-		p->turret[n].y += I->stepsize[n]; n++;
-		p->turret[n].z += I->stepsize[n]; n++;
-	}
+		for(u08 i = 0; i < NUM_TURRETS; i++)
+		{
+			p->turret[n].x += I->stepsize[n]; n++;
+			p->turret[n].y += I->stepsize[n]; n++;
+			p->turret[n].z += I->stepsize[n]; n++;
+		}
 
-	for(u08 i = 0; i < NUM_GUNS; i++)
-	{
-		p->gun[n].x += I->stepsize[n]; n++;
-		p->gun[n].y += I->stepsize[n]; n++;
-		p->gun[n].z += I->stepsize[n]; n++;
+		for(u08 i = 0; i < NUM_GUNS; i++)
+		{
+			p->gun[n].x += I->stepsize[n]; n++;
+			p->gun[n].y += I->stepsize[n]; n++;
+			p->gun[n].z += I->stepsize[n]; n++;
+		}
+		
+		I->step += 1;
 	}
-
-	if(I->position == I->period)
+	
+	if(I->step == I->steps)
 	{
 		return 1;
 	}
 	else
 	{
-		I->position += 1;
 		return 0;
-	}
+	}	
 }

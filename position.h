@@ -25,9 +25,9 @@ extern POSITION neutral;
 typedef struct {
 	POSITION ps; // interpolation starting position
 	POSITION pe; // interpolation ending position
-	float stepsize[(NUM_LEGS+NUM_TURRETS+NUM_GUNS)*3];
-	u16 period;
-	u16 position;
+	u16 steps;
+	u16 step;
+	s32 stepsize[(NUM_LEGS+NUM_TURRETS+NUM_GUNS)*3]; // dec4
 } INTERPOLATION;
 
 void position_init(void);
