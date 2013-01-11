@@ -5,9 +5,9 @@
 #include "types.h"
 
 typedef struct {
-	s32 x;
-	s32 y;
-	s32 z;
+	s16 x;
+	s16 y;
+	s16 z;
 } VECTOR;
 
 u16 okmath_vector_magnitude(VECTOR *v);

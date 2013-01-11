@@ -4,20 +4,20 @@
 #include "common.h"
 #include "okmath.h"
 
-u08 kinematics_leg_ik(s32 x, s32 y, s32 z, s16 *coxa, s16 *femur, s16 *tibia, s16 *tarsus)
+u08 kinematics_leg_ik(s16 x, s16 y, s16 z, s16 *coxa, s16 *femur, s16 *tibia, s16 *tarsus)
 {
-	u16 leg_length;                         // Magnitude of a vector along the ground from the coxa axis to the tip of the foot. DEC2
+	u16 leg_length;                         // Magnitude of a vector along the ground from the coxa axis to the tip of the foot.
 	s16 tarsus_offset_angle;                // Angle between the tarsus leg segment and the ground. DEC1
-	s16 tarsus_offset_xy;                   // DEC2
-	s16 tarsus_offset_z;                    // DEC2
+	s16 tarsus_offset_xy;                   // 
+	s16 tarsus_offset_z;                    // 
 	s16 theta;                              // Angle of line between the femur and Tarsus joints with respect to ground. DEC2 
-	u16 side_a, side_b, side_c;             // Sides of the triangle formed by the femur, tibia and tarsus joints. DEC2 
-	u16 side_a_sqr, side_b_sqr, side_c_sqr; // Sides of the triangle formed by the femur, tibia and tarsus joints raised to the power of two. DEC2
+	u16 side_a, side_b, side_c;             // Sides of the triangle formed by the femur, tibia and tarsus joints. 
+	u16 side_a_sqr, side_b_sqr, side_c_sqr; // Sides of the triangle formed by the femur, tibia and tarsus joints raised to the power of two.
 	s16 angle_b, angle_c;                   // Angles of the triangle formed by the femur, tibia and tarsus joints. DEC1
 	s16 result[4];                          // Temp stoarage of the resulting IK angles. DEC1
 
 	// Calculate the leg_length.
-	leg_length = okmath_sqrt((x * x + y * y) / DEC4);
+	leg_length = okmath_sqrt(x * x + y * y);
 	
 	// Calculate the tarsus leg segment offsets.
 	tarsus_offset_angle = 0; // 0 for now to make the tibia always perpendicular to the ground. Will revisit later.
@@ -30,15 +30,15 @@ u08 kinematics_leg_ik(s32 x, s32 y, s32 z, s16 *coxa, s16 *femur, s16 *tibia, s1
 	
 	side_a = FEMUR_LENGTH;
 	side_b = TIBIA_LENGTH;
-	side_c = okmath_sqrt((temp1 * temp1 + temp2 * temp2) / DEC2);
+	side_c = okmath_sqrt(temp1 * temp1 + temp2 * temp2);
 	
-	side_a_sqr = (side_a * side_a) / DEC2;
-	side_b_sqr = (side_b * side_b) / DEC2;
-	side_c_sqr = (side_c * side_c) / DEC2;
+	side_a_sqr = side_a * side_a;
+	side_b_sqr = side_b * side_b;
+	side_c_sqr = side_c * side_c;
 	
 	//angle_a not needed
-	angle_b = okmath_acos((side_a_sqr - side_b_sqr + side_c_sqr) / (2 * (side_a * side_c) / DEC2));
-	angle_c = okmath_acos((side_a_sqr + side_b_sqr - side_c_sqr) / (2 * (side_a * side_b) / DEC2));
+	angle_b = okmath_acos((side_a_sqr - side_b_sqr + side_c_sqr) / (2 * side_a * side_c));
+	angle_c = okmath_acos((side_a_sqr + side_b_sqr - side_c_sqr) / (2 * side_a * side_b));
 	
 	// Angle of line between the femur and Tarsus joints with respect to ground
 	theta = (okmath_atan2(temp2, temp1) * 5732) / DEC2;

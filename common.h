@@ -7,20 +7,20 @@
 #define NUM_TURRETS 1
 #define NUM_GUNS 2
 
-// Leg segment lengths (mm from joint to joint) dec2
-#define COXA_LENGTH   6000
-#define FEMUR_LENGTH  9000
-#define TIBIA_LENGTH  8000
-#define TARSUS_LENGTH 8000
+// Leg segment lengths (mm from joint to joint)
+#define COXA_LENGTH   60
+#define FEMUR_LENGTH  90
+#define TIBIA_LENGTH  80
+#define TARSUS_LENGTH 80
 
-// Foot neutral positions (mm from center of coxa joint) dec2
-#define FOOT_X_NEUTRAL 13000
-#define FOOT_Y_NEUTRAL 8000
-#define FOOT_Z_NEUTRAL 6000
+// Foot neutral positions (mm from center of coxa joint)
+#define FOOT_X_NEUTRAL 130
+#define FOOT_Y_NEUTRAL 80
+#define FOOT_Z_NEUTRAL 60
 
-// Coxa offset from center (mm from center of robot) dec2
-#define COXA_X_OFFSET 6000
-#define COXA_Y_OFFSET 6000
+// Coxa offset from center (mm from center of robot)
+#define COXA_X_OFFSET 60
+#define COXA_Y_OFFSET 60
 
 // Servo ID's
 #define FR_COXA_ID     1

@@ -68,18 +68,18 @@ void position_set_sitting(POSITION *p)
 void position_set_neutral_turrets(POSITION *p)
 {
 	p->turret[0].x = 0;
-	p->turret[0].y = 10000;
+	p->turret[0].y = 1;
 	p->turret[0].z = 0;
 }
 
 void position_set_neutral_guns(POSITION *p)
 {
 	p->gun[0].x = 0;
-	p->gun[0].y = 10000;
+	p->gun[0].y = 1;
 	p->gun[0].z = 0;
 
 	p->gun[1].x = 0;
-	p->gun[1].y = 10000;
+	p->gun[1].y = 1;
 	p->gun[1].z = 0;
 }
 
@@ -135,9 +135,9 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 steps)
 	{
 		if(I->pe.legignore & (1 << i))
 		{
-			I->stepsize[n++] = ((p1->foot[i].x - p2->foot[i].x) * DEC4) / I->steps;
-			I->stepsize[n++] = ((p1->foot[i].y - p2->foot[i].y) * DEC4) / I->steps;
-			I->stepsize[n++] = ((p1->foot[i].z - p2->foot[i].z) * DEC4) / I->steps;
+			I->stepsize[n++] = (p1->foot[i].x - p2->foot[i].x) / I->steps;
+			I->stepsize[n++] = (p1->foot[i].y - p2->foot[i].y) / I->steps;
+			I->stepsize[n++] = (p1->foot[i].z - p2->foot[i].z) / I->steps;
 		}
 		else
 		{
@@ -151,9 +151,9 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 steps)
 	{
 		if(I->pe.turretignore & (1 << i))
 		{
-			I->stepsize[n++] = ((p1->turret[i].x - p2->turret[i].x) * DEC4) / I->steps;
-			I->stepsize[n++] = ((p1->turret[i].y - p2->turret[i].y) * DEC4) / I->steps;
-			I->stepsize[n++] = ((p1->turret[i].z - p2->turret[i].z) * DEC4) / I->steps;
+			I->stepsize[n++] = (p1->turret[i].x - p2->turret[i].x) / I->steps;
+			I->stepsize[n++] = (p1->turret[i].y - p2->turret[i].y) / I->steps;
+			I->stepsize[n++] = (p1->turret[i].z - p2->turret[i].z) / I->steps;
 		}
 		else
 		{
@@ -167,9 +167,9 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u16 steps)
 	{
 		if(I->pe.gunignore & (1 << i))
 		{
-			I->stepsize[n++] = ((p1->gun[i].x - p2->gun[i].x) * DEC4) / I->steps;
-			I->stepsize[n++] = ((p1->gun[i].y - p2->gun[i].y) * DEC4) / I->steps;
-			I->stepsize[n++] = ((p1->gun[i].z - p2->gun[i].z) * DEC4) / I->steps;
+			I->stepsize[n++] = (p1->gun[i].x - p2->gun[i].x) / I->steps;
+			I->stepsize[n++] = (p1->gun[i].y - p2->gun[i].y) / I->steps;
+			I->stepsize[n++] = (p1->gun[i].z - p2->gun[i].z) / I->steps;
 		}
 		else
 		{
