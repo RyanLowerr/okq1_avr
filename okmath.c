@@ -18,7 +18,7 @@ void okmath_vector_rotate(VECTOR *vi, VECTOR *vo, s16 roll, s16 pitch, s16 yaw)
 }
 
 /*
-	The function okmath_sqrt()
+	okmath_sqrt()
 */
 u32 okmath_sqrt(u32 number)
 {
@@ -34,12 +34,10 @@ u32 okmath_sqrt(u32 number)
 	{
 		if(num >= root + bit)
 		{
-			num -= root + bit;
-			root = (root >> 1) + bit;
+			num -= (root + bit);
+			root += (bit << 1);
 		}
-		else
-			root >>= 1;
-		
+		root >>= 1;
 		bit >>= 2;
 	}
 	
@@ -151,11 +149,41 @@ s16 okmath_cos(s16 deg)
 }
 
 /*
-	acos lookup table.
+	acos lookup table broken into the parts to create a higher accuracy near acos(1).
+		0 to 0.9 is done in steps of 0.0079 rads. (1/127)
+		0.9 to 0.99 is done in steps of 0.0008 rads. (0.01/127)
+		0.99 to 1 is done in steps of 0.0002 rads. (0.01/64)
 */
 static const u16 acostable[] = 
 {
-	0
+	255, 254, 252, 251, 250, 249, 247, 246, 245, 243,
+	242, 241, 240, 238, 237, 236, 234, 233, 232, 231,
+	229, 228, 227, 225, 224, 223, 221, 220, 219, 217,
+	216, 215, 214, 212, 211, 210, 208, 207, 206, 204,
+	203, 201, 200, 199, 197, 196, 195, 193, 192, 190,
+	189, 188, 186, 185, 183, 182, 181, 179, 178, 176,
+	175, 173, 172, 170, 169, 167, 166, 164, 163, 161,
+	160, 158, 157, 155, 154, 152, 150, 149, 147, 146,
+	144, 142, 141, 139, 137, 135, 134, 132, 130, 128,
+	127, 125, 123, 121, 119, 117, 115, 113, 111, 109,
+	107, 105, 103, 101,  98,  96,  94,  92,  89,  87,
+	 84,  81,  79,  76,  73,  73,  73,  72,  72,  72,
+	 71,  71,  71,  70,  70,  70,  70,  69,  69,  69,
+	 68,  68,  68,  67,  67,  67,  66,  66,  66,  65,
+	 65,  65,  64,  64,  64,  63,  63,  63,  62,  62,
+	 62,  61,  61,  61,  60,  60,  59,  59,  59,  58,
+	 58,  58,  57,  57,  57,  56,  56,  55,  55,  55,
+	 54,  54,  53,  53,  53,  52,  52,  51,  51,  51,
+	 50,  50,  49,  49,  48,  48,  47,  47,  47,  46,
+	 46,  45,  45,  44,  44,  43,  43,  42,  42,  41,
+	 41,  40,  40,  39,  39,  38,  37,  37,  36,  36,
+	 35,  34,  34,  33,  33,  32,  31,  31,  30,  29,
+	 28,  28,  27,  26,  25,  24,  23,  23,  23,  23,
+	 22,  22,  22,  22,  21,  21,  21,  21,  20,  20,
+	 20,  19,  19,  19,  19,  18,  18,  18,  17,  17,
+	 17,  17,  16,  16,  16,  15,  15,  15,  14,  14,
+	 13,  13,  13,  12,  12,  11,  11,  10,  10,   9,
+	  9,   8,   7,   6,   6,   5,   3,   0
 };
 
 /*
@@ -163,7 +191,7 @@ static const u16 acostable[] =
 */
 s16 okmath_acos(s16 cosine)
 {
-	s16 acos;
+	s16 rads = 0;
 	u08 negative;
 	u16 abscosine;
 	
@@ -181,27 +209,21 @@ s16 okmath_acos(s16 cosine)
 	
 	// Cosine between 0 and 0.9.
 	if((cosine >= 0) && (cosine < 9000))
-	{
-		acos = acostable[0];
-	}
+		rads = (acostable[abscosine/79] * 616) / DEC1;
 	
 	// Cosine between 0.9 and 0.99.
-	else if ((cosine >= 90000) && (cosine < 9900))
-	{
-		acos = acostable[0];
-	}
+	else if ((cosine >= 9000) && (cosine < 9900))
+		rads = (acostable[(abscosine-9000) / 8 + 114] * 616) / DEC1;
 	
 	// Cosine between 0.99 and 1.0.
 	else if ((cosine >= 9900) && (cosine <= 10000))
-	{
-		acos = acostable[0];
-	}
+		rads = (acostable[(abscosine - 9900) / 2 + 227] * 616) / DEC1;
 	
 	// Account for the negative sign if required.
 	if(negative != 0)
-		acos = 31416 - acos;
+		rads = 31416 - rads;
 	
-	return acos;
+	return rads;
 }
 
 /*
@@ -209,14 +231,11 @@ s16 okmath_acos(s16 cosine)
 */
 s16 okmath_atan2(s16 x, s16 y)
 {
-	s16 atan;
-	s16 sqrt = okmath_sqrt(((s32)x * x * DEC4) + ((s32)y * y * DEC4));
-	s16 rads = okmath_acos(((s32)x * DEC6) / sqrt);
+	s16 hypt = okmath_sqrt(((s32)x * x * DEC4) + ((s32)y * y * DEC4));
+	s16 rads = okmath_acos(((s32)x * DEC6) / hypt);
 	
 	if(y < 0)
-		atan = -rads;
-	else
-		atan = rads;
+		rads = -rads;
 		
-	return atan;
+	return rads;
 }
