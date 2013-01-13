@@ -5,9 +5,9 @@
 #define MX_MIN_VALUE     0
 #define MX_MAX_VALUE     4095
 #define MX_CENTER_VALUE  2048
-#define MX_MIN_ANGLE    -180
-#define MX_MAX_ANGLE     180
-#define MX_TIC_PER_DEG   11.36
+#define MX_MIN_ANGLE    -1800 // DEC1
+#define MX_MAX_ANGLE     1800 // DEC1
+#define MX_TIC_PER_DEG   1136 // DEC2
 
 #define MX_MODEL_NUMBER_L          0
 #define MX_MODEL_NUMBER_H          1
