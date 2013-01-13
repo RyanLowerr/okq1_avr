@@ -9,11 +9,11 @@
 
 typedef struct
 {
-	float x;
-	float y;
-	float z;
-	float r;
-	float s;
+	s16 x;
+	s16 y;
+	s16 z;
+	s16 r;
+	s16 s;
 	u16 a[8];
 } CONTROLLER;
 

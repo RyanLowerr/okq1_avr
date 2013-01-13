@@ -32,11 +32,11 @@ void controller_init(CONTROLLER *c)
 	
 	controller_buffer_flush();
 
-	c->x = 0.0;
-	c->y = 0.0;
-	c->z = 30.0;
-	c->r = 0.0;
-	c->s = 0.0;
+	c->x = 0;
+	c->y = 0;
+	c->z = 0;
+	c->r = 0;
+	c->s = 0;
 
 	for(u08 i = 0; i < 8; i++)
 		c->a[i] = 512;
