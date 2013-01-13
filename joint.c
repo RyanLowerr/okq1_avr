@@ -115,9 +115,9 @@ void joint_write(JOINT *joint)
 	{	
 		// Calculate the joint's position.
 		if(joint[i].type == JOINT_TYPE_MX)
-			joint[i].position = (u16) (MX_CENTER_VALUE + (MX_TIC_PER_DEG * (joint[i].direction * (joint[i].center + joint[i].angle))));
+			joint[i].position = (u16)(MX_CENTER_VALUE + ((MX_TIC_PER_DEG * (joint[i].direction * (joint[i].center + (s32)joint[i].angle))) / DEC3));
 		else if (joint[i].type == JOINT_TYPE_AX)
-			joint[i].position = (u16) (AX_CENTER_VALUE + (AX_TIC_PER_DEG * (joint[i].direction * (joint[i].center + joint[i].angle))));
+			joint[i].position = (u16)(AX_CENTER_VALUE + ((AX_TIC_PER_DEG * (joint[i].direction * (joint[i].center + (s32)joint[i].angle))) / DEC3));
 		else
 			joint[i].position = 0;
 

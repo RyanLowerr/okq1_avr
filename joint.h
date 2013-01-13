@@ -7,7 +7,7 @@
 
 typedef struct
 {
-	float angle;
+	s16 angle; // DEC1
 	u16 position;
 	u16 prevposition;
 	u16 center;
