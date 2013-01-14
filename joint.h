@@ -10,7 +10,7 @@ typedef struct
 	s16 angle; // DEC1
 	u16 position;
 	u16 prevposition;
-	u16 center;
+	s16 center;
 	u08 id;
 	s08 direction;
 	s08 type;

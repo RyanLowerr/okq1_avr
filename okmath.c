@@ -24,7 +24,7 @@ u32 okmath_sqrt(u32 number)
 {
 	u32 root = 0;
 	u32 num = number;
-	u32 bit = 1 << 30;
+	u32 bit = 1UL << 30;
 	
 	// Bit starts at the highest power of four <= to input number.
 	while(bit > num)
@@ -187,7 +187,8 @@ static const u16 acostable[] =
 };
 
 /*
-	The function okmath_acos()
+	okmath_acos()
+	s16 cosine - DEC4
 */
 s16 okmath_acos(s16 cosine)
 {
@@ -209,15 +210,15 @@ s16 okmath_acos(s16 cosine)
 	
 	// Cosine between 0 and 0.9.
 	if((cosine >= 0) && (cosine < 9000))
-		rads = (acostable[abscosine/79] * 616) / DEC1;
+		rads = ((u32)acostable[abscosine/79] * 616) / DEC1;
 	
 	// Cosine between 0.9 and 0.99.
 	else if ((cosine >= 9000) && (cosine < 9900))
-		rads = (acostable[(abscosine-9000) / 8 + 114] * 616) / DEC1;
+		rads = ((u32)acostable[(abscosine-9000) / 8 + 114] * 616) / DEC1;
 	
 	// Cosine between 0.99 and 1.0.
 	else if ((cosine >= 9900) && (cosine <= 10000))
-		rads = (acostable[(abscosine - 9900) / 2 + 227] * 616) / DEC1;
+		rads = ((u32)acostable[(abscosine - 9900) / 2 + 227] * 616) / DEC1;
 	
 	// Account for the negative sign if required.
 	if(negative != 0)
@@ -227,12 +228,14 @@ s16 okmath_acos(s16 cosine)
 }
 
 /*
-	The function okmath_atan()
+	okmath_atan()
+	s16 y - DEC1
+	s16 x - DEC1
 */
-s16 okmath_atan2(s16 x, s16 y)
+s16 okmath_atan2(s16 y, s16 x)
 {
-	s16 hypt = okmath_sqrt(((s32)x * x * DEC4) + ((s32)y * y * DEC4));
-	s16 rads = okmath_acos(((s32)x * DEC6) / hypt);
+	u32 hypt = okmath_sqrt((((s32)x * x) + ((s32)y * y)) / DEC2);
+	s16 rads = okmath_acos(((s32)x * DEC3) / hypt);
 	
 	if(y < 0)
 		rads = -rads;

@@ -5,9 +5,9 @@
 #include "types.h"
 
 typedef struct {
-	s16 x;
-	s16 y;
-	s16 z;
+	s32 x;
+	s32 y;
+	s32 z;
 } VECTOR;
 
 u16 okmath_vector_magnitude(VECTOR *v);
@@ -17,6 +17,6 @@ u32 okmath_sqrt(u32 num);
 s16 okmath_sin(s16 deg);
 s16 okmath_cos(s16 deg);
 s16 okmath_acos(s16 cosine);
-s16 okmath_atan(s16 x, s16 y);
+s16 okmath_atan(s16 y, s16 x);
 
 #endif
