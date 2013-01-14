@@ -37,13 +37,13 @@ u08 kinematics_leg_ik(s16 x, s16 y, s16 z, s16 *coxa, s16 *femur, s16 *tibia, s1
 	s16 angle_c = ((s32)okmath_acos(((side_a_sqr + side_b_sqr - side_c_sqr) * DEC4) / (2 * (side_a * side_b) / DEC2)) * 180) / 3141;
 	
 	// Angle of line between the femur and Tarsus joints with respect to ground. DEC2
-	s16 theta = ((s32)okmath_atan2(tarsus_to_zero_z, femur_to_tarsus) * 180) / 3141;
+	s16 theta = ((s32)okmath_acos((femur_to_tarsus * DEC4) / side_c) * 180) / 3141;
 	
 	// Resulting joint angles in degrees. DEC1
-	s16 a1 = ((s32)okmath_atan2(y, x) * 180) / 3141; // coxa
-	s16 a2 = 900 - theta - angle_b;                  // femur
-	s16 a3 = 900 - angle_c;                          // tibia
-	s16 a4 = 0 - a2 - a3;                            // tarsus
+	s16 a1 = ((s32)okmath_acos((x * DEC4) / leg_length) * 180) / 3141; // coxa
+	s16 a2 = 900 - theta - angle_b;                                    // femur
+	s16 a3 = 900 - angle_c;                                            // tibia
+	s16 a4 = 0 - a2 - a3;                                              // tarsus
 	
 	// Should do some error checking here!
 	
