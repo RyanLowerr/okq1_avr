@@ -229,13 +229,13 @@ s16 okmath_acos(s16 cosine)
 
 /*
 	okmath_atan()
-	s16 y - DEC1
-	s16 x - DEC1
+	s16 opp - DEC1
+	s16 adj - DEC1
 */
-s16 okmath_atan2(s16 y, s16 x)
+s16 okmath_atan2(s16 opp, s16 adj)
 {
-	u32 hypt = okmath_sqrt((((s32)x * x) + ((s32)y * y)) / DEC2);
-	s16 rads = okmath_acos(((s32)x * DEC3) / hypt);
+	u32 hypt = okmath_sqrt((s32)adj * adj + (s32)opp * opp));
+	s16 rads = okmath_acos(((s32)adj * DEC3) / hypt);
 	
 	if(y < 0)
 		rads = -rads;
