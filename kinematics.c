@@ -16,7 +16,7 @@
 u08 kinematics_leg_ik(s16 x, s16 y, s16 z, s16 *coxa, s16 *femur, s16 *tibia, s16 *tarsus)
 { 
 	// Magnitude of a vector along the ground from the coxa axis to the tip of the foot. DEC1
-	u32 leg_length = okmath_sqrt((((s32)x * x) + ((s32)y * y)) / DEC2) * DEC1;
+	u32 leg_length = okmath_sqrt(((s32)x * x) + ((s32)y * y)));
 
 	// We are using the law of cosines on the triangle formed by the femur, tibia and tarsus joints.
 	s32 femur_to_tarsus = leg_length - COXA_LENGTH;
@@ -29,7 +29,7 @@ u08 kinematics_leg_ik(s16 x, s16 y, s16 z, s16 *coxa, s16 *femur, s16 *tibia, s1
 	s32 side_b = TIBIA_LENGTH;
 	s32 side_b_sqr = (side_b * side_b) / DEC2;
 	
-	s32 side_c = okmath_sqrt((femur_to_tarsus * femur_to_tarsus + tarsus_to_zero_z * tarsus_to_zero_z) / DEC2) * DEC1;
+	s32 side_c = okmath_sqrt(femur_to_tarsus * femur_to_tarsus + tarsus_to_zero_z * tarsus_to_zero_z);
 	s32 side_c_sqr = (side_c * side_c) / DEC2;
 	
 	// The angles of the triangle formed by the femur, tibia and tarsus joints. DEC1
