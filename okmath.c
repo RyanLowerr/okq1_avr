@@ -209,15 +209,15 @@ s16 okmath_acos(s16 cosine)
 	}
 	
 	// Cosine between 0 and 0.9.
-	if((cosine >= 0) && (cosine < 9000))
+	if((abscosine >= 0) && (abscosine < 9000))
 		rads = ((u32)acostable[abscosine/79] * 616) / DEC1;
 	
 	// Cosine between 0.9 and 0.99.
-	else if ((cosine >= 9000) && (cosine < 9900))
+	else if ((abscosine >= 9000) && (abscosine < 9900))
 		rads = ((u32)acostable[(abscosine-9000) / 8 + 114] * 616) / DEC1;
 	
 	// Cosine between 0.99 and 1.0.
-	else if ((cosine >= 9900) && (cosine <= 10000))
+	else if ((abscosine >= 9900) && (abscosine <= 10000))
 		rads = ((u32)acostable[(abscosine - 9900) / 2 + 227] * 616) / DEC1;
 	
 	// Account for the negative sign if required.
@@ -234,10 +234,10 @@ s16 okmath_acos(s16 cosine)
 */
 s16 okmath_atan2(s16 opp, s16 adj)
 {
-	u32 hypt = okmath_sqrt((s32)adj * adj + (s32)opp * opp));
+	u32 hypt = okmath_sqrt((s32)adj * adj + (s32)opp * opp);
 	s16 rads = okmath_acos(((s32)adj * DEC3) / hypt);
 	
-	if(y < 0)
+	if(opp < 0)
 		rads = -rads;
 		
 	return rads;

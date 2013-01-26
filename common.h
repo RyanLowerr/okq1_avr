@@ -15,7 +15,7 @@
 
 // Foot neutral positions (mm from center of coxa joint). DEC1
 #define FOOT_X_NEUTRAL 1300
-#define FOOT_Y_NEUTRAL 500
+#define FOOT_Y_NEUTRAL 800
 #define FOOT_Z_NEUTRAL 600
 
 // Coxa offset from center (mm from center of robot). DEC1
