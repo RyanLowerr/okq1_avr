@@ -57,7 +57,7 @@
 #define FR_TIBIA_DIRECTION   -1
 #define FR_TARSUS_DIRECTION  -1
 
-#define BR_COXA_DIRECTION     1
+#define BR_COXA_DIRECTION    -1
 #define BR_FEMUR_DIRECTION    1
 #define BR_TIBIA_DIRECTION   -1
 #define BR_TARSUS_DIRECTION  -1
@@ -67,7 +67,7 @@
 #define BL_TIBIA_DIRECTION    1
 #define BL_TARSUS_DIRECTION   1
 
-#define FL_COXA_DIRECTION     1
+#define FL_COXA_DIRECTION    -1
 #define FL_FEMUR_DIRECTION   -1
 #define FL_TIBIA_DIRECTION    1
 #define FL_TARSUS_DIRECTION   1

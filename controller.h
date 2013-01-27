@@ -24,5 +24,6 @@ u08 controller_buffer_size(void);
 void controller_buffer_flush(void);
 u08 controller_buffer_read(void);
 u08 controller_read(CONTROLLER *c);
+void controller_write(u08 c);
 
 #endif

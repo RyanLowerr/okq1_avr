@@ -45,9 +45,10 @@ u08 kinematics_leg_ik(s16 x, s16 y, s16 z, s16 *coxa, s16 *femur, s16 *tibia, s1
 	s16 a3 = 900 - angle_c;                                                      // tibia
 	s16 a4 = 0 - a2 - a3;                                                        // tarsus
 	
-	// Should do some error checking here!
-	
-	*coxa = a1;
+	if (x < 0)
+		*coxa = 1800 - a1;
+	else
+		*coxa = a1;	
 	*femur = a2;
 	*tibia = a3;
 	*tarsus = a4;

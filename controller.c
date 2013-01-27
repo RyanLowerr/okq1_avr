@@ -99,3 +99,9 @@ u08 controller_read(CONTROLLER *c)
 
 	return 1;
 }
+
+void controller_write(u08 c)
+{
+	while(bit_is_clear(UCSR1A, UDRE1));
+	UDR1 = c;
+}

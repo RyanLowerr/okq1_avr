@@ -60,19 +60,19 @@ void gait_process(GAIT *g)
 		if((g->position >= g->step_start[i]) && (g->position <= g->step_end[i]))
 		{
 			// Translation is movement along a line from -1 (fully backwards) to 1 (full forward) for this portion of the gait.
-			// A rearanged and simplified equation for a line (y = mx + c) is used here.
-			g->tran[i] = (((u32)shiftedposition * 2 * DEC4) / g->step_period) - DEC4;			
+			// A rearanged and simplified point slope format equation for a line (y = mx + b) is used here.
+			g->tran[i] = ((shiftedposition * 2 * DEC4) / g->step_period) - DEC4;			
 			
 			// Lift follows the first 180 degrees of a sin wave for this portion of the gait. (0.0 -> 1.0 -> 0.0)
-			g->lift[i] = lookupsin( ((u32)shiftedposition * 180 * DEC1) / g->step_period);
+			g->lift[i] = okmath_sin((shiftedposition * 180 * DEC1) / g->step_period);
 		}
 		
 		// Foot is on the ground an leg moves backwards to move the boday forward.
 		else
 		{			
 			// Translation is movement along a line from 1 (full forward) to -1 (fully backwards) for this portion of the gait.
-			// A rearanged and simplified equation for a line (y = mx + c) is used here.
-			g->tran[i] = ((((u32)(shiftedposition - g->step_period)) * -2 * DEC4) / g->move_period) + DEC4;
+			// A rearanged and simplified point slope format equation for a line (y = mx + b) is used here.
+			g->tran[i] = -((((shiftedposition - g->step_period) * 2 * DEC4) / g->move_period) - DEC4);
 			
 			// Lift is always zero for this portion of the gait.
 			g->lift[i] = 0;
@@ -90,7 +90,7 @@ void gait_increment(GAIT *g, u16 step_size)
 
 void gait_decrement(GAIT *g, u16 step_size)
 {	
-	if(g->position - step_size < 0)
+	if((s32)g->position - step_size < 0)
 		g->position = g->period;
 	else
 		g->position -= step_size;

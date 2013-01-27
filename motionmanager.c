@@ -36,15 +36,16 @@ void mm_process(CONTROLLER *controller, GAIT *gait)
 		controller->s = (u08) (((float)controller->a[3]) / 17.0);
 	}
 	*/
-	controller->y = 20.0;
-	controller->x = 0.0;
-	controller->z = 30.0;
+	controller->y = 200;
+	controller->x = 0;
+	controller->z = 200;
+	controller->r = 0;
 
 	gait_process(gait);
 
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
-		if(controller->r == 0.0)
+		if(controller->r == 0)
 		{
 			// Start with neutral foot position		
 			goal.foot[i].x = neutral.foot[i].x;
@@ -72,21 +73,23 @@ void mm_process(CONTROLLER *controller, GAIT *gait)
 		}
 		
 		// Add gait translations to goal position
-		goal.foot[i].x += 1.0 * ((float)gait->tran[i] / 10000.0) * controller->x;
-		goal.foot[i].y += 1.0 * ((float)gait->tran[i] / 10000.0) * controller->y;
-		goal.foot[i].z += 1.0 * ((float)gait->lift[i] / 10000.0) * controller->z;
+		goal.foot[i].x += ((s32)gait->tran[i] * controller->x) / DEC4;
+		goal.foot[i].y += ((s32)gait->tran[i] * controller->y) / DEC4;
+		goal.foot[i].z += ((s32)gait->lift[i] * controller->z) / DEC4;
 	}
 
-	gait_increment(gait, 400);
+	gait_increment(gait, 500);
 
 	for(u08 i = 0; i < NUM_LEGS; i++)
 		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
+	
+	//joint[0].angle = 450;
 
-	for(u08 i = 0; i < NUM_TURRETS; i++)
-		kinematics_turret_ik();
+	//for(u08 i = 0; i < NUM_TURRETS; i++)
+		//kinematics_turret_ik();
 
-	for(u08 i = 0; i < NUM_GUNS; i++)
-		kinematics_gun_ik();
+	//for(u08 i = 0; i < NUM_GUNS; i++)
+		//kinematics_gun_ik();
 
 	joint_write(&joint[0]);
 }
