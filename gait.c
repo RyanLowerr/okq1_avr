@@ -82,7 +82,7 @@ void gait_process(GAIT *g)
 
 void gait_increment(GAIT *g, u16 step_size)
 {	
-	if(g->position + step_size > (u32)g->period)
+	if((u32)g->position + step_size > g->period)
 		g->position = 0;
 	else
 		g->position += step_size;			

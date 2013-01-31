@@ -1,6 +1,4 @@
 
-#include <math.h>
-
 #include "motionmanager.h"
 #include "types.h"
 #include "controller.h"
@@ -13,6 +11,7 @@
 #include "dynamixel.h"
 #include "mx.h"
 #include "ax.h"
+#include "okmath.h"
 
 void mm_init(void)
 {
@@ -21,25 +20,20 @@ void mm_init(void)
 
 void mm_process(CONTROLLER *controller, GAIT *gait)
 {
-	/*
 	if(controller_buffer_size() >= 19)
 	{
 		controller_read(controller);
-		controller->s = (u08) (((float)controller->a[3]) / 17.0); 
+		controller->s = ((s32)controller->a[3] * DEC1) / 170; 
 	}
 	
 	if(gait->position == 0)
 	{
-		controller->y = (((float) controller->a[0]) - 512.0) / 12.8;
-		controller->x = (((float) controller->a[1]) - 512.0) / 12.8;
-		controller->r = -1 * ((((float) controller->a[2]) - 512.0) / 51.2);
-		controller->s = (u08) (((float)controller->a[3]) / 17.0);
+		controller->y = (((s32)controller->a[0] - 512) * DEC2) / 128;
+		controller->x = (((s32)controller->a[1] - 512) * DEC2) / 128;
+		controller->r = 1 - ((((s32)controller->a[2] - 512) * DEC2) / 500);
+		
+		controller->z = 250;
 	}
-	*/
-	controller->y = 200;
-	controller->x = 0;
-	controller->z = 200;
-	controller->r = 0;
 
 	gait_process(gait);
 
@@ -55,20 +49,20 @@ void mm_process(CONTROLLER *controller, GAIT *gait)
 		else
 		{
 			// start with rotations from neutral foot position
-			float theta;
-			float costheta;
-			float sintheta;
-			float xfromcenter;
-			float yfromcenter;
+			s16 theta;
+			s16 costheta;
+			s16 sintheta;
+			s16 xfromcenter;
+			s16 yfromcenter;
 		
-			theta = gait->tran[i] * controller->r * 0.01745;
-			costheta = cos(theta);
-			sintheta = sin(theta);
+			theta = ((s32)gait->tran[i] * controller->r) / DEC4;
+			costheta = okmath_cos(theta);
+			sintheta = okmath_sin(theta);
 			xfromcenter = neutral.foot[i].x + coxaoffset.foot[i].x;
 			yfromcenter = neutral.foot[i].y + coxaoffset.foot[i].y;
 
-			goal.foot[i].x = (xfromcenter * costheta - yfromcenter * sintheta) - coxaoffset.foot[i].x;
-			goal.foot[i].y = (xfromcenter * sintheta + yfromcenter * costheta) - coxaoffset.foot[i].y;
+			goal.foot[i].x = (((s32)xfromcenter * costheta) / DEC4) - (((s32)yfromcenter * sintheta) / DEC4) - coxaoffset.foot[i].x;
+			goal.foot[i].y = (((s32)xfromcenter * sintheta) / DEC4) + (((s32)yfromcenter * costheta) / DEC4) - coxaoffset.foot[i].y;
 			goal.foot[i].z = neutral.foot[i].z;
 		}
 		

@@ -83,6 +83,9 @@ u08 controller_read(CONTROLLER *c)
 				checksum += low;
 				
 				a[i] = (high << 8) + low;
+				
+				if(a[i] > 1024) 
+					a[i] = 1024;
 			}
 			
 			checksum = ~(checksum % 256);
