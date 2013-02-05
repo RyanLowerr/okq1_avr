@@ -24,14 +24,9 @@ void mm_process(CONTROLLER *controller, GAIT *gait)
 	{
 		controller_read(controller);
 		controller->s = ((s32)controller->a[3] * DEC1) / 170; 
-	}
-	
-	if(gait->position == 0)
-	{
 		controller->y = (((s32)controller->a[0] - 512) * DEC2) / 128;
 		controller->x = (((s32)controller->a[1] - 512) * DEC2) / 128;
 		controller->r = 1 - ((((s32)controller->a[2] - 512) * DEC2) / 500);
-		
 		controller->z = 250;
 	}
 
@@ -76,14 +71,15 @@ void mm_process(CONTROLLER *controller, GAIT *gait)
 
 	for(u08 i = 0; i < NUM_LEGS; i++)
 		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
-	
-	//joint[0].angle = 450;
 
 	//for(u08 i = 0; i < NUM_TURRETS; i++)
 		//kinematics_turret_ik();
 
 	//for(u08 i = 0; i < NUM_GUNS; i++)
 		//kinematics_gun_ik();
-
+	
+	for(u08 i = 0; i < NUM_LEGS; i++)
+		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
+	
 	joint_write(&joint[0]);
 }

@@ -27,7 +27,7 @@ typedef struct {
 	POSITION pe; // interpolation ending position
 	u16 steps;
 	u16 step;
-	s16 stepsize[(NUM_LEGS+NUM_TURRETS+NUM_GUNS)*3]; // dec4
+	s16 stepsize[(NUM_LEGS+NUM_TURRETS+NUM_GUNS)*3];
 } INTERPOLATION;
 
 void position_init(void);
