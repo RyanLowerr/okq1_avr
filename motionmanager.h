@@ -5,6 +5,7 @@
 #include "types.h"
 #include "okmath.h"
 #include "position.h"
+#include "interpolation.h"
 #include "controller.h"
 #include "gait.h"
 
@@ -26,6 +27,6 @@ typedef struct {
 extern MOTIONMANAGER motionmanager;
 
 void mm_init(void);
-void mm_process(CONTROLLER *controller, GAIT *gait);
+void mm_process(void);
 
 #endif

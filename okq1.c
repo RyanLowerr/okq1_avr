@@ -37,7 +37,7 @@ int main(void)
 	
 	while(1)
 	{	
-		mm_process(&controller, &gait);		
+		mm_process();		
 		//_delay_ms(1);
 	}
 	
