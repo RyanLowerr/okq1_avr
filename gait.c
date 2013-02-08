@@ -1,6 +1,4 @@
 
-#include <math.h>
-
 #include "gait.h"
 #include "types.h"
 #include "okmath.h"
@@ -23,7 +21,7 @@ static void gait_paramcalc(GAIT *g)
 void gait_init(GAIT *g, u08 type)
 {
 	g->position = 0;
-
+	
 	if(type == GAIT_TYPE_RIPPLE)
 	{
 		g->step_to_move_ratio = 25;
@@ -48,7 +46,7 @@ void gait_init(GAIT *g, u08 type)
 void gait_process(GAIT *g)
 {
 	s32 shiftedposition = 0;
-
+	
 	// For each leg calculate percentage of leg endpoint movement
 	for(u08 i = 0; i < 4; i++)
 	{	

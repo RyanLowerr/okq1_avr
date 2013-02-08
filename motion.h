@@ -10,20 +10,20 @@
 #include "gait.h"
 
 // Motion status
-#define MOTION_LEG_INTERPOLATING     0
-#define MOTION_LEG_WALKING           1
-#define MOTION_LEG_TRACKING          2
-#define MOTION_LEG_IDLING            3
+#define MOTION_LEGS_INTERPOLATING     0
+#define MOTION_LEGS_WALKING           1
+#define MOTION_LEGS_TRACKING          2
+#define MOTION_LEGS_IDLING            3
 
-#define MOTION_TURRET_INTERPOLATING  0
-#define MOTION_TURRET_WALKING        1
-#define MOTION_TURRET_TRACKING       2
-#define MOTION_TURRET_IDLING         3
+#define MOTION_TURRETS_INTERPOLATING  0
+#define MOTION_TURRETS_FOLLOWING      1
+#define MOTION_TURRETS_TRACKING       2
+#define MOTION_TURRETS_IDLING         3
 
-#define MOTION_GUN_INTERPOLATING     0
-#define MOTION_GUN_WALKING           1
-#define MOTION_GUN_TRACKING          2
-#define MOTION_GUN_IDLING            3
+#define MOTION_GUNS_INTERPOLATING     0
+#define MOTION_GUNS_FOLLOWING         1
+#define MOTION_GUNS_TRACKING          2
+#define MOTION_GUNS_IDLING            3
 
 typedef struct {
 	VECTOR heading; // Direction the turret is pointed.

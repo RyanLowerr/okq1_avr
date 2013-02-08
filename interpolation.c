@@ -4,7 +4,9 @@
 #include "types.h"
 #include "common.h"
 
-INTERPOLATION interpolation;
+INTERPOLATION interp_legs;
+INTERPOLATION interp_turrets;
+INTERPOLATION interp_guns;
 
 static s16 interpolation_calc_delta(s16 x, s16 y)
 {
@@ -26,7 +28,7 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
-		if(I->ignore_mask)
+		if(I->ignore_mask & INTERPOLATION_IGNORE_LEGS)
 		{
 			I->delta[n++] = 0;
 			I->delta[n++] = 0;
@@ -42,7 +44,7 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 	
 	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
-		if(I->ignore_mask)
+		if(I->ignore_mask & INTERPOLATION_IGNORE_TURRETS)
 		{
 			I->delta[n++] = 0;
 			I->delta[n++] = 0;
@@ -58,7 +60,7 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
-		if(I->ignore_mask)
+		if(I->ignore_mask & INTERPOLATION_IGNORE_GUNS)
 		{
 			I->delta[n++] = 0;
 			I->delta[n++] = 0;
@@ -90,7 +92,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size)
 	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
-		if(I->ignore_mask)
+		if(I->ignore_mask & INTERPOLATION_IGNORE_LEGS)
 		{
 			p->foot[i].x += 0; n++;
 			p->foot[i].y += 0; n++;
@@ -106,7 +108,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size)
 	
 	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
-		if(I->ignore_mask)
+		if(I->ignore_mask & INTERPOLATION_IGNORE_TURRETS)
 		{
 			p->turret[i].x += 0; n++;
 			p->turret[i].y += 0; n++;
@@ -122,7 +124,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size)
 	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
-		if(I->ignore_mask)
+		if(I->ignore_mask & INTERPOLATION_IGNORE_GUNS)
 		{
 			p->gun[i].x += 0; n++;
 			p->gun[i].y += 0; n++;
@@ -136,7 +138,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size)
 		}
 	}
 	
-	if(I->position != I->period)
+	if(I->position == I->period)
 		return 1;
 	else
 		return 0;

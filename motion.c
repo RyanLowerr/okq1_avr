@@ -18,13 +18,30 @@ MOTION motion;
 
 void motion_init(MOTION *m)
 {
-	m->leg_state = 0;
+	m->leg_state = MOTION_LEGS_WALKING;
 	m->turret_state = 0;
 	m->gun_state = 0;
 }
 
-static void motion_leg_walking(void)
+void motion_set_leg_state(MOTION *m, u16 state)
 {
+	m->leg_state = state;
+}
+
+void motion_set_turret_state(MOTION *m, u16 state)
+{
+	m->turret_state = state;
+}
+
+void motion_set_gun_state(MOTION *m, u16 state)
+{
+	m->gun_state = state;
+}
+
+static void motion_legs_walking(void)
+{
+	gait_process(&gait);
+	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		if(controller.r == 0)
@@ -63,68 +80,72 @@ static void motion_leg_walking(void)
 	gait_increment(&gait, 500);
 }
 
-static motion_leg_tracking(void)
+static motion_legs_tracking(void)
 {
 }
 
 void motion_process(MOTION *m)
-{
-	// Save the previous goal potsition as the robot's current position.
-	position_copy(&goal, &current);
-	
+{	
+	// Calculate the legs goal positions.
 	switch(m->leg_state)
 	{
-		case MOTION_LEG_INTERPOLATING:
+		case MOTION_LEGS_INTERPOLATING:
+			if(interpolation_step(&interp_legs, &goal, 500))
+				motion_set_leg_state(m, MOTION_LEGS_IDLING);
 			break;
 			
-		case MOTION_LEG_WALKING:
-			motion_leg_walking();
+		case MOTION_LEGS_WALKING:
+			motion_legs_walking();
 			break;
 			
-		case MOTION_LEG_TRACKING:
-			motion_leg_tracking();
+		case MOTION_LEGS_TRACKING:
+			motion_legs_tracking();
 			break;
 			
-		case MOTION_LEG_IDLING:
+		case MOTION_LEGS_IDLING:
 			m->leg_idle_count += 1;
 			break;
 	}
 	
+	// Calculate the turret(s) goal position(s).
 	switch(m->turret_state)
 	{
-		case MOTION_TURRET_INTERPOLATING:
+		case MOTION_TURRETS_INTERPOLATING:
+			if(interpolation_step(&interp_turrets, &goal, 500))
+				motion_set_turret_state(m, MOTION_TURRETS_IDLING);
 			break;
 			
-		case MOTION_TURRET_WALKING:
+		case MOTION_TURRETS_FOLLOWING:
 			break;
 			
-		case MOTION_TURRET_TRACKING:
+		case MOTION_TURRETS_TRACKING:
 			break;
 			
-		case MOTION_TURRET_IDLING:
+		case MOTION_TURRETS_IDLING:
 			m->turret_idle_count += 1;
 			break;
 	}
 	
+	// Calculate the gun(s) goal position(s).
 	switch(m->gun_state)
 	{
-		case MOTION_GUN_INTERPOLATING:
+		case MOTION_GUNS_INTERPOLATING:
+			if(interpolation_step(&interp_guns, &goal, 500))
+				motion_set_gun_state(m, MOTION_GUNS_IDLING);
 			break;
 			
-		case MOTION_GUN_WALKING:
+		case MOTION_GUNS_FOLLOWING:
 			break;
 			
-		case MOTION_GUN_TRACKING:
+		case MOTION_GUNS_TRACKING:
 			break;
 			
-		case MOTION_GUN_IDLING:
+		case MOTION_GUNS_IDLING:
 			m->gun_idle_count += 1;
 			break;
 	}
 	
-	gait_process(&gait);
-	motion_leg_walking();
-	
+	// Perform the IK on all legs, turrets and guns using the caclulated goal positon.
 	for(u08 i = 0; i < NUM_LEGS; i++)
 		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
 	
@@ -133,4 +154,7 @@ void motion_process(MOTION *m)
 	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 		kinematics_gun_ik();
+	
+	// Save the previous goal potsition as the robot's current position.
+	current = goal;
 }
