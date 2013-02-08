@@ -29,6 +29,7 @@ int main(void)
 	{
 		controller_process(&controller);
 		motion_process(&motion);
+		joint_process(&joint[0]);
 	}
 	
 	return 0;

@@ -105,7 +105,7 @@ void joint_init(JOINT *joint)
 }
 
 // Writes joint positions to all servos that need their goal positions updated using the dynamixel sync write command
-void joint_write(JOINT *joint)
+void joint_process(JOINT *joint)
 {
 	u08 packet[NUM_SERVOS*3]; // id, position low byte and position high byte per servo
 	u08 servocount = 0;       // count of servos that need position update
