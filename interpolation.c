@@ -4,8 +4,6 @@
 #include "types.h"
 #include "common.h"
 
-#include "controller.h"
-
 INTERPOLATION interpolation;
 
 static s16 interpolation_calc_delta(s16 x, s16 y)
@@ -13,9 +11,7 @@ static s16 interpolation_calc_delta(s16 x, s16 y)
 	s16 absx = (x < 0) ? -x : x;
 	s16 absy = (y < 0) ? -y : y;
 	s16 delta = (absx > absy) ? (absx - absy) : (absy - absx);
-	
-	// NEED TO CORRECTLY DETERMINE IF DELTA IS POSITIVE OR NEGATIVE HERE!!!!
-	return delta;//((x + y) < x) ? -delta : delta;
+	return (x > y) ? -delta : delta;
 }
 
 u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_mask)
