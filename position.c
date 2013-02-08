@@ -32,53 +32,6 @@ void position_copy(POSITION *pi, POSITION *po)
 	}	
 }
 
-void position_set_goal(POSITION *p)
-{
-	position_copy(p, &goal);
-}
-
-void position_set_standing(POSITION *p)
-{
-	p->foot[0].x =  FOOT_X_NEUTRAL;
-	p->foot[0].y =  FOOT_Y_NEUTRAL;
-	p->foot[0].z = -FOOT_Z_NEUTRAL;
-
-	p->foot[1].x =  FOOT_X_NEUTRAL;
-	p->foot[1].y = -FOOT_Y_NEUTRAL;
-	p->foot[1].z = -FOOT_Z_NEUTRAL;
-
-	p->foot[2].x = -FOOT_X_NEUTRAL;
-	p->foot[2].y = -FOOT_Y_NEUTRAL;
-	p->foot[2].z = -FOOT_Z_NEUTRAL;
-
-	p->foot[3].x = -FOOT_X_NEUTRAL;
-	p->foot[3].y =  FOOT_Y_NEUTRAL;
-	p->foot[3].z = -FOOT_Z_NEUTRAL;
-}
-
-void position_set_sitting(POSITION *p)
-{
-	;
-}
-
-void position_set_neutral_turrets(POSITION *p)
-{
-	p->turret[0].x = 0;
-	p->turret[0].y = 1;
-	p->turret[0].z = 0;
-}
-
-void position_set_neutral_guns(POSITION *p)
-{
-	p->gun[0].x = 0;
-	p->gun[0].y = 1;
-	p->gun[0].z = 0;
-
-	p->gun[1].x = 0;
-	p->gun[1].y = 1;
-	p->gun[1].z = 0;
-}
-
 void position_init(void)
 {
 	// coxa offset position initilization.
@@ -99,5 +52,19 @@ void position_init(void)
 	coxaoffset.foot[3].z =  0;
 
 	// neutral leg position initilization
-	position_set_standing(&neutral);
+	neutral.foot[0].x =  FOOT_X_NEUTRAL;
+	neutral.foot[0].y =  FOOT_Y_NEUTRAL;
+	neutral.foot[0].z = -FOOT_Z_NEUTRAL;
+
+	neutral.foot[1].x =  FOOT_X_NEUTRAL;
+	neutral.foot[1].y = -FOOT_Y_NEUTRAL;
+	neutral.foot[1].z = -FOOT_Z_NEUTRAL;
+
+	neutral.foot[2].x = -FOOT_X_NEUTRAL;
+	neutral.foot[2].y = -FOOT_Y_NEUTRAL;
+	neutral.foot[2].z = -FOOT_Z_NEUTRAL;
+
+	neutral.foot[3].x = -FOOT_X_NEUTRAL;
+	neutral.foot[3].y =  FOOT_Y_NEUTRAL;
+	neutral.foot[3].z = -FOOT_Z_NEUTRAL;
 }

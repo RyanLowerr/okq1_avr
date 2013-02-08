@@ -19,6 +19,6 @@ typedef struct {
 extern INTERPOLATION interpolation;
 
 u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_mask);
-u08 interpolation_step(INTERPOLATION *I, POSITION *p, u08 step_size);
+u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size);
 
 #endif
