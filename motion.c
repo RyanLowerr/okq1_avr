@@ -69,7 +69,8 @@ static motion_leg_tracking(void)
 
 void motion_process(MOTION *m)
 {
-	gait_process(&gait);
+	// Save the previous goal potsition as the robot's current position.
+	position_copy(&goal, &current);
 	
 	switch(m->leg_state)
 	{
@@ -121,21 +122,15 @@ void motion_process(MOTION *m)
 			break;
 	}
 	
+	gait_process(&gait);
 	motion_leg_walking();
 	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
 	
-	/*
 	for(u08 i = 0; i < NUM_TURRETS; i++)
 		kinematics_turret_ik();
 	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 		kinematics_gun_ik();
-	*/
-	
-	joint_write(&joint[0]);
-	
-	// Copy the output goal potsition as the robot's current position.
-	position_copy(&goal, &current);
 }

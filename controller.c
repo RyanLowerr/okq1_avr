@@ -111,7 +111,7 @@ u08 controller_read(CONTROLLER *c)
 	}
 	
 	controller_buffer_flush();
-
+	
 	return 1;
 }
 
