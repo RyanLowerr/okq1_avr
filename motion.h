@@ -9,6 +9,7 @@
 #include "controller.h"
 #include "gait.h"
 
+// Motion status
 #define MOTION_LEG_INTERPOLATING     0
 #define MOTION_LEG_WALKING           1
 #define MOTION_LEG_TRACKING          2
@@ -27,9 +28,14 @@
 typedef struct {
 	VECTOR heading; // Direction the turret is pointed.
 	VECTOR bearing; // Direction and magnitude the robot is to walk.
+	
 	u08 leg_state;
 	u08 turret_state;
 	u08 gun_state;
+	
+	u16 leg_idle_count;
+	u16 turret_idle_count;
+	u16 gun_idle_count;
 } MOTION;
 
 extern MOTION motion;

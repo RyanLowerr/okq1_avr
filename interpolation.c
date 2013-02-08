@@ -8,7 +8,6 @@ INTERPOLATION interpolation;
 
 static s16 interpolation_calc_delta(s16 x, s16 y)
 {
-
 	s16 absx = (x < 0) ? -x : x;
 	s16 absy = (y < 0) ? -x : x;
 	return ((x + y) < x) ? -(absx + absy) : (absx + absy);
@@ -20,10 +19,10 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 	I->ignore_mask = ignore_mask;
 	I->period = MAX_U16;;
 	I->position = 0;
-
+	
 	position_copy(p1, &(I->ps));
 	position_copy(p2, &(I->pe));
-
+	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		if(I->ignore_mask)
@@ -39,7 +38,7 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 			I->delta[n++] = interpolation_calc_delta(p1->foot[i].z, p2->foot[i].z);
 		}
 	}
-
+	
 	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
 		if(I->ignore_mask)
@@ -55,7 +54,7 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 			I->delta[n++] = interpolation_calc_delta(p1->turret[i].z, p2->turret[i].z);
 		}
 	}
-
+	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
 		if(I->ignore_mask)
@@ -71,7 +70,7 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 			I->delta[n++] = interpolation_calc_delta(p1->gun[i].z, p2->gun[i].z);
 		}
 	}
-
+	
 	return 0;
 }
 
@@ -87,7 +86,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u08 step_size)
 	
 	percent = ((u32)I->position * DEC4) / I->period; // DEC4
 	n = 0;
-
+	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		if(I->ignore_mask)
@@ -103,7 +102,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u08 step_size)
 			p->foot[n].z = I->ps.foot[n].z + (((s32)I->delta[n] * percent) / DEC4); n++;
 		}
 	}
-
+	
 	for(u08 i = 0; i < NUM_TURRETS; i++)
 	{
 		if(I->ignore_mask)
@@ -135,7 +134,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u08 step_size)
 			p->gun[n].z = I->ps.gun[n].z + (((s32)I->delta[n] * percent) / DEC4); n++;
 		}
 	}
-
+	
 	if(I->position == I->period)
 		return 1;
 	else

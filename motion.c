@@ -23,55 +23,8 @@ void motion_init(MOTION *m)
 	m->gun_state = 0;
 }
 
-void motion_process(MOTION *m)
+static void motion_leg_walking(void)
 {
-	gait_process(&gait);
-
-	switch(m->leg_state)
-	{
-		case MOTION_LEG_INTERPOLATING:
-			break;
-			
-		case MOTION_LEG_WALKING:
-			break;
-			
-		case MOTION_LEG_TRACKING:
-			break;
-			
-		case MOTION_LEG_IDLING:
-			break;
-	}
-	
-	switch(m->turret_state)
-	{
-		case MOTION_TURRET_INTERPOLATING:
-			break;
-			
-		case MOTION_TURRET_WALKING:
-			break;
-			
-		case MOTION_TURRET_TRACKING:
-			break;
-			
-		case MOTION_TURRET_IDLING:
-			break;
-	}
-	
-	switch(m->gun_state)
-	{
-		case MOTION_GUN_INTERPOLATING:
-			break;
-			
-		case MOTION_GUN_WALKING:
-			break;
-			
-		case MOTION_GUN_TRACKING:
-			break;
-			
-		case MOTION_GUN_IDLING:
-			break;
-	}
-	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		if(controller.r == 0)
@@ -95,7 +48,7 @@ void motion_process(MOTION *m)
 			sintheta = okmath_sin(theta);
 			xfromcenter = neutral.foot[i].x + coxaoffset.foot[i].x;
 			yfromcenter = neutral.foot[i].y + coxaoffset.foot[i].y;
-
+			
 			goal.foot[i].x = (((s32)xfromcenter * costheta) / DEC4) - (((s32)yfromcenter * sintheta) / DEC4) - coxaoffset.foot[i].x;
 			goal.foot[i].y = (((s32)xfromcenter * sintheta) / DEC4) + (((s32)yfromcenter * costheta) / DEC4) - coxaoffset.foot[i].y;
 			goal.foot[i].z = neutral.foot[i].z;
@@ -106,22 +59,83 @@ void motion_process(MOTION *m)
 		goal.foot[i].y += ((s32)gait.tran[i] * controller.y) / DEC4;
 		goal.foot[i].z += ((s32)gait.lift[i] * controller.z) / DEC4;
 	}
-
+	
 	gait_increment(&gait, 500);
+}
 
+static motion_leg_tracking(void)
+{
+}
+
+void motion_process(MOTION *m)
+{
+	gait_process(&gait);
+	
+	switch(m->leg_state)
+	{
+		case MOTION_LEG_INTERPOLATING:
+			break;
+			
+		case MOTION_LEG_WALKING:
+			motion_leg_walking();
+			break;
+			
+		case MOTION_LEG_TRACKING:
+			motion_leg_tracking();
+			break;
+			
+		case MOTION_LEG_IDLING:
+			m->leg_idle_count += 1;
+			break;
+	}
+	
+	switch(m->turret_state)
+	{
+		case MOTION_TURRET_INTERPOLATING:
+			break;
+			
+		case MOTION_TURRET_WALKING:
+			break;
+			
+		case MOTION_TURRET_TRACKING:
+			break;
+			
+		case MOTION_TURRET_IDLING:
+			m->turret_idle_count += 1;
+			break;
+	}
+	
+	switch(m->gun_state)
+	{
+		case MOTION_GUN_INTERPOLATING:
+			break;
+			
+		case MOTION_GUN_WALKING:
+			break;
+			
+		case MOTION_GUN_TRACKING:
+			break;
+			
+		case MOTION_GUN_IDLING:
+			m->gun_idle_count += 1;
+			break;
+	}
+	
+	motion_leg_walking();
+	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
-
+	
 	/*
 	for(u08 i = 0; i < NUM_TURRETS; i++)
 		kinematics_turret_ik();
-
+	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 		kinematics_gun_ik();
 	*/
 	
 	joint_write(&joint[0]);
-
+	
 	// Copy the output goal potsition as the robot's current position.
 	position_copy(&goal, &current);
 }
