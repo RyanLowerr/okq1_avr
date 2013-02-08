@@ -1,5 +1,5 @@
 
-#include "motionmanager.h"
+#include "motion.h"
 #include "types.h"
 #include "controller.h"
 #include "common.h"
@@ -14,66 +14,64 @@
 #include "ax.h"
 #include "okmath.h"
 
-MOTIONMANAGER motionmanager;
+MOTION motion;
 
-void mm_init(void)
+void motion_init(MOTION *m)
 {
-	motionmanager.state = 0;
+	m->leg_state = 0;
+	m->turret_state = 0;
+	m->gun_state = 0;
 }
 
-void mm_process(void)
+void motion_process(MOTION *m)
 {
-	if(controller_buffer_size() >= 19)
-	{
-		controller_read(&controller);
-		controller.s = ((s32)controller.a[3] * DEC1) / 170; 
-		controller.y = (((s32)controller.a[0] - 512) * DEC2) / 128;
-		controller.x = (((s32)controller.a[1] - 512) * DEC2) / 128;
-		controller.r = 1 - ((((s32)controller.a[2] - 512) * DEC2) / 500);
-		controller.z = 250;
-	}
 	gait_process(&gait);
 
-	/*
-	switch(motionmanager.state)
+	switch(m->leg_state)
 	{
-		//
-		case MOTION_POWER_UP:
-			motionmanager_setstate(MOTION_INTERPOLATE);
+		case MOTION_LEG_INTERPOLATING:
 			break;
-		
-		//
-		case MOTION_INTERPOLATE:
 			
-			if(&interpolation)
-
+		case MOTION_LEG_WALKING:
 			break;
-		
-		//
-		case MOTION_INTERPOLATE_DONE:
+			
+		case MOTION_LEG_TRACKING:
 			break;
-		
-		//
-		case MOTION_GAIT:
-			break;
-		
-		//
-		case MOTION_LEGS_DOWN:
-			motionmanager_setstate(MOTION_INTERPOLATE);
-			break;
-		
-		//
-		case MOTION_LEGS_UP:
-			motionmanager_setstate(MOTION_INTERPOLATE);
-			break;
-		
-		//
-		case MOTION_LEGS_NEUTRAL:
-			motionmanager_setstate(MOTION_INTERPOLATE);
+			
+		case MOTION_LEG_IDLING:
 			break;
 	}
-	*/
-
+	
+	switch(m->turret_state)
+	{
+		case MOTION_TURRET_INTERPOLATING:
+			break;
+			
+		case MOTION_TURRET_WALKING:
+			break;
+			
+		case MOTION_TURRET_TRACKING:
+			break;
+			
+		case MOTION_TURRET_IDLING:
+			break;
+	}
+	
+	switch(m->gun_state)
+	{
+		case MOTION_GUN_INTERPOLATING:
+			break;
+			
+		case MOTION_GUN_WALKING:
+			break;
+			
+		case MOTION_GUN_TRACKING:
+			break;
+			
+		case MOTION_GUN_IDLING:
+			break;
+	}
+	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
 		if(controller.r == 0)

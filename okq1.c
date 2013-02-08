@@ -4,7 +4,7 @@
 #include "types.h"
 #include "common.h"
 #include "position.h"
-#include "motionmanager.h"
+#include "motion.h"
 #include "joint.h"
 #include "gait.h"
 #include "controller.h"
@@ -13,32 +13,22 @@
 
 int main(void)
 {
-	// enable interups
+	// Enable global interups.
 	sei();
-
-	// initalize datasets that store joint values
+	
+	// Perform all initizations.
 	joint_init(&joint[0]);
-	
-	// initalize datasets that store gait values
 	gait_init(&gait, GAIT_TYPE_AMBLE);
-	gait_process(&gait);
-	
-	// initalize controller
 	controller_init(&controller);
-	
-	// initalize dynamixel bus
+	motion_init(&motion);
 	dynamixel_init();
-
-	// initalize robot positions
 	position_init();
-
-	// initalize the motion manager
-	mm_init();
 	
+	// Main program loop.
 	while(1)
-	{	
-		mm_process();		
-		//_delay_ms(1);
+	{
+		controller_process(&controller);
+		motion_process(&motion);
 	}
 	
 	return 0;

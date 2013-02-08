@@ -119,7 +119,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u08 step_size)
 			p->turret[n].z = I->ps.turret[n].x + (((s32)I->delta[n] * percent) / DEC4); n++;
 		}
 	}
-
+	
 	for(u08 i = 0; i < NUM_GUNS; i++)
 	{
 		if(I->ignore_mask)

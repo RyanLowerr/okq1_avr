@@ -1,5 +1,4 @@
 
-#include <util/delay.h>
 #include <avr/interrupt.h>
 
 #include "controller.h"
@@ -40,6 +39,19 @@ void controller_init(CONTROLLER *c)
 
 	for(u08 i = 0; i < 8; i++)
 		c->a[i] = 512;
+}
+
+void controller_process(CONTROLLER *c)
+{
+	if(controller_buffer_size() >= 19)
+	{
+		controller_read(&controller);
+		c->s = ((s32)c->a[3] * DEC1) / 170; 
+		c->y = (((s32)c->a[0] - 512) * DEC2) / 128;
+		c->x = (((s32)c->a[1] - 512) * DEC2) / 128;
+		c->r = 1 - ((((s32)c->a[2] - 512) * DEC2) / 500);
+		c->z = 250;
+	}
 }
 
 u08 controller_buffer_size(void)

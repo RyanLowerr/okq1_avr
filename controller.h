@@ -20,6 +20,7 @@ typedef struct
 extern CONTROLLER controller;
 
 void controller_init(CONTROLLER *c);
+void controller_process(CONTROLLER *C);
 u08 controller_buffer_size(void);
 void controller_buffer_flush(void);
 u08 controller_buffer_read(void);
