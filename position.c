@@ -8,30 +8,6 @@ POSITION goal;
 POSITION coxaoffset;
 POSITION neutral;
 
-void position_copy(POSITION *pi, POSITION *po)
-{
-	for(u08 i = 0; i < NUM_LEGS; i++)
-	{
-		po->foot[i].x = pi->foot[i].x;
-		po->foot[i].y = pi->foot[i].y;
-		po->foot[i].z = pi->foot[i].z;
-	}
-
-	for(u08 i = 0; i < NUM_TURRETS; i++)
-	{
-		po->turret[i].x = pi->turret[i].x;
-		po->turret[i].y = pi->turret[i].y;
-		po->turret[i].z = pi->turret[i].z;
-	}
-
-	for(u08 i = 0; i < NUM_GUNS; i++)
-	{
-		po->gun[i].x = pi->gun[i].x;
-		po->gun[i].y = pi->gun[i].y;
-		po->gun[i].z = pi->gun[i].z;
-	}	
-}
-
 void position_init(void)
 {
 	// coxa offset position initilization.

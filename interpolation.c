@@ -23,8 +23,8 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 	I->period = MAX_U16;;
 	I->position = 0;
 	
-	position_copy(p1, &(I->ps));
-	position_copy(p2, &(I->pe));
+	I->ps = *p1;
+	I->pe = *p2;
 	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{

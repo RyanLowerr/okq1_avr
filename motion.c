@@ -18,130 +18,151 @@ MOTION motion;
 
 void motion_init(MOTION *m)
 {
-	m->leg_state = MOTION_LEGS_WALKING;
-	m->turret_state = 0;
-	m->gun_state = 0;
+	m->state_leg    = MOTIONSTATUS_LEGS_IDLING;
+	m->state_turret = MOTIONSTATUS_TURRETS_FOLLOWING;
+	m->state_gun    = MOTIONSTATUS_GUNS_FOLLOWING;
 }
 
-void motion_set_leg_state(MOTION *m, u16 state)
+void motion_paramater_calcs(MOTION *m, CONTROLLER *c)
 {
-	m->leg_state = state;
 }
 
-void motion_set_turret_state(MOTION *m, u16 state)
+void motion_state_control(MOTION *m)
 {
-	m->turret_state = state;
 }
 
-void motion_set_gun_state(MOTION *m, u16 state)
+void motion_leg_goals(MOTION *m, GAIT *g, POSITION *p)
 {
-	m->gun_state = state;
-}
-
-static void motion_legs_walking(void)
-{
-	gait_process(&gait);
-	
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
-		if(controller.r == 0)
-		{
-			// Start with neutral foot position		
-			goal.foot[i].x = neutral.foot[i].x;
-			goal.foot[i].y = neutral.foot[i].y;
-			goal.foot[i].z = neutral.foot[i].z;
-		}
-		else
-		{
-			// start with rotations from neutral foot position
-			s16 theta;
-			s16 costheta;
-			s16 sintheta;
-			s16 xfromcenter;
-			s16 yfromcenter;
+		// start with rotations from neutral foot position
+		s16 theta;
+		s16 costheta;
+		s16 sintheta;
+		s16 xfromcenter;
+		s16 yfromcenter;
 			
-			theta = ((s32)gait.tran[i] * controller.r) / DEC4;
-			costheta = okmath_cos(theta);
-			sintheta = okmath_sin(theta);
-			xfromcenter = neutral.foot[i].x + coxaoffset.foot[i].x;
-			yfromcenter = neutral.foot[i].y + coxaoffset.foot[i].y;
+		theta = ((s32)g->tran[i] * m->travel_r) / DEC4;
+		costheta = okmath_cos(theta);
+		sintheta = okmath_sin(theta);
+		xfromcenter = neutral.foot[i].x + coxaoffset.foot[i].x;
+		yfromcenter = neutral.foot[i].y + coxaoffset.foot[i].y;
 			
-			goal.foot[i].x = (((s32)xfromcenter * costheta) / DEC4) - (((s32)yfromcenter * sintheta) / DEC4) - coxaoffset.foot[i].x;
-			goal.foot[i].y = (((s32)xfromcenter * sintheta) / DEC4) + (((s32)yfromcenter * costheta) / DEC4) - coxaoffset.foot[i].y;
-			goal.foot[i].z = neutral.foot[i].z;
-		}
+		p->foot[i].x = (((s32)xfromcenter * costheta) / DEC4) - (((s32)yfromcenter * sintheta) / DEC4) - coxaoffset.foot[i].x;
+		p->foot[i].y = (((s32)xfromcenter * sintheta) / DEC4) + (((s32)yfromcenter * costheta) / DEC4) - coxaoffset.foot[i].y;
+		p->foot[i].z = neutral.foot[i].z;
 			
 		// Add gait translations to goal position
-		goal.foot[i].x += ((s32)gait.tran[i] * controller.x) / DEC4;
-		goal.foot[i].y += ((s32)gait.tran[i] * controller.y) / DEC4;
-		goal.foot[i].z += ((s32)gait.lift[i] * controller.z) / DEC4;
+		p->foot[i].x += ((s32)g->tran[i] * m->travel_x) / DEC4;
+		p->foot[i].y += ((s32)g->tran[i] * m->travel_y) / DEC4;
+		p->foot[i].z += ((s32)g->lift[i] * m->travel_l) / DEC4;
 	}
-	
-	gait_increment(&gait, 500);
 }
 
-static motion_legs_tracking(void)
-{
-}
-
-void motion_process(MOTION *m)
+void motion_process(MOTION *m, CONTROLLER *c)
 {	
-	// Calculate the legs goal positions.
-	switch(m->leg_state)
+	// Calculate travel, look and aiming paramaters from controller readings.
+	motion_paramater_calcs(m, c);
+	
+	// Determin motion states and update motion status.
+	motion_state_control(m);
+	
+	// Calculate the leg goal positions.
+	switch(m->status_leg)
 	{
-		case MOTION_LEGS_INTERPOLATING:
+		/*
+		 *   The legs are interpolating into a new position.
+		 */
+		case MOTIONSTATUS_LEGS_INTERPOLATING:
+			
+			// We are not Idling. Reset the idle counter.
+			m->idle_count = 0;
+			
 			if(interpolation_step(&interp_legs, &goal, 500))
-				motion_set_leg_state(m, MOTION_LEGS_IDLING);
-			break;
+			{
+				if(m->state_leg & MOTIONSTATE_LEGS_WALK)
+					m->status_leg = MOTIONSTATUS_LEGS_WALKING;
+				else
+					m->status_leg = MOTIONSTATUS_LEGS_IDLING;
+			}
 			
-		case MOTION_LEGS_WALKING:
-			motion_legs_walking();
 			break;
+		
+		/*
+		 *   The legs are walking using our gait routines and calculated travel paramaters.
+		 */
+		case MOTIONSTATUS_LEGS_WALKING:
 			
-		case MOTION_LEGS_TRACKING:
-			motion_legs_tracking();
+			// We are not Idling. Reset the idle counter.
+			m->idle_count = 0;
+			
+			// Increment the gait position and process.
+			// Idealy we have already interpolated to the current position to get to this
+			// point so we need to increment the gait to calculate our next goal position.
+			gait_increment(&gait, m->travel_s);
+			gait_process(&gait);
+			
+			// Calculate the legs goal positions.
+			motion_leg_goals(m, &gait, &goal);
+			
 			break;
-			
-		case MOTION_LEGS_IDLING:
-			m->leg_idle_count += 1;
+		
+		/*
+		 *   The legs are idle so we increment an idle counter.
+		 *   Idle counter can be used to flag or quee up new position interpolations.
+		 *   EXAMPLE: If robot has been standing idle for X calls of motion_process() initalize
+		 *            interpolation between current position and sitting position.
+		 */
+		case MOTIONSTATUS_LEGS_IDLING:
+			m->idle_count += 1;
 			break;
 	}
 	
-	// Calculate the turret(s) goal position(s).
-	switch(m->turret_state)
+	// Calculate the turret goal positions.
+	switch(m->status_gun)
 	{
-		case MOTION_TURRETS_INTERPOLATING:
-			if(interpolation_step(&interp_turrets, &goal, 500))
-				motion_set_turret_state(m, MOTION_TURRETS_IDLING);
+		/*
+		 *   The turrets are interpolating into a new position.
+		 */
+		case MOTIONSTATUS_TURRETS_INTERPOLATING:
+			if(interpolation_step(&interp_turrets, &goal, m->look_s))
+				m->status_turret = MOTIONSTATUS_TURRETS_IDLING;
 			break;
 			
-		case MOTION_TURRETS_FOLLOWING:
+		/*
+		 *   The turrets are folling controller input.
+		 */
+		case MOTIONSTATUS_TURRETS_FOLLOWING:
 			break;
 			
-		case MOTION_TURRETS_TRACKING:
-			break;
-			
-		case MOTION_TURRETS_IDLING:
-			m->turret_idle_count += 1;
+		/*
+		 *   The turrets are idle.
+		 */
+		case MOTIONSTATUS_TURRETS_TRACKING:
 			break;
 	}
 	
-	// Calculate the gun(s) goal position(s).
-	switch(m->gun_state)
+	// Calculate the gun goal positions.
+	switch(m->status_gun)
 	{
-		case MOTION_GUNS_INTERPOLATING:
-			if(interpolation_step(&interp_guns, &goal, 500))
-				motion_set_gun_state(m, MOTION_GUNS_IDLING);
+		/*
+		 *   The guns are interpolating into a new position.
+		 */
+		case MOTIONSTATUS_GUNS_INTERPOLATING:
+			if(interpolation_step(&interp_guns, &goal, m->aim_s))
+				m->status_gun = MOTIONSTATUS_GUNS_IDLING;
 			break;
 			
-		case MOTION_GUNS_FOLLOWING:
+		/*
+		 *   The guns are folling controller input.
+		 */
+		case MOTIONSTATUS_GUNS_FOLLOWING:
 			break;
-			
-		case MOTION_GUNS_TRACKING:
-			break;
-			
-		case MOTION_GUNS_IDLING:
-			m->gun_idle_count += 1;
+		
+		/*
+		 *   The guns are Idle.
+		 */
+		case MOTIONSTATUS_GUNS_TRACKING:
 			break;
 	}
 	

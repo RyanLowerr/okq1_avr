@@ -28,7 +28,7 @@ int main(void)
 	while(1)
 	{
 		controller_process(&controller);
-		motion_process(&motion);
+		motion_process(&motion, &controller);
 		joint_process(&joint[0]);
 	}
 	

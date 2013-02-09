@@ -18,7 +18,5 @@ extern POSITION coxaoffset;
 extern POSITION neutral;
 
 void position_init(void);
-void position_copy(POSITION *pi, POSITION *po);
-void position_set_neutral(POSITION *p);
 
 #endif
