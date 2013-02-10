@@ -18,17 +18,93 @@ MOTION motion;
 
 void motion_init(MOTION *m)
 {
-	m->state_leg    = MOTIONSTATUS_LEGS_IDLING;
-	m->state_turret = MOTIONSTATUS_TURRETS_FOLLOWING;
-	m->state_gun    = MOTIONSTATUS_GUNS_FOLLOWING;
+	m->travel_x = 0;
+	m->travel_y = 0;
+	m->travel_r = 0;
+	m->travel_l = 0;
+	m->travel_s = 500;
+	
+	m->travel_request = 0;
+	m->travel_largechange = 0;
+	
+	m->look_s   = 500;
+	m->aim_s    = 500;
+	 
+	m->state_leg    = MOTIONSTATE_LEGS_INIT;
+	m->state_turret = MOTIONSTATE_TURRETS_INIT;
+	m->state_gun    = MOTIONSTATE_GUNS_INIT;
+	
+	m->status_leg    = MOTIONSTATUS_LEGS_IDLING;
+	m->status_turret = MOTIONSTATUS_TURRETS_FOLLOWING;
+	m->status_gun    = MOTIONSTATUS_GUNS_FOLLOWING;
+	
+	m->idle_count = 0;
 }
 
 void motion_paramater_calcs(MOTION *m, CONTROLLER *c)
 {
+	m->travel_x = 0;
+	m->travel_y = 400;
+	m->travel_r = 0;
+	m->travel_l = 250;
+	m->travel_s = 500;
+	m->travel_request = 1;
 }
 
 void motion_state_control(MOTION *m)
 {
+	/*
+	 *   Leg state controls.
+	 */
+	
+	// If we should be walking.
+	if(m->travel_request)
+	{
+		// We have a travel request. Setting leg state to walk.
+		m->state_leg = MOTIONSTATE_LEGS_WALK;
+		
+		// If we are not interpolating or walking OR are walking and have had a large travel request change.
+		if(((m->status_leg != MOTIONSTATUS_LEGS_INTERPOLATING) && (m->status_leg != MOTIONSTATUS_LEGS_WALKING)) ||
+		   ((m->status_leg == MOTIONSTATUS_LEGS_WALKING) && (m->travel_largechange)))
+		{
+			// Calculate the goal position to interpolate to.
+			gait_process(&gait);
+			motion_leg_goals(m, &gait, &goal);
+			
+			// Initalize interpolation for the legs from the robots current position to the calculated goal position.
+			// Then set the robots status as interpolating.
+			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRETS + INTERPOLATION_IGNORE_GUNS);
+			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
+		}
+	}
+	// If we should not be walking.
+	else
+	{
+		// If we are not idling set out leg status to idling. 
+		// The idea here is that we do not always need to imediatly interpolate to a standing positiong.
+		if(m->status_leg != MOTIONSTATUS_LEGS_IDLING) m->status_leg = MOTIONSTATUS_LEGS_IDLING;
+		
+		// If we are not interpolating, our idle count is above XYZ, and our state is not yet stand. 
+		// Interpolate to standing position.
+		if((m->status_leg != MOTIONSTATUS_LEGS_INTERPOLATING) && (m->idle_count >= 100) && (m->state_leg != MOTIONSTATE_LEGS_STAND))
+		{
+			// Set leg state to stand.
+			m->state_leg = MOTIONSTATE_LEGS_STAND;
+		
+			// Initalize interpolation for the legs from the robot's current postion to the neutral standing position.
+			// Then set the robots status as interpolating.
+			interpolation_init(&interp_legs, &current, &neutral, INTERPOLATION_IGNORE_TURRETS + INTERPOLATION_IGNORE_GUNS);
+			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
+		}
+	}
+	
+	/*
+	 *   Turret state controls.
+	 */
+	
+	/*
+	 *   Gun state controls.
+	 */
 }
 
 void motion_leg_goals(MOTION *m, GAIT *g, POSITION *p)
@@ -78,7 +154,7 @@ void motion_process(MOTION *m, CONTROLLER *c)
 			// We are not Idling. Reset the idle counter.
 			m->idle_count = 0;
 			
-			if(interpolation_step(&interp_legs, &goal, 500))
+			if(interpolation_step(&interp_legs, &goal, 700))
 			{
 				if(m->state_leg & MOTIONSTATE_LEGS_WALK)
 					m->status_leg = MOTIONSTATUS_LEGS_WALKING;
