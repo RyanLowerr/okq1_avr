@@ -14,8 +14,7 @@
 #define MOTIONSTATE_LEGS_STAND       1
 #define MOTIONSTATE_LEGS_SIT         2
 #define MOTIONSTATE_LEGS_WALK        4
-#define MOTIONSTATE_LEGS_DOWN        8
-#define MOTIONSTATE_LEGS_TRACK       16
+#define MOTIONSTATE_LEGS_TRACK       8
 
 #define MOTIONSTATE_TURRETS_INIT     0
 #define MOTIONSTATE_TURRETS_HOME     1
@@ -46,7 +45,6 @@
 #define MOTIONSTATUS_GUNS_IDLING            3
 
 typedef struct {
-	
 	// Motion Paramaters for walking, looking with the turret, and aiming the guns.
 	
 	s16 travel_x; // Translational travel along the X axis in mm. DEC1
@@ -76,9 +74,6 @@ typedef struct {
 extern MOTION motion;
 
 void motion_init(MOTION *m);
-void motion_paramater_calcs(MOTION *m, CONTROLLER *c);
-void motion_state_control(MOTION *m);
-void motion_leg_goals(MOTION *m, GAIT *g, POSITION *p);
 void motion_process(MOTION *m, CONTROLLER *c);
 
 #endif
