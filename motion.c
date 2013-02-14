@@ -43,12 +43,21 @@ void motion_init(MOTION *m)
 
 static void motion_paramaters(MOTION *m, CONTROLLER *c)
 {
-	m->travel_x = 0;
-	m->travel_y = 400;
-	m->travel_r = 0;
-	m->travel_l = 250;
-	m->travel_s = 500;
-	m->travel_request = 1;
+	//m->travel_s = ((s32)c->analog[3] * DEC1) / 170; 
+	m->travel_y = (((s32)c->analog[0] - 512) * DEC2) / 128;
+	m->travel_x = (((s32)c->analog[1] - 512) * DEC2) / 128;
+	m->travel_r = 0;//1 - ((((s32)c->analog[2] - 512) * DEC2) / 500);
+	
+	if((m->travel_x >= 20) || (m->travel_x <= -20) || (m->travel_y >= 20) || (m->travel_x <= -20) || (m->travel_r >= 20) || (m->travel_x <= -20))
+	{
+		m->travel_l = 250;
+		m->travel_request = 1;
+	}
+	else
+	{
+		m->travel_l = 0;
+		m->travel_request = 0;
+	}
 }
 
 static void motion_gait(MOTION *m, GAIT *g, POSITION *p)
@@ -170,9 +179,9 @@ static void motion_status(MOTION *m)
 			// We are not Idling. Reset the idle counter.
 			m->idle_count = 0;
 			
-			if(interpolation_step(&interp_legs, &goal, 700))
+			if(interpolation_step(&interp_legs, &goal, 500))
 			{
-				if(m->state_leg & MOTIONSTATE_LEGS_WALK)
+				if(m->state_leg = MOTIONSTATE_LEGS_WALK)
 					m->status_leg = MOTIONSTATUS_LEGS_WALKING;
 				else
 					m->status_leg = MOTIONSTATUS_LEGS_IDLING;
@@ -206,7 +215,10 @@ static void motion_status(MOTION *m)
 		 *            interpolation between current position and sitting position.
 		 */
 		case MOTIONSTATUS_LEGS_IDLING:
-			m->idle_count += 1;
+			if(m->idle_count != MAX_U16)
+				m->idle_count += 1;
+			else
+				m->idle_count = MAX_U16;
 			break;
 	}
 	

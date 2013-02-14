@@ -9,15 +9,12 @@
 
 typedef struct
 {
-	s16 x;
-	s16 y;
-	s16 z;
-	s16 r;
-	s16 s;
-	u16 a[8];
+	u16 analog[8];
+	u08 digital[3];
 } CONTROLLER;
 
 extern CONTROLLER controller;
+extern CONTROLLER controller_pre;
 
 void controller_init(CONTROLLER *c);
 void controller_process(CONTROLLER *C);

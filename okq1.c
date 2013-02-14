@@ -16,7 +16,7 @@ int main(void)
 	// Enable global interups.
 	sei();
 	
-	// Perform all initizations.
+	// Perform initizations.
 	joint_init(&joint[0]);
 	gait_init(&gait, GAIT_TYPE_AMBLE);
 	controller_init(&controller);

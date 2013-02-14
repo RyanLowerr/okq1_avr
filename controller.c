@@ -5,6 +5,7 @@
 #include "types.h"
 
 CONTROLLER controller;
+CONTROLLER controller_pre;
 
 static volatile u08 controller_rxbuffer[CONTROLLER_BUFFER_SIZE];
 static volatile u08 controller_rxhead;
@@ -31,27 +32,14 @@ void controller_init(CONTROLLER *c)
 	
 	controller_buffer_flush();
 
-	c->x = 0;
-	c->y = 0;
-	c->z = 0;
-	c->r = 0;
-	c->s = 0;
-
 	for(u08 i = 0; i < 8; i++)
-		c->a[i] = 512;
+		c->analog[i] = 512;
 }
 
 void controller_process(CONTROLLER *c)
 {
 	if(controller_buffer_size() >= 19)
-	{
 		controller_read(&controller);
-		c->s = ((s32)c->a[3] * DEC1) / 170; 
-		c->y = (((s32)c->a[0] - 512) * DEC2) / 128;
-		c->x = (((s32)c->a[1] - 512) * DEC2) / 128;
-		c->r = 1 - ((((s32)c->a[2] - 512) * DEC2) / 500);
-		c->z = 250;
-	}
 }
 
 u08 controller_buffer_size(void)
@@ -79,7 +67,7 @@ u08 controller_read(CONTROLLER *c)
 {
 	u08 high;
 	u08 low;
-	u16 a[8];
+	u16 analog[8];
 	u16 checksum = 0;
 	
 	if(controller_buffer_read() == 0xff)
@@ -94,10 +82,10 @@ u08 controller_read(CONTROLLER *c)
 				low = controller_buffer_read();
 				checksum += low;
 				
-				a[i] = (high << 8) + low;
+				analog[i] = (high << 8) + low;
 				
-				if(a[i] > 1024) 
-					a[i] = 1024;
+				if(analog[i] > 1024) 
+					analog[i] = 1024;
 			}
 			
 			checksum = ~(checksum % 256);
@@ -105,7 +93,7 @@ u08 controller_read(CONTROLLER *c)
 			if((u08)checksum == controller_buffer_read())
 			{
 				for(u08 i = 0; i < 8; i++)
-					c->a[i] = a[i];
+					c->analog[i] = analog[i];
 			}
 		}
 	}

@@ -82,7 +82,7 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size)
 	u08 n;
 	u16 percent;
 	
-	if((u32)I->position + step_size > I->period)
+	if((u32)I->position + step_size >= I->period)
 		I->position = I->period;
 	else
 		I->position += step_size;
