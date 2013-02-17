@@ -89,11 +89,11 @@ static u08 dynamixel_writepacket(volatile u08 *txpacket, u08 packetlength)
 
 static u08 dynamixel_readpacket(volatile u08 *rxpacket, u08 packetlength)
 {
-	u16 ulcounter = 0;
+	u16 counter = 0;
 
 	while(dynamixel_rxindex < packetlength)
 	{
-		if(ulcounter++ > 10000)
+		if(counter++ > 10000)
 			return DYNAMIXEL_RX_TIMEOUT;
 	}
 

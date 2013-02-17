@@ -27,7 +27,6 @@ int main(void)
 	// Main program loop.
 	while(1)
 	{
-		controller_process(&controller);
 		motion_process(&motion, &controller);
 		joint_process(&joint[0]);
 	}

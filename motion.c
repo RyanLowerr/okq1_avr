@@ -46,9 +46,9 @@ static void motion_paramaters(MOTION *m, CONTROLLER *c)
 	//m->travel_s = ((s32)c->analog[3] * DEC1) / 170; 
 	m->travel_y = (((s32)c->analog[0] - 512) * DEC2) / 128;
 	m->travel_x = (((s32)c->analog[1] - 512) * DEC2) / 128;
-	m->travel_r = 0;//1 - ((((s32)c->analog[2] - 512) * DEC2) / 500);
+	m->travel_r = 1 - ((((s32)c->analog[2] - 512) * DEC2) / 500);
 	
-	if((m->travel_x >= 20) || (m->travel_x <= -20) || (m->travel_y >= 20) || (m->travel_x <= -20) || (m->travel_r >= 20) || (m->travel_x <= -20))
+	if((m->travel_x >= 20) || (m->travel_x <= -20) || (m->travel_y >= 20) || (m->travel_y <= -20) || (m->travel_r >= 20) || (m->travel_r <= -20))
 	{
 		m->travel_l = 250;
 		m->travel_request = 1;
