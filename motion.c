@@ -27,8 +27,12 @@ void motion_init(MOTION *m)
 	m->travel_request = 0;
 	m->travel_largechange = 0;
 	
-	m->look_s   = 500;
-	m->aim_s    = 500;
+	m->look_x = 0;
+	m->look_y = 0;
+	m->look_s = 500;
+	
+	m->aim_f = 0;
+	m->aim_s = 500;
 	 
 	m->state_leg    = MOTIONSTATE_LEGS_INIT;
 	m->state_turret = MOTIONSTATE_TURRETS_INIT;
@@ -39,6 +43,12 @@ void motion_init(MOTION *m)
 	m->status_gun    = MOTIONSTATUS_GUNS_FOLLOWING;
 	
 	m->idle_count = 0;
+	
+	// HACK  HACK  HACK
+	joint[17].angle = 450;
+	joint[18].angle = 0;
+	joint[19].angle = 0;
+	joint[20].angle = 0;
 }
 
 static void motion_paramaters(MOTION *m, CONTROLLER *c)
@@ -50,13 +60,26 @@ static void motion_paramaters(MOTION *m, CONTROLLER *c)
 	m->travel_l = 300;
 	
 	if((m->travel_x >= 20) || (m->travel_x <= -20) || (m->travel_y >= 20) || (m->travel_y <= -20) || (m->travel_r >= 20) || (m->travel_r <= -20))
-	{
 		m->travel_request = 1;
-	}
 	else
-	{
 		m->travel_request = 0;
-	}
+	
+	m->look_x = (((s32)c->analog[3] - 512) * DEC2) / 8192;
+	m->look_y = (((s32)c->analog[4] - 512) * DEC2) / 8192;
+	//m->look_s;
+	
+	if((m->look_x >= 20) || (m->look_x <= -20) || (m->look_y >= 20) || (m->look_y <= -20))
+		m->look_request = 1;
+	else
+		m->look_request = 0;
+	
+	m->aim_f = (((s32)c->analog[5] - 512) * DEC2) / 8192;
+	//m->aim_s;
+	
+	if((m->aim_f >= 20) || (m->aim_f <= -20))
+		m->aim_request = 1;
+	else
+		m->aim_request = 0;
 }
 
 static void motion_gait(MOTION *m, GAIT *g, POSITION *p)
@@ -159,10 +182,22 @@ static void motion_state(MOTION *m)
 	/*
 	 *   Turret state controls.
 	 */
+	if(m->look_request)
+	{
+	}
+	else
+	{
+	}
 	
 	/*
 	 *   Gun state controls.
 	 */
+	if(m->aim_request)
+	{
+	}
+	else
+	{
+	}
 }
 
 static void motion_status(MOTION *m)
@@ -220,7 +255,7 @@ static void motion_status(MOTION *m)
 			break;
 	}
 	
-	switch(m->status_gun)
+	switch(m->status_turret)
 	{
 		/*
 		 *   The turrets are interpolating into a new position.
@@ -234,6 +269,16 @@ static void motion_status(MOTION *m)
 		 *   The turrets are folling controller input.
 		 */
 		case MOTIONSTATUS_TURRETS_FOLLOWING:
+			// HACK  HACK  HACK
+			//goal.turret.x += current.turret.x + m->look_x;
+			//goal.turret.y += current.turret.y + m->look_y;
+			joint[16].angle += m->look_x * 1;
+			if (joint[16].angle > PAN_MAX) joint[16].angle = PAN_MAX;
+			if (joint[16].angle < PAN_MIN) joint[16].angle = PAN_MIN;
+			
+			joint[17].angle += m->look_y * 1;
+			if (joint[17].angle > TILT_MAX) joint[17].angle = TILT_MAX;
+			if (joint[17].angle < TILT_MIN) joint[17].angle = TILT_MIN;
 			break;
 			
 		/*
@@ -257,6 +302,12 @@ static void motion_status(MOTION *m)
 		 *   The guns are folling controller input.
 		 */
 		case MOTIONSTATUS_GUNS_FOLLOWING:
+			// HACK  HACK  HACK
+			//goal.guns.z += current.turret.z + m->look_y;
+			joint[18].angle += m->aim_f * 1;
+			if (joint[18].angle > GUN_MAX) joint[18].angle = GUN_MAX;
+			if (joint[18].angle < GUN_MIN) joint[18].angle = GUN_MIN;
+			joint[19].angle = -joint[20].angle;
 			break;
 		
 		/*

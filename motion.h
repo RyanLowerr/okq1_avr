@@ -53,8 +53,15 @@ typedef struct {
 	s16 travel_s; // Speed of travel.
 	u08 travel_request;
 	u08 travel_largechange;
-	s16 look_s;   // Speed of looking;
-	s16 aim_s;    // Speed of aiming;
+	
+	s16 look_x; // DEC1
+	s16 look_y; // DEC1
+	s16 look_s; // Speed of looking;
+	u08 look_request;
+	
+	s16 aim_f;  // DEC1
+	s16 aim_s;  // Speed of aiming;
+	u08 aim_request;
 	
 	// Motion states.
 	u08 state_leg;

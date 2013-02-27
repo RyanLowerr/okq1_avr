@@ -52,9 +52,9 @@ static u08 controller_read(void)
 		return 0;
 }
 
-ISR(USART1_RX_vect)
+ISR(USART_RX_vect)
 {
-	controller_rxpacket[controller_rxindex++] = UDR1;
+	controller_rxpacket[controller_rxindex++] = UDR0;
 	
 	if(controller_rxindex >= 19)
 	{
@@ -65,12 +65,12 @@ ISR(USART1_RX_vect)
 
 void controller_init(CONTROLLER *c)
 {
-	UBRR1H = ((F_CPU / 16 + CONTROLLER_BAUDRATE / 2) / CONTROLLER_BAUDRATE - 1) >> 8;
-	UBRR1L = ((F_CPU / 16 + CONTROLLER_BAUDRATE / 2) / CONTROLLER_BAUDRATE - 1);
+	UBRR0H = ((F_CPU / 16 + CONTROLLER_BAUDRATE / 2) / CONTROLLER_BAUDRATE - 1) >> 8;
+	UBRR0L = ((F_CPU / 16 + CONTROLLER_BAUDRATE / 2) / CONTROLLER_BAUDRATE - 1);
 	
-	UCSR1B |= (1 << TXEN1);
-	UCSR1B |= (1 << RXEN1);
-	UCSR1B |= (1 << RXCIE1);
+	UCSR0B |= (1 << TXEN0);
+	UCSR0B |= (1 << RXEN0);
+	UCSR0B |= (1 << RXCIE0);
 	
 	controller_flush();
 
@@ -80,6 +80,6 @@ void controller_init(CONTROLLER *c)
 
 void controller_write(u08 c)
 {
-	while(bit_is_clear(UCSR1A, UDRE1));
-	UDR1 = c;
+	while(bit_is_clear(UCSR0A, UDRE0));
+	UDR0 = c;
 }

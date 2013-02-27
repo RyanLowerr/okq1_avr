@@ -9,25 +9,25 @@ static volatile u08 dynamixel_txpacket[DYNAMIXEL_PACKET_SIZE];
 static volatile u08 dynamixel_rxpacket[DYNAMIXEL_PACKET_SIZE];
 static volatile u08 dynamixel_rxindex = 0;
 
-ISR(USART_RX_vect)
+ISR(USART1_RX_vect)
 {
-	dynamixel_rxpacket[dynamixel_rxindex++] = UDR0;
+	dynamixel_rxpacket[dynamixel_rxindex++] = UDR1;
 }
 
 void dynamixel_init(void)
 {
 	// Set UART baudrate
-	UBRR0H = ((F_CPU / 16 + DYNAMIXEL_BAUDRATE / 2) / DYNAMIXEL_BAUDRATE - 1) >> 8;
-	UBRR0L = ((F_CPU / 16 + DYNAMIXEL_BAUDRATE / 2) / DYNAMIXEL_BAUDRATE - 1);
+	UBRR1H = ((F_CPU / 16 + DYNAMIXEL_BAUDRATE / 2) / DYNAMIXEL_BAUDRATE - 1) >> 8;
+	UBRR1L = ((F_CPU / 16 + DYNAMIXEL_BAUDRATE / 2) / DYNAMIXEL_BAUDRATE - 1);
 	
 	// Enable UART TX, RX, and RX interrupt
-	UCSR0B |= (1 << TXEN0);
-	UCSR0B |= (1 << RXEN0);
-	UCSR0B |= (1 << RXCIE0);
+	UCSR1B |= (1 << TXEN1);
+	UCSR1B |= (1 << RXEN1);
+	UCSR1B |= (1 << RXCIE1);
 	
 	// Set UART direction pins as outputs
-	DDRD |= (1 << PD2);
-	DDRD |= (1 << PD3);
+	//DDRD |= (1 << PD2);
+	//DDRD |= (1 << PD3);
 	
 	// Reset rx index
 	dynamixel_rxindex = 0;
@@ -47,7 +47,7 @@ static void dynamixel_settx(void)
 static void dynamixel_setrx(void)
 {
 	// Wait for TX complete flag before turning the bus around
-	while(bit_is_clear(UCSR0A, TXC0));
+	while(bit_is_clear(UCSR0A, TXC1));
 	
 	_delay_us(1);
 	
@@ -65,8 +65,8 @@ static void dynamixel_setrx(void)
 
 static void dynamixel_write(u08 c)
 {
-	while(bit_is_clear(UCSR0A, UDRE0));
-	UDR0 = c;
+	while(bit_is_clear(UCSR1A, UDRE1));
+	UDR1 = c;
 }
 
 static u08 dynamixel_calculatechecksum(volatile u08 *packet)
