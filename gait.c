@@ -24,10 +24,10 @@ void gait_init(GAIT *g, u08 type)
 	
 	if(type == GAIT_TYPE_RIPPLE)
 	{
-		g->step_to_move_ratio = 25;
+		g->step_to_move_ratio = 30;
 		g->start_position[0] = 0;
-		g->start_position[1] = 25;
-		g->start_position[2] = 50;
+		g->start_position[1] = 50;
+		g->start_position[2] = 25;
 		g->start_position[3] = 75;
 		gait_paramcalc(g);
 	}
@@ -55,7 +55,7 @@ void gait_process(GAIT *g)
 			shiftedposition += g->period;
 			
 		// Foot is raised and lowerd while the leg moves forward.
-		if((g->position >= g->step_start[i]) && (g->position <= g->step_end[i]))
+		if((shiftedposition >= g->step_start[0]) && (shiftedposition <= g->step_end[0]))
 		{
 			// Translation is movement along a line from -1 (fully backwards) to 1 (full forward) for this portion of the gait.
 			// A rearanged and simplified point slope format equation for a line (y = mx + b) is used here.
