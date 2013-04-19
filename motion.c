@@ -22,33 +22,15 @@ void motion_init(MOTION *m)
 	m->travel_y = 0;
 	m->travel_r = 0;
 	m->travel_l = 0;
-	m->travel_s = 500;
+	m->travel_s = 300;
 	
 	m->travel_request = 0;
 	m->travel_largechange = 0;
-	
-	m->look_x = 0;
-	m->look_y = 0;
-	m->look_s = 500;
-	
-	m->aim_f = 0;
-	m->aim_s = 500;
 	 
-	m->state_leg    = MOTIONSTATE_LEGS_INIT;
-	m->state_turret = MOTIONSTATE_TURRETS_INIT;
-	m->state_gun    = MOTIONSTATE_GUNS_INIT;
-	
-	m->status_leg    = MOTIONSTATUS_LEGS_IDLING;
-	m->status_turret = MOTIONSTATUS_TURRETS_FOLLOWING;
-	m->status_gun    = MOTIONSTATUS_GUNS_FOLLOWING;
+	m->state_leg  = MOTIONSTATE_LEGS_INIT;
+	m->status_leg = MOTIONSTATUS_LEGS_IDLING;
 	
 	m->idle_count = 0;
-	
-	// HACK  HACK  HACK
-	joint[17].angle = 450;
-	joint[18].angle = 0;
-	joint[19].angle = 0;
-	joint[20].angle = 0;
 }
 
 static void motion_paramaters(MOTION *m, CONTROLLER *c)
@@ -63,23 +45,6 @@ static void motion_paramaters(MOTION *m, CONTROLLER *c)
 		m->travel_request = 1;
 	else
 		m->travel_request = 0;
-	
-	m->look_x = (((s32)c->analog[3] - 512) * DEC2) / 8192;
-	m->look_y = (((s32)c->analog[4] - 512) * DEC2) / 8192;
-	//m->look_s;
-	
-	if((m->look_x >= 20) || (m->look_x <= -20) || (m->look_y >= 20) || (m->look_y <= -20))
-		m->look_request = 1;
-	else
-		m->look_request = 0;
-	
-	m->aim_f = (((s32)c->analog[5] - 512) * DEC2) / 8192;
-	//m->aim_s;
-	
-	if((m->aim_f >= 20) || (m->aim_f <= -20))
-		m->aim_request = 1;
-	else
-		m->aim_request = 0;
 }
 
 static void motion_gait(MOTION *m, GAIT *g, POSITION *p)
@@ -131,7 +96,7 @@ static void motion_state(MOTION *m)
 			
 			// Initalize interpolation for the legs from the robots current position to the calculated goal position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRETS + INTERPOLATION_IGNORE_GUNS);
+			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
 			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 	}
@@ -155,7 +120,7 @@ static void motion_state(MOTION *m)
 			
 			// Initalize interpolation for the legs from the robot's current postion to the neutral standing position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRETS + INTERPOLATION_IGNORE_GUNS);
+			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
 			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 		// If we have been idle for a while initalize interpolation to the sitting position.
@@ -174,29 +139,9 @@ static void motion_state(MOTION *m)
 			
 			// Initalize interpolation for the legs from the robot's current postion to the sitting position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRETS + INTERPOLATION_IGNORE_GUNS);
+			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
 			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
-	}
-	
-	/*
-	 *   Turret state controls.
-	 */
-	if(m->look_request)
-	{
-	}
-	else
-	{
-	}
-	
-	/*
-	 *   Gun state controls.
-	 */
-	if(m->aim_request)
-	{
-	}
-	else
-	{
 	}
 }
 
@@ -248,72 +193,11 @@ static void motion_status(MOTION *m)
 		 *            interpolation between current position and sitting position.
 		 */
 		case MOTIONSTATUS_LEGS_IDLING:
+			
 			if(m->idle_count != MAX_U16)
 				m->idle_count += 1;
 			else
 				m->idle_count = MAX_U16;
-			break;
-	}
-	
-	switch(m->status_turret)
-	{
-		/*
-		 *   The turrets are interpolating into a new position.
-		 */
-		case MOTIONSTATUS_TURRETS_INTERPOLATING:
-			if(interpolation_step(&interp_turrets, &goal, m->look_s))
-				m->status_turret = MOTIONSTATUS_TURRETS_IDLING;
-			break;
-			
-		/*
-		 *   The turrets are folling controller input.
-		 */
-		case MOTIONSTATUS_TURRETS_FOLLOWING:
-			// HACK  HACK  HACK
-			//goal.turret.x += current.turret.x + m->look_x;
-			//goal.turret.y += current.turret.y + m->look_y;
-			joint[16].angle += m->look_x * 1;
-			if (joint[16].angle > PAN_MAX) joint[16].angle = PAN_MAX;
-			if (joint[16].angle < PAN_MIN) joint[16].angle = PAN_MIN;
-			
-			joint[17].angle += m->look_y * 1;
-			if (joint[17].angle > TILT_MAX) joint[17].angle = TILT_MAX;
-			if (joint[17].angle < TILT_MIN) joint[17].angle = TILT_MIN;
-			break;
-			
-		/*
-		 *   The turrets are idle.
-		 */
-		case MOTIONSTATUS_TURRETS_TRACKING:
-			break;
-	}
-	
-	switch(m->status_gun)
-	{
-		/*
-		 *   The guns are interpolating into a new position.
-		 */
-		case MOTIONSTATUS_GUNS_INTERPOLATING:
-			if(interpolation_step(&interp_guns, &goal, m->aim_s))
-				m->status_gun = MOTIONSTATUS_GUNS_IDLING;
-			break;
-			
-		/*
-		 *   The guns are folling controller input.
-		 */
-		case MOTIONSTATUS_GUNS_FOLLOWING:
-			// HACK  HACK  HACK
-			//goal.guns.z += current.turret.z + m->look_y;
-			joint[18].angle += m->aim_f * 1;
-			if (joint[18].angle > GUN_MAX) joint[18].angle = GUN_MAX;
-			if (joint[18].angle < GUN_MIN) joint[18].angle = GUN_MIN;
-			joint[19].angle = -joint[20].angle;
-			break;
-		
-		/*
-		 *   The guns are Idle.
-		 */
-		case MOTIONSTATUS_GUNS_TRACKING:
 			break;
 	}
 }
@@ -327,12 +211,6 @@ void motion_process(MOTION *m, CONTROLLER *c)
 	// Perform the IK on all legs, turrets and guns using the caclulated goal positon.
 	for(u08 i = 0; i < NUM_LEGS; i++)
 		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
-	
-	for(u08 i = 0; i < NUM_TURRETS; i++)
-		kinematics_turret_ik();
-	
-	for(u08 i = 0; i < NUM_GUNS; i++)
-		kinematics_gun_ik();
 	
 	// Save the previous goal potsition as the robot's current position.
 	current = goal;

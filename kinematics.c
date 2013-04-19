@@ -45,10 +45,7 @@ u08 kinematics_leg_ik(s16 x, s16 y, s16 z, s16 *coxa, s16 *femur, s16 *tibia, s1
 	s16 a3 = 900 - angle_c;                                                      // tibia
 	s16 a4 = 0 - a2 - a3;                                                        // tarsus
 	
-	if (x < 0)
-		*coxa = 1800 - a1;
-	else
-		*coxa = a1;	
+	*coxa = (x < 0) ? (1800 - a1) : a1;	
 	*femur = a2;
 	*tibia = a3;
 	*tarsus = a4;
@@ -67,16 +64,6 @@ u08 kinematics_turret_ik(void)
 }
 
 u08 kinematics_turret_fk(void)
-{
-	;
-}
-
-u08 kinematics_gun_ik(void)
-{
-	;
-}
-
-u08 kinematics_gun_fk(void)
 {
 	;
 }

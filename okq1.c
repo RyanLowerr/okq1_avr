@@ -28,7 +28,7 @@ int main(void)
 	while(1)
 	{
 		motion_process(&motion, &controller);
-		joint_process(&joint[0]);
+		joint_write_positions(&joint[0]);
 	}
 	
 	return 0;

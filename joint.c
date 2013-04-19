@@ -104,8 +104,30 @@ void joint_init(JOINT *joint)
 	joint[21].center = L_GUN_TILT_ZERO;
 }
 
+// Reads all servos position and uses readings to calculate joint angles.
+void joint_read_angles(JOINT *joint)
+{
+	u16 position;
+	
+	for(u08 i = 0; i < NUM_SERVOS; i++)
+	{
+		if(joint[i].type == JOINT_TYPE_MX)
+		{
+			dynamixel_readword(i, MX_PRESENT_POSITION_L, &position);
+			joint[i].angle = 0;
+		}
+		else if (joint[i].type == JOINT_TYPE_AX)
+		{
+			dynamixel_readword(i, AX_PRESENT_POSITION_L, &position);
+			joint[i].angle = 0;
+		}
+		else
+			joint[i].angle = 0;
+	}
+}
+
 // Writes joint positions to all servos that need their goal positions updated using the dynamixel sync write command
-void joint_process(JOINT *joint)
+void joint_write_positions(JOINT *joint)
 {
 	u08 packet[NUM_SERVOS*3]; // id, position low byte and position high byte per servo
 	u08 servocount = 0;       // count of servos that need position update

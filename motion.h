@@ -16,17 +16,11 @@
 #define MOTIONSTATE_LEGS_WALK        4
 #define MOTIONSTATE_LEGS_TRACK       8
 
-#define MOTIONSTATE_TURRETS_INIT     0
-#define MOTIONSTATE_TURRETS_HOME     1
-#define MOTIONSTATE_TURRETS_ABSOLUTE 2
-#define MOTIONSTATE_TURRETS_RELATIVE 4
-#define MOTIONSTATE_TURRETS_TRACK    8
-
-#define MOTIONSTATE_GUNS_INIT        0
-#define MOTIONSTATE_GUNS_HOME        1
-#define MOTIONSTATE_GUNS_ABSOLUTE    2
-#define MOTIONSTATE_GUNS_RELATIVE    4
-#define MOTIONSTATE_GUNS_TRACK       8
+#define MOTIONSTATE_TURRET_INIT      0
+#define MOTIONSTATE_TURRET_HOME      1
+#define MOTIONSTATE_TURRET_ABSOLUTE  2
+#define MOTIONSTATE_TURRET_RELATIVE  4
+#define MOTIONSTATE_TURRET_TRACK     8
 
 // Motion status
 #define MOTIONSTATUS_LEGS_INTERPOLATING     0
@@ -34,15 +28,10 @@
 #define MOTIONSTATUS_LEGS_TRACKING          2
 #define MOTIONSTATUS_LEGS_IDLING            3
 
-#define MOTIONSTATUS_TURRETS_INTERPOLATING  0
-#define MOTIONSTATUS_TURRETS_FOLLOWING      1
-#define MOTIONSTATUS_TURRETS_TRACKING       2
-#define MOTIONSTATUS_TURRETS_IDLING         3
-
-#define MOTIONSTATUS_GUNS_INTERPOLATING     0
-#define MOTIONSTATUS_GUNS_FOLLOWING         1
-#define MOTIONSTATUS_GUNS_TRACKING          2
-#define MOTIONSTATUS_GUNS_IDLING            3
+#define MOTIONSTATUS_TURRET_INTERPOLATING   0
+#define MOTIONSTATUS_TURRET_FOLLOWING       1
+#define MOTIONSTATUS_TURRET_TRACKING        2
+#define MOTIONSTATUS_TURRET_IDLING          3
 
 typedef struct {
 	// Motion Paramaters for walking, looking with the turret, and aiming the guns.
@@ -54,24 +43,8 @@ typedef struct {
 	u08 travel_request;
 	u08 travel_largechange;
 	
-	s16 look_x; // DEC1
-	s16 look_y; // DEC1
-	s16 look_s; // Speed of looking;
-	u08 look_request;
-	
-	s16 aim_f;  // DEC1
-	s16 aim_s;  // Speed of aiming;
-	u08 aim_request;
-	
-	// Motion states.
-	u08 state_leg;
-	u08 state_turret;
-	u08 state_gun;
-	
-	// Motion status. 
+	u08 state_leg; 
 	u08 status_leg;
-	u08 status_turret;
-	u08 status_gun;
 	
 	// Idle counters.
 	u16 idle_count;

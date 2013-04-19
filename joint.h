@@ -22,6 +22,7 @@ typedef struct
 extern JOINT joint[NUM_SERVOS];
 
 void joint_init(JOINT *joint);
-void joint_process(JOINT *joint);
+void joint_read_angles(JOINT *joint);
+void joint_write_positions(JOINT *joint);
 
 #endif

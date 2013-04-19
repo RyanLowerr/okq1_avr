@@ -5,8 +5,7 @@
 #include "common.h"
 
 INTERPOLATION interp_legs;
-INTERPOLATION interp_turrets;
-INTERPOLATION interp_guns;
+INTERPOLATION interp_turret;
 
 static s16 interpolation_calc_delta(s16 x, s16 y)
 {
@@ -42,36 +41,17 @@ u08 interpolation_init(INTERPOLATION *I, POSITION *p1, POSITION *p2, u08 ignore_
 		}
 	}
 	
-	for(u08 i = 0; i < NUM_TURRETS; i++)
+	if(I->ignore_mask & INTERPOLATION_IGNORE_TURRET)
 	{
-		if(I->ignore_mask & INTERPOLATION_IGNORE_TURRETS)
-		{
-			I->delta[n++] = 0;
-			I->delta[n++] = 0;
-			I->delta[n++] = 0;
-		}
-		else
-		{
-			I->delta[n++] = interpolation_calc_delta(p1->turret[i].x, p2->turret[i].x);
-			I->delta[n++] = interpolation_calc_delta(p1->turret[i].y, p2->turret[i].y);
-			I->delta[n++] = interpolation_calc_delta(p1->turret[i].z, p2->turret[i].z);
-		}
+		I->delta[n++] = 0;
+		I->delta[n++] = 0;
+		I->delta[n++] = 0;
 	}
-	
-	for(u08 i = 0; i < NUM_GUNS; i++)
+	else
 	{
-		if(I->ignore_mask & INTERPOLATION_IGNORE_GUNS)
-		{
-			I->delta[n++] = 0;
-			I->delta[n++] = 0;
-			I->delta[n++] = 0;
-		}
-		else
-		{
-			I->delta[n++] = interpolation_calc_delta(p1->gun[i].x, p2->gun[i].x);
-			I->delta[n++] = interpolation_calc_delta(p1->gun[i].y, p2->gun[i].y);
-			I->delta[n++] = interpolation_calc_delta(p1->gun[i].z, p2->gun[i].z);
-		}
+		I->delta[n++] = interpolation_calc_delta(p1->turret.x, p2->turret.x);
+		I->delta[n++] = interpolation_calc_delta(p1->turret.y, p2->turret.y);
+		I->delta[n++] = interpolation_calc_delta(p1->turret.z, p2->turret.z);
 	}
 	
 	return 0;
@@ -106,40 +86,18 @@ u08 interpolation_step(INTERPOLATION *I, POSITION *p, u16 step_size)
 		}
 	}
 	
-	for(u08 i = 0; i < NUM_TURRETS; i++)
+	if(I->ignore_mask & INTERPOLATION_IGNORE_TURRET)
 	{
-		if(I->ignore_mask & INTERPOLATION_IGNORE_TURRETS)
-		{
-			p->turret[i].x += 0; n++;
-			p->turret[i].y += 0; n++;
-			p->turret[i].z += 0; n++;	
-		}
-		else
-		{
-			p->turret[i].x = I->ps.turret[i].x + (((s32)I->delta[n] * percent) / DEC4); n++;
-			p->turret[i].y = I->ps.turret[i].y + (((s32)I->delta[n] * percent) / DEC4); n++;
-			p->turret[i].z = I->ps.turret[i].z + (((s32)I->delta[n] * percent) / DEC4); n++;
-		}
+		p->turret.x += 0; n++;
+		p->turret.y += 0; n++;
+		p->turret.z += 0; n++;	
 	}
-	
-	for(u08 i = 0; i < NUM_GUNS; i++)
-	{
-		if(I->ignore_mask & INTERPOLATION_IGNORE_GUNS)
-		{
-			p->gun[i].x += 0; n++;
-			p->gun[i].y += 0; n++;
-			p->gun[i].z += 0; n++;
-		}
-		else
-		{
-			p->gun[i].x = I->ps.gun[i].x + (((s32)I->delta[n] * percent) / DEC4); n++;
-			p->gun[i].y = I->ps.gun[i].y + (((s32)I->delta[n] * percent) / DEC4); n++;
-			p->gun[i].z = I->ps.gun[i].z + (((s32)I->delta[n] * percent) / DEC4); n++;
-		}
-	}
-	
-	if(I->position == I->period)
-		return 1;
 	else
-		return 0;
+	{
+		p->turret.x = I->ps.turret.x + (((s32)I->delta[n] * percent) / DEC4); n++;
+		p->turret.y = I->ps.turret.y + (((s32)I->delta[n] * percent) / DEC4); n++;
+		p->turret.z = I->ps.turret.z + (((s32)I->delta[n] * percent) / DEC4); n++;
+	}
+	
+	return (I->position == I->period) ? 1 : 0;
 }

@@ -4,8 +4,6 @@
 
 #define NUM_SERVOS 22
 #define NUM_LEGS 4
-#define NUM_TURRETS 1
-#define NUM_GUNS 2
 
 // Leg segment lengths (mm from joint to joint). DEC1
 #define COXA_LENGTH   600
@@ -99,12 +97,5 @@
 #define R_GUN_TILT_ZERO   0
 #define L_GUN_PAN_ZERO    0
 #define L_GUN_TILT_ZERO   0
-
-#define PAN_MAX 1800
-#define PAN_MIN -1800
-#define TILT_MAX 200
-#define TILT_MIN -200
-#define GUN_MAX 200
-#define GUN_MIN -200
 
 #endif

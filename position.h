@@ -8,8 +8,7 @@
 
 typedef struct {
 	VECTOR foot[NUM_LEGS];
-	VECTOR turret[NUM_TURRETS];
-	VECTOR gun[NUM_GUNS];
+	VECTOR turret;
 } POSITION;
 
 extern POSITION current;
