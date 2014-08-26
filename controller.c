@@ -20,8 +20,7 @@ static void controller_flush(void)
 
 static u08 controller_read(void)
 {
-	u08 high;
-	u08 low;
+	u08 tmp;
 	u16 analog[8];
 	u08 n = 2;
 	u16 checksum = 0;
@@ -29,22 +28,18 @@ static u08 controller_read(void)
 	if((controller_rxpacket[0] != 0xff) && (controller_rxpacket[1] != 0xff))
 		return 0;
 	
-	for(u08 i = 0; i < 8; i++)
+	for(u08 i = 0; i < 4; i++)
 	{
-		high = controller_rxpacket[n++];
-		checksum += high;
-		
-		low = controller_rxpacket[n++];
-		checksum += low;
-		
-		analog[i] = (high << 8) + low;
+		tmp = controller_rxpacket[n++];
+		checksum += tmp;
+		analog[i] = tmp;
 	}
 	
 	checksum = ~(checksum % 256);
 	
-	if((u08)checksum == controller_rxpacket[18])
+	if((u08)checksum == controller_rxpacket[6])
 	{
-		for(u08 i = 0; i < 8; i++)
+		for(u08 i = 0; i < 4; i++)
 			controller.analog[i] = analog[i];
 		return 1;
 	}
@@ -52,11 +47,11 @@ static u08 controller_read(void)
 		return 0;
 }
 
-ISR(USART_RX_vect)
+ISR(USART0_RX_vect)
 {
 	controller_rxpacket[controller_rxindex++] = UDR0;
 	
-	if(controller_rxindex >= 19)
+	if(controller_rxindex >= 7)
 	{
 		controller_read();
 		controller_flush();
@@ -75,7 +70,7 @@ void controller_init(CONTROLLER *c)
 	controller_flush();
 
 	for(u08 i = 0; i < 8; i++)
-		c->analog[i] = 512;
+		c->analog[i] = 0;
 }
 
 void controller_write(u08 c)

@@ -9,45 +9,24 @@
 #include "joint.h"
 #include "okmath.h"
 #include "gait.h"
-#include "dynamixel.h"
-#include "mx.h"
-#include "ax.h"
 #include "okmath.h"
 
-MOTION motion;
-
-void motion_init(MOTION *m)
-{
-	m->travel_x = 0;
-	m->travel_y = 0;
-	m->travel_r = 0;
-	m->travel_l = 0;
-	m->travel_s = 300;
+// Motion Paramaters for walking, looking with the turret, and aiming the guns.
+s16 travel_x; // Translational travel along the X axis in mm. DEC1
+s16 travel_y; // Translational travel along the Y axis in mm. DEC1
+s16 travel_r; // Rotational travel around the Z axis in degrees. DEC1
+s16 travel_l; // Leg lift height in mm. DEC1
+s16 travel_s; // Speed of travel.
+u08 travel_request;
+u08 travel_largechange;
 	
-	m->travel_request = 0;
-	m->travel_largechange = 0;
-	 
-	m->state_leg  = MOTIONSTATE_LEGS_INIT;
-	m->status_leg = MOTIONSTATUS_LEGS_IDLING;
+u08 state_leg; 
+u08 status_leg;
 	
-	m->idle_count = 0;
-}
+// Idle counters.
+u16 idle_count;
 
-static void motion_paramaters(MOTION *m, CONTROLLER *c)
-{
-	//m->travel_s = ((s32)c->analog[3] * DEC1) / 170; 
-	m->travel_y = (((s32)c->analog[0] - 512) * DEC2) / 128;
-	m->travel_x = (((s32)c->analog[1] - 512) * DEC2) / 128;
-	m->travel_r = 1 - ((((s32)c->analog[2] - 512) * DEC2) / 500);
-	m->travel_l = 300;
-	
-	if((m->travel_x >= 20) || (m->travel_x <= -20) || (m->travel_y >= 20) || (m->travel_y <= -20) || (m->travel_r >= 20) || (m->travel_r <= -20))
-		m->travel_request = 1;
-	else
-		m->travel_request = 0;
-}
-
-static void motion_gait(MOTION *m, GAIT *g, POSITION *p)
+static void motion_gait(GAIT *g, POSITION *p)
 {
 	for(u08 i = 0; i < NUM_LEGS; i++)
 	{
@@ -58,7 +37,7 @@ static void motion_gait(MOTION *m, GAIT *g, POSITION *p)
 		s16 xfromcenter;
 		s16 yfromcenter;
 			
-		theta = ((s32)g->tran[i] * m->travel_r) / DEC4;
+		theta = ((s32)g->tran[i] * travel_r) / DEC4;
 		costheta = okmath_cos(theta);
 		sintheta = okmath_sin(theta);
 		xfromcenter = neutral.foot[i].x + coxaoffset.foot[i].x;
@@ -69,35 +48,56 @@ static void motion_gait(MOTION *m, GAIT *g, POSITION *p)
 		p->foot[i].z = neutral.foot[i].z;
 			
 		// Add gait translations to goal position
-		p->foot[i].x += ((s32)g->tran[i] * m->travel_x) / DEC4;
-		p->foot[i].y += ((s32)g->tran[i] * m->travel_y) / DEC4;
-		p->foot[i].z += ((s32)g->lift[i] * m->travel_l) / DEC4;
+		p->foot[i].x += ((s32)g->tran[i] * travel_x) / DEC4;
+		p->foot[i].y += ((s32)g->tran[i] * travel_y) / DEC4;
+		p->foot[i].z += ((s32)g->lift[i] * travel_l) / DEC4;
 	}
 }
 
-static void motion_state(MOTION *m)
+void motion_init(void)
 {
-	/*
-	 *   Leg state controls.
-	 */
+	travel_x = 0;
+	travel_y = 0;
+	travel_r = 0;
+	travel_l = 0;
+	travel_s = 500;
+	
+	travel_request = 0;
+	travel_largechange = 0;
+	
+	state_leg  = MOTIONSTATE_LEGS_INIT;
+	status_leg = MOTIONSTATUS_LEGS_IDLING;
+	
+	idle_count = 0;
+}
+
+void motion_process(CONTROLLER *c)
+{
+	travel_s = 600; 
+	travel_y = (c->analog[3] >= 128) ?  (-c->analog[3] + 255) * 3: -(c->analog[3]) * 3;
+	travel_x = (c->analog[2] >= 128) ? -(-c->analog[2] + 255) * 3:  (c->analog[2]) * 3;
+	travel_r = (c->analog[0] >= 128) ?  (-c->analog[0] + 255)/1.27 : -(c->analog[0]/1.27);
+	travel_l = 350;
+	
+	travel_request = ((travel_x >= 20) || (travel_x <= -20) || (travel_y >= 20) || (travel_y <= -20) || (travel_r >= 10) || (travel_r <= -10)) ? 1 : 0;
 	
 	// We have a travel request.
-	if(m->travel_request)
+	if(travel_request)
 	{
 		// We have a travel request. Setting leg state to walk.
-		m->state_leg = MOTIONSTATE_LEGS_WALK;
+		state_leg = MOTIONSTATE_LEGS_WALK;
 		
 		// If we are not interpolating or walking OR are walking and have had a large travel request change.
-		if((m->status_leg != MOTIONSTATUS_LEGS_INTERPOLATING) && (m->status_leg != MOTIONSTATUS_LEGS_WALKING))
+		if((status_leg != MOTIONSTATUS_LEGS_INTERPOLATING) && (status_leg != MOTIONSTATUS_LEGS_WALKING))
 		{
 			// Calculate the goal position to interpolate to.
 			gait_process(&gait);
-			motion_gait(m, &gait, &goal);
+			motion_gait(&gait, &goal);
 			
 			// Initalize interpolation for the legs from the robots current position to the calculated goal position.
 			// Then set the robots status as interpolating.
 			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
-			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
+			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 	}
 	// We do not have a travel request.
@@ -105,10 +105,10 @@ static void motion_state(MOTION *m)
 	{		
 		// If we are not interpolating and our state is not already stand or sit. 
 		// Interpolate to a standing position with all four feet on the ground.
-		if((m->status_leg != MOTIONSTATUS_LEGS_INTERPOLATING) && (m->state_leg != MOTIONSTATE_LEGS_STAND) && (m->state_leg != MOTIONSTATE_LEGS_SIT))
+		if((status_leg != MOTIONSTATUS_LEGS_INTERPOLATING) && (state_leg != MOTIONSTATE_LEGS_STAND) && (state_leg != MOTIONSTATE_LEGS_SIT))
 		{
 			// Set leg state to stand.
-			m->state_leg = MOTIONSTATE_LEGS_STAND;
+			state_leg = MOTIONSTATE_LEGS_STAND;
 			
 			// set the goal position.
 			for(u08 i = 0; i < NUM_LEGS; i++)
@@ -121,13 +121,13 @@ static void motion_state(MOTION *m)
 			// Initalize interpolation for the legs from the robot's current postion to the neutral standing position.
 			// Then set the robots status as interpolating.
 			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
-			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
+			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 		// If we have been idle for a while initalize interpolation to the sitting position.
-		else if((m->idle_count >= 500) && (m->state_leg != MOTIONSTATE_LEGS_SIT))
+		else if((idle_count >= 500) && (state_leg != MOTIONSTATE_LEGS_SIT))
 		{
 			// Set leg state to stand.
-			m->state_leg = MOTIONSTATE_LEGS_SIT;
+			state_leg = MOTIONSTATE_LEGS_SIT;
 			
 			// Set the goal position.
 			for(u08 i = 0; i < NUM_LEGS; i++)
@@ -140,14 +140,11 @@ static void motion_state(MOTION *m)
 			// Initalize interpolation for the legs from the robot's current postion to the sitting position.
 			// Then set the robots status as interpolating.
 			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
-			m->status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
+			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 	}
-}
-
-static void motion_status(MOTION *m)
-{
-	switch(m->status_leg)
+	
+	switch(status_leg)
 	{
 		/*
 		 *   The legs are interpolating into a new position.
@@ -155,14 +152,14 @@ static void motion_status(MOTION *m)
 		case MOTIONSTATUS_LEGS_INTERPOLATING:
 			
 			// We are not Idling. Reset the idle counter.
-			m->idle_count = 0;
+			idle_count = 0;
 			
 			if(interpolation_step(&interp_legs, &goal, 600))
 			{
-				if(m->state_leg == MOTIONSTATE_LEGS_WALK)
-					m->status_leg = MOTIONSTATUS_LEGS_WALKING;
+				if(state_leg == MOTIONSTATE_LEGS_WALK)
+					status_leg = MOTIONSTATUS_LEGS_WALKING;
 				else
-					m->status_leg = MOTIONSTATUS_LEGS_IDLING;
+					status_leg = MOTIONSTATUS_LEGS_IDLING;
 			}
 			
 			break;
@@ -173,17 +170,16 @@ static void motion_status(MOTION *m)
 		case MOTIONSTATUS_LEGS_WALKING:
 			
 			// We are not Idling. Reset the idle counter.
-			m->idle_count = 0;
+			idle_count = 0;
 			
 			// Increment the gait position and process.
 			// Idealy we have already interpolated to the current position to get to this
 			// point so we need to increment the gait to calculate our next goal position.
-			gait_increment(&gait, m->travel_s);
+			gait_increment(&gait, travel_s);
 			gait_process(&gait);
 			
 			// Calculate the legs goal positions.
-			motion_gait(m, &gait, &goal);
-			
+			motion_gait(&gait, &goal);
 			break;
 		
 		/*
@@ -194,19 +190,13 @@ static void motion_status(MOTION *m)
 		 */
 		case MOTIONSTATUS_LEGS_IDLING:
 			
-			if(m->idle_count != MAX_U16)
-				m->idle_count += 1;
+			if(idle_count != MAX_U16)
+				idle_count += 1;
 			else
-				m->idle_count = MAX_U16;
+				idle_count = MAX_U16;
+			
 			break;
 	}
-}
-
-void motion_process(MOTION *m, CONTROLLER *c)
-{	
-	motion_paramaters(m, c);
-	motion_state(m);
-	motion_status(m);
 	
 	// Perform the IK on all legs, turrets and guns using the caclulated goal positon.
 	for(u08 i = 0; i < NUM_LEGS; i++)

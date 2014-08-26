@@ -129,7 +129,7 @@ void joint_read_angles(JOINT *joint)
 // Writes joint positions to all servos that need their goal positions updated using the dynamixel sync write command
 void joint_write_positions(JOINT *joint)
 {
-	u08 packet[NUM_SERVOS*3]; // id, position low byte and position high byte per servo
+	u08 packet[NUM_SERVOS*5]; // id, position low byte and position high byte per servo
 	u08 servocount = 0;       // count of servos that need position update
 	u08 n = 0;
 	
@@ -142,21 +142,23 @@ void joint_write_positions(JOINT *joint)
 			joint[i].position = (u16)(AX_CENTER_VALUE + ((AX_TIC_PER_DEG * (joint[i].center + joint[i].direction * (s32)joint[i].angle)) / DEC3));
 		else
 			joint[i].position = 0;
-
+		
 		// If the joint requires a position update add it to the sync write packet. Increment the servo counter.		
 		if(joint[i].position != joint[i].prevposition) 
 		{
 			packet[n++] = joint[i].id;
 			packet[n++] = dynamixel_getlowbyte(joint[i].position);
 			packet[n++] = dynamixel_gethighbyte(joint[i].position);
+			packet[n++] = dynamixel_getlowbyte(500);
+			packet[n++] = dynamixel_gethighbyte(500);
 			servocount++;
 		}
-
+		
 		// Remember the joint's newest position value.
 		joint[i].prevposition = joint[i].position;
 	}
-
+	
 	// sync write goal positions out to servos if required.
 	if(servocount > 0)
-	 dynamixel_syncwrite(MX_GOAL_POSITION_L, 2, servocount, &packet[0]);
+		dynamixel_syncwrite(MX_GOAL_POSITION_L, 4, servocount, &packet[0]);
 }

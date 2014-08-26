@@ -20,14 +20,14 @@ int main(void)
 	joint_init(&joint[0]);
 	gait_init(&gait, GAIT_TYPE_AMBLE);
 	controller_init(&controller);
-	motion_init(&motion);
+	motion_init();
 	dynamixel_init();
 	position_init();
 	
 	// Main program loop.
 	while(1)
 	{
-		motion_process(&motion, &controller);
+		motion_process(&controller);
 		joint_write_positions(&joint[0]);
 	}
 	
