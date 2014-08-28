@@ -4,8 +4,7 @@
 #include "controller.h"
 #include "common.h"
 #include "position.h"
-#include "interpolation.h"
-#include "kinematics.h"
+#include "leg4dof.h"
 #include "okmath.h"
 #include "gait.h"
 #include "okmath.h"
@@ -74,7 +73,7 @@ void motion_init(void)
 void motion_process(CONTROLLER *c)
 {
 	travel_s = 600; 
-	travel_y = (c->analog[3] >= 128) ?  (-c->analog[3] + 255) * 3: -(c->analog[3]) * 3;
+	travel_y = 100;//(c->analog[3] >= 128) ?  (-c->analog[3] + 255) * 3: -(c->analog[3]) * 3;
 	travel_x = (c->analog[2] >= 128) ? -(-c->analog[2] + 255) * 3:  (c->analog[2]) * 3;
 	travel_r = (c->analog[0] >= 128) ?  (-c->analog[0] + 255)/1.27 : -(c->analog[0]/1.27);
 	travel_l = 350;
@@ -96,7 +95,7 @@ void motion_process(CONTROLLER *c)
 			
 			// Initalize interpolation for the legs from the robots current position to the calculated goal position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp, &current, &goal);
+			leg4dof_interpolation_init(&interp, &current, &goal);
 			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 	}
@@ -154,7 +153,7 @@ void motion_process(CONTROLLER *c)
 			// We are not Idling. Reset the idle counter.
 			idle_count = 0;
 			
-			if(interpolation_step(&interp, &goal, 600))
+			if(leg4dof_interpolation_step(&interp, &goal, 600))
 			{
 				if(state_leg == MOTIONSTATE_LEGS_WALK)
 					status_leg = MOTIONSTATUS_LEGS_WALKING;
@@ -200,7 +199,7 @@ void motion_process(CONTROLLER *c)
 	
 	// Perform the IK on all legs, turrets and guns using the caclulated goal positon.
 	for(u08 i = 0; i < NUM_LEGS; i++)
-		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &servo[i*4].angle, &servo[i*4+1].angle, &servo[i*4+2].angle, &servo[i*4+3].angle);
+		leg4dof_kinematics_reverse(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &servo[i*4].angle, &servo[i*4+1].angle, &servo[i*4+2].angle, &servo[i*4+3].angle);
 	
 	// Save the previous goal potsition as the robot's current position.
 	current = goal;

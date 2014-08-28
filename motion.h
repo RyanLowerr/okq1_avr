@@ -3,11 +3,7 @@
 #define _MOTIONSTATUS_H_
 
 #include "types.h"
-#include "okmath.h"
-#include "position.h"
-#include "interpolation.h"
 #include "controller.h"
-#include "gait.h"
 
 // Motion states
 #define MOTIONSTATE_LEGS_INIT        0
