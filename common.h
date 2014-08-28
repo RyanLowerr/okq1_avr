@@ -44,14 +44,6 @@
 #define FL_TIBIA_ID    15
 #define FL_TARSUS_ID   16
 
-#define TURRET_PAN_ID  17
-#define TURRET_TILT_ID 18
-
-#define R_GUN_PAN_ID   19
-#define R_GUN_TILT_ID  20
-#define L_GUN_PAN_ID   21
-#define L_GUN_TILT_ID  22
-
 // Servo Direction
 #define FR_COXA_DIRECTION     1
 #define FR_FEMUR_DIRECTION    1

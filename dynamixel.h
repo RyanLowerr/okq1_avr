@@ -3,6 +3,18 @@
 #define _DYNAMIXEL_H_
 
 #include "types.h"
+#include "common.h"
+
+typedef struct
+{
+	u16 position;     //
+	u16 prevposition; //
+	s16 center;       //
+	s16 angle;        //
+	u08 id;           //
+	s08 direction;    //
+	s08 type;         // 
+} DYNAMIXEL;
 
 #define DYNAMIXEL_BAUDRATE      1000000
 
@@ -32,6 +44,11 @@
 #define DYNAMIXEL_TX_FAIL       4
 #define DYNAMIXEL_TX_TIMEOUT    5
 
+#define DYNAMIXEL_TYPE_AX       1
+#define DYNAMIXEL_TYPE_MX       2
+
+extern DYNAMIXEL servo[NUM_SERVOS];
+
 void dynamixel_init(void);
 u08 dynamixel_ping(u08 id);
 u08 dynamixel_readbyte(u08 id, u08 address, u08 *value);
@@ -44,5 +61,9 @@ u08 dynamixel_reset(u08 id);
 u16 dynamixel_makeword(u08 lowbyte, u08 highbyte);
 u08 dynamixel_getlowbyte(u16 word);
 u08 dynamixel_gethighbyte(u16 word);
+
+DYNAMIXEL dynamixel_new(u08 type, u08 id, u08 direction, s16 center);
+void dynamixel_get_positions(DYNAMIXEL *servo);
+void dynamixel_write_positions(DYNAMIXEL *servo);
 
 #endif

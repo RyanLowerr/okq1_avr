@@ -6,10 +6,10 @@
 #include "position.h"
 #include "interpolation.h"
 #include "kinematics.h"
-#include "joint.h"
 #include "okmath.h"
 #include "gait.h"
 #include "okmath.h"
+#include "dynamixel.h"
 
 // Motion Paramaters for walking, looking with the turret, and aiming the guns.
 s16 travel_x; // Translational travel along the X axis in mm. DEC1
@@ -96,7 +96,7 @@ void motion_process(CONTROLLER *c)
 			
 			// Initalize interpolation for the legs from the robots current position to the calculated goal position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
+			interpolation_init(&interp, &current, &goal);
 			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 	}
@@ -120,7 +120,7 @@ void motion_process(CONTROLLER *c)
 			
 			// Initalize interpolation for the legs from the robot's current postion to the neutral standing position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
+			interpolation_init(&interp, &current, &goal);
 			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 		// If we have been idle for a while initalize interpolation to the sitting position.
@@ -139,7 +139,7 @@ void motion_process(CONTROLLER *c)
 			
 			// Initalize interpolation for the legs from the robot's current postion to the sitting position.
 			// Then set the robots status as interpolating.
-			interpolation_init(&interp_legs, &current, &goal, INTERPOLATION_IGNORE_TURRET);
+			interpolation_init(&interp, &current, &goal);
 			status_leg = MOTIONSTATUS_LEGS_INTERPOLATING;
 		}
 	}
@@ -154,7 +154,7 @@ void motion_process(CONTROLLER *c)
 			// We are not Idling. Reset the idle counter.
 			idle_count = 0;
 			
-			if(interpolation_step(&interp_legs, &goal, 600))
+			if(interpolation_step(&interp, &goal, 600))
 			{
 				if(state_leg == MOTIONSTATE_LEGS_WALK)
 					status_leg = MOTIONSTATUS_LEGS_WALKING;
@@ -200,7 +200,7 @@ void motion_process(CONTROLLER *c)
 	
 	// Perform the IK on all legs, turrets and guns using the caclulated goal positon.
 	for(u08 i = 0; i < NUM_LEGS; i++)
-		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &joint[i*4].angle, &joint[i*4+1].angle, &joint[i*4+2].angle, &joint[i*4+3].angle);
+		kinematics_leg_ik(goal.foot[i].x, goal.foot[i].y, goal.foot[i].z, &servo[i*4].angle, &servo[i*4+1].angle, &servo[i*4+2].angle, &servo[i*4+3].angle);
 	
 	// Save the previous goal potsition as the robot's current position.
 	current = goal;

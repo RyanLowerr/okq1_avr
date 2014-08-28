@@ -4,7 +4,11 @@
 
 #include "dynamixel.h"
 #include "types.h"
+#include "common.h"
+#include "ax.h"
+#include "mx.h"
 
+DYNAMIXEL servo[NUM_SERVOS];
 static volatile u08 dynamixel_txpacket[DYNAMIXEL_PACKET_SIZE];
 static volatile u08 dynamixel_rxpacket[DYNAMIXEL_PACKET_SIZE];
 static volatile u08 dynamixel_rxindex = 0;
@@ -261,4 +265,75 @@ u08 dynamixel_getlowbyte(u16 word)
 u08 dynamixel_gethighbyte(u16 word)
 {
 	return ((word & 0xff00) >> 8);
+}
+
+DYNAMIXEL dynamixel_new(u08 type, u08 id, u08 direction, s16 center)
+{
+	DYNAMIXEL d;
+	d.type = type;
+	d.id = id;
+	d.center = center;
+	d.direction = direction;
+	return d;
+}
+
+// Reads all servos position and uses readings to calculate joint angles.
+void dynamixel_get_positions(DYNAMIXEL *servo)
+{
+	u16 position;
+	
+	for(u08 i = 0; i < NUM_SERVOS; i++)
+	{
+		if(servo[i].type == DYNAMIXEL_TYPE_MX)
+		{
+			dynamixel_readword(i, MX_PRESENT_POSITION_L, &position);
+			position = 0;
+		}
+		else if (servo[i].type == DYNAMIXEL_TYPE_AX)
+		{
+			dynamixel_readword(i, AX_PRESENT_POSITION_L, &position);
+			position = 0;
+		}
+		else
+		{
+			position = 0;
+		}
+	}
+}
+
+// Writes joint positions to all servos that need their goal positions updated using the dynamixel sync write command
+void dynamixel_write_positions(DYNAMIXEL *servo)
+{
+	u08 packet[NUM_SERVOS*5]; // id, position low byte and position high byte per servo
+	u08 servocount = 0;       // count of servos that need position update
+	u08 n = 0;
+	
+	for(u08 i = 0; i < NUM_SERVOS; i++)
+	{	
+		// Calculate the joint's position.
+		if(servo[i].type == DYNAMIXEL_TYPE_MX)
+			servo[i].position = (u16)(MX_CENTER_VALUE + ((MX_TIC_PER_DEG * (servo[i].center + servo[i].direction * (s32)servo[i].angle)) / DEC3));
+		else if (servo[i].type == DYNAMIXEL_TYPE_AX)
+			servo[i].position = (u16)(AX_CENTER_VALUE + ((AX_TIC_PER_DEG * (servo[i].center + servo[i].direction * (s32)servo[i].angle)) / DEC3));
+		else
+			servo[i].position = 0;
+		
+		// If the joint requires a position update add it to the sync write packet. Increment the servo counter.		
+		if(servo[i].position != servo[i].prevposition) 
+		{
+			packet[n++] = servo[i].id;
+			packet[n++] = dynamixel_getlowbyte(servo[i].position);
+			packet[n++] = dynamixel_gethighbyte(servo[i].position);
+			packet[n++] = dynamixel_getlowbyte(500);
+			packet[n++] = dynamixel_gethighbyte(500);
+			servocount++;
+		}
+		
+		// Remember the joint's newest position value.
+		servo[i].prevposition = servo[i].position;
+	}
+	
+	// sync write goal positions out to servos if required.
+	if(servocount > 0)
+		dynamixel_syncwrite(MX_GOAL_POSITION_L, 4, servocount, &packet[0]);
 }

@@ -8,7 +8,6 @@
 
 typedef struct {
 	VECTOR foot[NUM_LEGS];
-	VECTOR turret;
 } POSITION;
 
 extern POSITION current;
